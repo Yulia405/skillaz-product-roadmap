@@ -2,369 +2,60 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Skillaz — продуктовая дорожная карта 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>План развития Skillaz Start</title>
   <style>
-    :root {
-      --bg: #f3f5f8;
-      --surface: #ffffff;
-      --surface-soft: #f8fafc;
-      --text: #16181d;
-      --muted: #697386;
-      --line: #dfe4eb;
-      --blue: #1769e0;
-      --blue-soft: #eaf3ff;
-      --green: #16845b;
-      --green-soft: #e9f7f0;
-      --amber: #a65d00;
-      --amber-soft: #fff3dc;
-      --red: #c83c3c;
-      --red-soft: #fff0ef;
-      --violet: #6750a4;
-      --violet-soft: #f1edff;
-      --cyan: #087c91;
-      --cyan-soft: #e6f7fa;
-      --shadow: 0 12px 32px rgba(26, 39, 62, .08);
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; color: var(--text); background: var(--bg); font-family: Inter, Arial, sans-serif; font-size: 14px; letter-spacing: 0; }
-    button, input { font: inherit; }
-    button { cursor: pointer; }
-    .app { min-height: 100vh; }
-    .topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.96); border-bottom: 1px solid var(--line); backdrop-filter: blur(10px); }
-    .topbar-inner { max-width: 1540px; margin: auto; min-height: 64px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-    .brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 750; }
-    .brand-mark { width: 30px; height: 30px; display: grid; place-items: center; background: #ffd21c; border-radius: 7px; font-weight: 850; }
-    .updated { color: var(--muted); font-size: 12px; }
-    main { max-width: 1540px; margin: auto; padding: 26px 24px 60px; }
-    .intro { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 28px; align-items: end; margin-bottom: 22px; }
-    h1 { margin: 0; font-size: 30px; line-height: 1.16; }
-    .subtitle { margin: 8px 0 0; max-width: 780px; color: var(--muted); line-height: 1.5; }
-    .summary { display: flex; gap: 10px; }
-    .metric { min-width: 112px; padding: 12px 14px; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; }
-    .metric strong { display: block; font-size: 22px; line-height: 1; }
-    .metric span { display: block; margin-top: 6px; color: var(--muted); font-size: 11px; }
-    .toolbar { position: sticky; top: 64px; z-index: 15; display: flex; align-items: center; gap: 10px; padding: 12px; margin-bottom: 18px; border: 1px solid var(--line); background: rgba(255,255,255,.96); box-shadow: 0 6px 18px rgba(26,39,62,.05); }
-    .search { position: relative; flex: 1 1 340px; max-width: 420px; }
-    .search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
-    .search input { width: 100%; height: 38px; padding: 0 12px 0 38px; border: 1px solid #cfd6df; border-radius: 7px; outline: none; background: #fff; }
-    .search input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(23,105,224,.11); }
-    .filters { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-    .filter { height: 36px; padding: 0 13px; border: 1px solid var(--line); border-radius: 18px; background: #fff; color: #3d4654; }
-    .filter.active { background: #16181d; border-color: #16181d; color: #fff; }
-    .legend { display: flex; align-items: center; gap: 14px; margin-left: auto; color: var(--muted); font-size: 11px; white-space: nowrap; }
-    .legend span { display: inline-flex; align-items: center; gap: 5px; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: #aab4c2; }
-    .dot.done { background: var(--green); }
-    .dot.progress { background: var(--blue); }
-    .dot.planned { background: #df8b16; }
-    .dot.risk { background: var(--red); }
-    .roadmap-wrap { overflow-x: auto; padding-bottom: 12px; }
-    .roadmap { min-width: 1390px; display: grid; grid-template-columns: 205px repeat(5, minmax(225px, 1fr)); border: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow); }
-    .corner, .wave { position: relative; z-index: 8; background: var(--surface); border-bottom: 1px solid var(--line); }
-    .corner { position: sticky; left: 0; z-index: 10; padding: 17px 16px; border-right: 1px solid var(--line); }
-    .corner strong { display: block; font-size: 15px; }
-    .corner span { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
-    .wave { padding: 15px 14px; border-right: 1px solid var(--line); }
-    .wave:last-child { border-right: 0; }
-    .wave-title { font-size: 15px; font-weight: 750; }
-    .wave-subtitle { margin-top: 5px; color: var(--muted); font-size: 11px; }
-    .wave-progress { height: 3px; margin-top: 11px; background: #e8ebf0; }
-    .wave-progress span { display: block; height: 100%; background: var(--blue); }
-    .lane-label { position: sticky; left: 0; z-index: 5; min-height: 150px; padding: 18px 16px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: #fbfcfe; }
-    .lane-label[data-family="start"] { box-shadow: inset 4px 0 var(--blue); }
-    .lane-label[data-family="lnd"] { box-shadow: inset 4px 0 var(--green); }
-    .lane-label[data-family="goals"] { box-shadow: inset 4px 0 #d28a00; }
-    .lane-kicker { color: var(--muted); font-size: 10px; font-weight: 750; text-transform: uppercase; }
-    .lane-label h2 { margin: 6px 0 5px; font-size: 16px; }
-    .lane-label p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
-    .cell { min-height: 150px; padding: 10px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: #fff; }
-    .cell:last-child { border-right: 0; }
-    .cell.empty { background: repeating-linear-gradient(-45deg,#fafbfc,#fafbfc 8px,#f6f8fa 8px,#f6f8fa 16px); }
-    .empty-note { padding: 14px 10px; color: #8a94a4; font-size: 11px; line-height: 1.4; }
-    .task { position: relative; padding: 11px 11px 10px; margin-bottom: 8px; border: 1px solid var(--line); border-left: 3px solid #aab4c2; border-radius: 6px; background: #fff; transition: box-shadow .16s ease, transform .16s ease; }
-    .task:last-child { margin-bottom: 0; }
-    .task:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(25,45,75,.10); }
-    .task[data-status="done"] { border-left-color: var(--green); }
-    .task[data-status="progress"] { border-left-color: var(--blue); }
-    .task[data-status="planned"] { border-left-color: #df8b16; }
-    .task[data-status="risk"] { border-left-color: var(--red); }
-    .task-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px; }
-    .task-top { justify-content: flex-end; }
-    .date { padding: 3px 6px; border-radius: 4px; background: var(--surface-soft); color: #596477; font-size: 10px; white-space: nowrap; }
-    .task h3 { margin: 0; font-size: 12px; line-height: 1.35; }
-    .task p { margin: 6px 0 9px; color: var(--muted); font-size: 10.5px; line-height: 1.42; }
-    .task-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .product { display: inline-flex; align-items: center; min-width: 0; padding: 3px 6px; border-radius: 4px; font-size: 9.5px; font-weight: 700; }
-    .product.start { color: #0e5abc; background: var(--blue-soft); }
-    .product.learning { color: #0f7650; background: var(--green-soft); }
-    .product.assessment { color: #a64925; background: #fff0e7; }
-    .product.idp { color: #594193; background: var(--violet-soft); }
-    .product.goals { color: #8a5600; background: var(--amber-soft); }
-    .state { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); font-size: 9.5px; white-space: nowrap; }
-    .state::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #aab4c2; }
-    .task[data-status="done"] .state::before { background: var(--green); }
-    .task[data-status="progress"] .state::before { background: var(--blue); }
-    .task[data-status="planned"] .state::before { background: #df8b16; }
-    .task[data-status="risk"] .state::before { background: var(--red); }
-    .more { width: 100%; height: 32px; border: 1px dashed #cbd3de; border-radius: 6px; color: var(--blue); background: #fafcff; font-size: 11px; }
-    .task.is-extra { display: none; }
-    .cell.expanded .task.is-extra { display: block; }
-    .no-results { display: none; padding: 40px; text-align: center; border: 1px solid var(--line); background: #fff; color: var(--muted); }
-    .source-note { display: flex; align-items: flex-start; gap: 10px; margin-top: 16px; padding: 13px 15px; border-left: 3px solid var(--cyan); background: var(--cyan-soft); color: #34515a; font-size: 11px; line-height: 1.45; }
-    .drawer-layer { position: fixed; inset: 0; z-index: 60; display: none; background: rgba(18,25,36,.46); }
-    .drawer-layer.open { display: block; }
-    .drawer { position: absolute; top: 0; right: 0; width: min(560px, 100%); height: 100%; display: flex; flex-direction: column; background: #fff; box-shadow: -18px 0 44px rgba(15,31,54,.18); }
-    .drawer-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding: 24px; border-bottom: 1px solid var(--line); }
-    .drawer-head h2 { margin: 8px 0 0; font-size: 22px; line-height: 1.25; }
-    .drawer-meta { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 11px; }
-    .drawer-close { width: 36px; height: 36px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 7px; background: #fff; color: #465264; }
-    .drawer-body { overflow-y: auto; padding: 24px; }
-    .detail-section { padding: 0 0 22px; margin-bottom: 22px; border-bottom: 1px solid var(--line); }
-    .detail-section:last-child { border-bottom: 0; }
-    .detail-section h3 { margin: 0 0 9px; font-size: 13px; }
-    .detail-section p { margin: 0; color: #4e596a; font-size: 13px; line-height: 1.6; }
-    .detail-list { margin: 0; padding-left: 20px; color: #4e596a; }
-    .detail-list li { margin: 0 0 9px; line-height: 1.5; }
-    .outcome { padding: 14px; border-left: 3px solid var(--blue); background: var(--blue-soft); color: #24466f; line-height: 1.55; }
-    body.drawer-open { overflow: hidden; }
-    @media (max-width: 900px) {
-      .intro { grid-template-columns: 1fr; }
-      .summary { overflow-x: auto; }
-      .toolbar { top: 64px; align-items: flex-start; flex-wrap: wrap; }
-      .search { max-width: none; flex-basis: 100%; }
-      .legend { margin-left: 0; width: 100%; overflow-x: auto; }
-    }
+    :root{--ink:#18212a;--muted:#687580;--line:#dce2e6;--soft:#f4f6f7;--brand:#1d2c36;--accent:#16846b;--done:#16846b;--progress:#3569c8;--acceptance:#8b5da8;--planned:#7a858d;--risk:#c45b43;--shadow:0 16px 42px rgba(26,39,48,.12)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:#edf1f2;font-family:Inter,Arial,Helvetica,sans-serif;letter-spacing:0}button,select,textarea,input{font:inherit;letter-spacing:0}button,a{-webkit-tap-highlight-color:transparent}button:focus-visible,a:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid rgba(53,105,200,.28);outline-offset:2px}.app{min-height:100vh;background:#fff}
+    .topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;min-height:64px;padding:10px clamp(18px,4vw,56px);border-bottom:1px solid var(--line);background:rgba(255,255,255,.96);backdrop-filter:blur(12px)}.brand{display:flex;align-items:center;gap:12px;min-width:0}.brand-mark{width:34px;height:34px;object-fit:contain}.brand-copy{min-width:0}.brand-copy strong{display:block;font-size:14px}.brand-copy span{display:block;margin-top:2px;color:var(--muted);font-size:11px}.top-actions,.owner-tools{display:flex;align-items:center;gap:8px}
+    .button{min-height:38px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 13px;border:1px solid var(--line);border-radius:6px;color:var(--ink);background:#fff;cursor:pointer;text-decoration:none;font-size:13px;font-weight:700}.button:hover{border-color:#aeb8be;background:#fafbfb}.button.primary{color:#fff;border-color:var(--brand);background:var(--brand)}.button.primary:hover{background:#2a3b47}.button.icon-only{width:38px;padding:0}.button.active{color:#fff;border-color:var(--accent);background:var(--accent)}.button svg{width:16px;height:16px;flex:0 0 auto}.owner-tools{display:none}body.edit-mode .owner-tools{display:flex}
+    .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,380px);gap:clamp(28px,6vw,84px);padding:clamp(40px,7vw,84px) clamp(18px,6vw,84px) 46px;border-bottom:1px solid var(--line);background:#fff}.eyebrow{color:var(--accent);font-size:12px;font-weight:800;text-transform:uppercase}h1{max-width:840px;margin:13px 0 18px;font-size:clamp(38px,5vw,68px);line-height:1.02;font-weight:760}.hero-lead{max-width:730px;margin:0;color:#4d5b65;font-size:clamp(17px,2vw,21px);line-height:1.55}.hero-aside{align-self:end;border-left:1px solid var(--line);padding-left:clamp(20px,3vw,40px)}.hero-aside p{margin:0 0 24px;color:var(--muted);font-size:13px;line-height:1.6}.hero-aside strong{display:block;margin-bottom:4px;color:var(--ink);font-size:28px}.hero-aside span{color:var(--muted);font-size:12px}
+    .snapshot-note{display:none;margin:0 clamp(18px,6vw,84px);padding:12px 14px;color:#654c16;border:1px solid #ead7a8;border-top:0;background:#fff9e9;font-size:13px}.snapshot-note.visible{display:flex;gap:8px;align-items:center}.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:0 clamp(18px,6vw,84px);border-bottom:1px solid var(--line)}.metric{min-height:112px;padding:24px 24px 20px 0;border-right:1px solid var(--line)}.metric:not(:first-child){padding-left:24px}.metric:last-child{border-right:0}.metric strong{display:block;font-size:29px;font-weight:740}.metric span{display:block;margin-top:6px;color:var(--muted);font-size:12px;line-height:1.4}
+    .controls{position:sticky;top:64px;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px clamp(18px,4vw,56px);border-bottom:1px solid var(--line);background:rgba(247,249,249,.96);backdrop-filter:blur(10px)}.filters{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.filter{min-height:32px;padding:0 10px;border:1px solid transparent;border-radius:5px;color:var(--muted);background:transparent;cursor:pointer;font-size:12px;font-weight:700}.filter:hover{color:var(--ink);background:#fff}.filter.active{color:var(--ink);border-color:var(--line);background:#fff}.legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:11px}.legend span{display:inline-flex;align-items:center;gap:6px}.dot{width:8px;height:8px;border-radius:50%;background:var(--planned)}.dot.done{background:var(--done)}.dot.in_progress{background:var(--progress)}.dot.acceptance{background:var(--acceptance)}
+    .roadmap-wrap{padding:38px clamp(18px,4vw,56px) 80px;background:#fff;overflow-x:auto}.roadmap{min-width:980px;max-width:1500px;margin:0 auto}.release-grid,.lane-row{display:grid;grid-template-columns:220px repeat(3,minmax(0,1fr))}.release-grid{position:sticky;top:125px;z-index:12;background:#fff;border-bottom:1px solid var(--line)}.release-intro{padding:0 20px 22px 0;align-self:end}.release-intro strong{display:block;font-size:15px}.release-intro span{display:block;margin-top:5px;color:var(--muted);font-size:11px}.release{position:relative;min-height:104px;padding:0 22px 18px;border-left:1px solid var(--line)}.release:before{content:'';position:absolute;left:-5px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--brand)}.release.current:before{box-shadow:0 0 0 5px rgba(22,132,107,.14);background:var(--accent)}.release time{display:block;margin-bottom:9px;font-size:25px;font-weight:780}.release strong{display:block;font-size:13px}.release p{max-width:330px;margin:6px 0 0;color:var(--muted);font-size:11px;line-height:1.45}
+    .lane-row{position:relative;border-bottom:1px solid var(--line)}.lane-head{padding:26px 24px 26px 0}.lane-head strong{display:block;padding-left:12px;border-left:4px solid var(--lane);font-size:14px}.lane-head span{display:block;margin:7px 0 0 16px;color:var(--muted);font-size:11px;line-height:1.4}.lane-track{grid-column:2/5;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(116px,auto);align-items:stretch;gap:10px;min-height:154px;padding:16px 14px 18px;background-image:linear-gradient(to right,transparent calc(33.333% - 1px),var(--line) calc(33.333% - 1px),var(--line) 33.333%,transparent 33.333%,transparent calc(66.666% - 1px),var(--line) calc(66.666% - 1px),var(--line) 66.666%,transparent 66.666%)}
+    .feature{position:relative;min-width:0;min-height:116px;padding:15px 16px 13px 19px;border:1px solid #d7dde0;border-radius:7px;background:#fff;cursor:pointer;text-align:left;box-shadow:0 3px 10px rgba(26,39,48,.04)}.feature:before{content:'';position:absolute;inset:0 auto 0 0;width:4px;border-radius:6px 0 0 6px;background:var(--lane)}.feature:hover{transform:translateY(-1px);border-color:#aeb8be;box-shadow:0 8px 22px rgba(26,39,48,.10)}.feature-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.status{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase}.status:before{content:'';width:7px;height:7px;border-radius:50%;background:var(--status-color)}.feature-progress{color:var(--muted);font-size:11px;font-weight:750}.feature h3{margin:11px 0 7px;font-size:14px;line-height:1.3}.feature p{margin:0;color:var(--muted);font-size:11px;line-height:1.45}.progress-line{display:block;height:3px;margin-top:13px;background:#edf0f1;overflow:hidden}.progress-line i{display:block;height:100%;width:var(--progress-value);background:var(--status-color)}
+    .placeholder{grid-column:1/4;align-self:center;min-height:88px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 20px;border:1px dashed #b8c0c5;border-radius:7px;background:#fafbfb}.placeholder strong{display:block;font-size:13px}.placeholder p{margin:5px 0 0;color:var(--muted);font-size:11px}.placeholder svg{color:#8b979e}.hidden{display:none!important}
+    .drawer-shell{position:fixed;inset:0;z-index:80;pointer-events:none}.drawer-shell.open{pointer-events:auto}.backdrop{position:absolute;inset:0;opacity:0;background:rgba(18,28,34,.42);transition:opacity .2s ease}.drawer-shell.open .backdrop{opacity:1}.drawer{position:absolute;top:0;right:0;width:min(560px,100%);height:100%;overflow:auto;transform:translateX(100%);transition:transform .24s ease;background:#fff;box-shadow:var(--shadow)}.drawer-shell.open .drawer{transform:translateX(0)}.drawer-head{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;gap:16px;padding:22px 24px;border-bottom:1px solid var(--line);background:#fff}.drawer-head span{color:var(--muted);font-size:11px;text-transform:uppercase;font-weight:800}.drawer-head h2{margin:6px 0 0;font-size:24px;line-height:1.2}.drawer-body{padding:26px 24px 50px}.drawer-outcome{margin:0 0 28px;color:#42515a;font-size:16px;line-height:1.6}.drawer-section{padding:22px 0;border-top:1px solid var(--line)}.drawer-section h3{margin:0 0 14px;font-size:13px}.scope{display:grid;gap:10px;margin:0;padding:0;list-style:none}.scope li{display:flex;gap:9px;color:#44515a;font-size:13px;line-height:1.45}.scope li:before{content:'✓';color:var(--accent);font-weight:800}.source-links{display:flex;flex-wrap:wrap;gap:14px}.source-link{display:inline-flex;align-items:center;gap:6px;color:#275ba9;font-size:12px;font-weight:700;text-decoration:none}.source-link:hover{text-decoration:underline}.source-link svg{width:14px}.edit-panel{display:none;padding:18px;border:1px solid #cfd8dc;border-radius:7px;background:#f7f9f9}body.edit-mode .edit-panel{display:block}.edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{color:var(--muted);font-size:11px;font-weight:800;text-transform:uppercase}.field select,.field textarea{width:100%;border:1px solid #c8d0d4;border-radius:5px;background:#fff;padding:9px 10px;color:var(--ink)}.field textarea{min-height:88px;resize:vertical;line-height:1.45}.range-row{display:grid;grid-template-columns:1fr 46px;align-items:center;gap:10px}.range-row output{text-align:right;font-size:13px;font-weight:750}.note{margin-top:16px;padding:13px 14px;border-left:3px solid #d0a23b;background:#fff9ea;color:#624e22;font-size:12px;line-height:1.5}.toast{position:fixed;left:50%;bottom:28px;z-index:120;transform:translate(-50%,20px);opacity:0;padding:11px 15px;border-radius:6px;color:#fff;background:#1d2c36;box-shadow:var(--shadow);font-size:13px;transition:.2s ease;pointer-events:none}.toast.show{transform:translate(-50%,0);opacity:1}
+    @media(max-width:780px){.topbar{align-items:flex-start;min-height:58px;padding:10px 14px}.brand-copy span,.share-label,.edit-label{display:none}.hero{grid-template-columns:1fr;padding:34px 18px 30px}h1{font-size:42px}.hero-aside{border-left:0;border-top:1px solid var(--line);padding:22px 0 0}.summary{grid-template-columns:repeat(2,1fr);padding:0 18px}.metric{min-height:96px;border-bottom:1px solid var(--line)}.metric:nth-child(2){border-right:0}.metric:nth-child(3),.metric:nth-child(4){border-bottom:0}.metric:nth-child(3){padding-left:0}.controls{top:58px;padding:10px 14px;overflow-x:auto}.legend{display:none}.roadmap-wrap{padding:24px 14px 60px}.roadmap{min-width:850px}.release-grid{top:111px}.release-grid,.lane-row{grid-template-columns:170px repeat(3,minmax(0,1fr))}.feature{padding-right:13px}.feature p{display:none}.edit-grid{grid-template-columns:1fr}.field.full{grid-column:auto}}
   </style>
 </head>
 <body>
   <div class="app">
-    <header class="topbar"><div class="topbar-inner"><div class="brand"><span class="brand-mark">S</span> Skillaz Product Roadmap</div><div class="updated">Актуально на 19 августа 2026</div></div></header>
+    <header class="topbar"><div class="brand"><img class="brand-mark" src="skillaz-logo.png" alt="Skillaz"><div class="brand-copy"><strong>Skillaz Start</strong><span>План развития проекта</span></div></div><div class="top-actions"><div class="owner-tools"><button class="button icon-only" id="exportBtn" title="Скачать данные" aria-label="Скачать данные"><i data-lucide="download"></i></button><label class="button icon-only" title="Загрузить данные" aria-label="Загрузить данные"><i data-lucide="upload"></i><input id="importInput" class="hidden" type="file" accept="application/json"></label></div><button class="button" id="editBtn"><i data-lucide="square-pen"></i><span class="edit-label">Режим обновления</span></button><button class="button primary" id="shareBtn"><i data-lucide="share-2"></i><span class="share-label">Поделиться</span></button></div></header>
     <main>
-      <section class="intro">
-        <div><h1>Дорожная карта развития продуктов</h1><p class="subtitle">Skillaz Start, обучение, оценка, ИПР и целеполагание. В карте оставлены только изменения, которые дают понятный пользовательский или бизнес-результат.</p></div>
-        <div class="summary"><div class="metric"><strong id="visibleCount">0</strong><span>бизнес-задач</span></div><div class="metric"><strong>5</strong><span>релизных волн</span></div><div class="metric"><strong>7</strong><span>продуктовых треков</span></div></div>
-      </section>
-
-      <section class="toolbar">
-        <div class="search"><i data-lucide="search" size="17"></i><input id="search" placeholder="Найти задачу или результат"></div>
-        <div class="filters" id="familyFilters">
-          <button class="filter active" data-family="all">Все</button>
-          <button class="filter" data-family="start">Skillaz Start</button>
-          <button class="filter" data-family="lnd">Обучение, оценка, ИПР</button>
-          <button class="filter" data-family="goals">Целеполагание</button>
-        </div>
-        <div class="legend"><span><i class="dot done"></i>Готово</span><span><i class="dot progress"></i>В работе</span><span><i class="dot planned"></i>Запланировано</span><span><i class="dot risk"></i>Под риском</span></div>
-      </section>
-
-      <div class="roadmap-wrap">
-        <section class="roadmap" id="roadmap">
-          <div class="corner"><strong>Продуктовый трек</strong><span>Бизнес-результат по релизам</span></div>
-          <div class="wave"><div class="wave-title">Релиз 0.77</div><div class="wave-subtitle">Август — начало сентября</div><div class="wave-progress"><span style="width:92%"></span></div></div>
-          <div class="wave"><div class="wave-title">Релиз 0.78</div><div class="wave-subtitle">Сентябрь</div><div class="wave-progress"><span style="width:58%"></span></div></div>
-          <div class="wave"><div class="wave-title">Релиз 0.79</div><div class="wave-subtitle">Сентябрь — октябрь</div><div class="wave-progress"><span style="width:28%"></span></div></div>
-          <div class="wave"><div class="wave-title">Октябрь</div><div class="wave-subtitle">Сборка Skillaz Start MVP</div><div class="wave-progress"><span style="width:14%"></span></div></div>
-          <div class="wave"><div class="wave-title">До 05.11</div><div class="wave-subtitle">Финальная волна и приемка</div><div class="wave-progress"><span style="width:5%"></span></div></div>
-        </section>
-      </div>
-      <div class="no-results" id="noResults">По выбранному фильтру задач не найдено.</div>
-      <div class="source-note"><i data-lucide="info" size="18"></i><div><strong>Состав дорожной карты.</strong> Здесь показаны только продуктовые изменения с понятным результатом для сотрудников, руководителей и администраторов. Технические работы в клиентскую карту не включены.</div></div>
+      <section class="hero"><div><div class="eyebrow">Продуктовый план · сентябрь — ноябрь 2026</div><h1 id="projectTitle"></h1><p class="hero-lead" id="projectSubtitle"></p></div><aside class="hero-aside"><p>Единый продуктовый контур объединяет адаптацию, самостоятельный запуск клиента и внутренние переходы.</p><strong id="nextReleaseDate">09.09</strong><span id="nextReleaseLabel">ближайшая контрольная дата</span></aside></section>
+      <div class="snapshot-note" id="snapshotNote"><i data-lucide="eye"></i> Открыт зафиксированный снимок плана. Изменения владельца в этом браузере не применяются.</div>
+      <section class="summary" aria-label="Сводка проекта"><div class="metric"><strong id="featureCount">0</strong><span>крупных фич в плане</span></div><div class="metric"><strong id="doneCount">0</strong><span>готово или на приёмке</span></div><div class="metric"><strong id="avgProgress">0%</strong><span>средняя готовность продуктового потока</span></div><div class="metric"><strong id="lastUpdated">09.09</strong><span>последнее обновление плана</span></div></section>
+      <section class="controls"><div class="filters" id="filters"></div><div class="legend"><span><i class="dot done"></i>Готово</span><span><i class="dot acceptance"></i>Приёмка</span><span><i class="dot in_progress"></i>В работе</span><span><i class="dot"></i>Запланировано</span></div></section>
+      <section class="roadmap-wrap"><div class="roadmap"><div class="release-grid" id="releaseGrid"></div><div id="laneRows"></div></div></section>
     </main>
   </div>
-
-  <div class="drawer-layer" id="detailLayer" aria-hidden="true">
-    <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
-      <div class="drawer-head"><div><div class="drawer-meta"><span class="product start" id="detailProduct">Skillaz Start</span><span id="detailDate">Октябрь</span></div><h2 id="detailTitle">Название изменения</h2></div><button class="drawer-close" id="detailClose" aria-label="Закрыть"><i data-lucide="x" size="20"></i></button></div>
-      <div class="drawer-body">
-        <section class="detail-section"><h3>Для кого</h3><p id="detailAudience"></p></section>
-        <section class="detail-section"><h3>Зачем это нужно</h3><p id="detailNeed"></p></section>
-        <section class="detail-section"><h3>Что изменится</h3><ul class="detail-list" id="detailChanges"></ul></section>
-        <section class="detail-section"><h3>Ожидаемый результат</h3><div class="outcome" id="detailOutcome"></div></section>
-      </div>
-    </aside>
-  </div>
-
+  <div class="drawer-shell" id="drawerShell" aria-hidden="true"><div class="backdrop" id="backdrop"></div><aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"><header class="drawer-head"><div><span id="drawerMeta"></span><h2 id="drawerTitle"></h2></div><button class="button icon-only" id="closeDrawer" title="Закрыть" aria-label="Закрыть"><i data-lucide="x"></i></button></header><div class="drawer-body" id="drawerBody"></div></aside></div>
+  <div class="toast" id="toast" role="status"></div>
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-  <script src="tracker-details.js"></script>
+  <script src="roadmap-data.js"></script>
   <script>
-    const waves = ['r77','r78','r79','oct','nov'];
-    const lanes = [
-      { id:'preboarding', family:'start', product:'start', group:'Skillaz Start', title:'Пребординг', description:'Безопасный доступ кандидата и подготовка к выходу.' },
-      { id:'adaptation', family:'start', product:'start', group:'Skillaz Start', title:'Адаптация', description:'Цели, контроль, рабочее место руководителя и итоговое решение.' },
-      { id:'hiring', family:'start', product:'start', group:'Skillaz Start', title:'Внутренний найм', description:'Вакансии, отклики и переход сотрудника в новый план адаптации.' },
-      { id:'learning', family:'lnd', product:'learning', group:'Развитие', title:'Обучение', description:'Новый опыт прохождения и управления обучением.' },
-      { id:'assessment', family:'lnd', product:'assessment', group:'Развитие', title:'Оценка', description:'Оценочные сценарии, результаты и пользовательские отчеты.' },
-      { id:'idp', family:'lnd', product:'idp', group:'Развитие', title:'ИПР', description:'Управление планами развития и отчетность.' },
-      { id:'goals', family:'goals', product:'goals', group:'Эффективность', title:'Целеполагание', description:'Чекины, Performance Review и прозрачные результаты целей.' }
-    ];
-
-    const tasks = [
-      {lane:'preboarding',wave:'r77',key:'DEV-61959',title:'Вход кандидата по временной ссылке',date:'02.09',status:'progress',state:'В работе',desc:'Кандидат открывает свой план пребординга без полноценной учетной записи LMS.'},
-      {lane:'preboarding',wave:'r77',key:'DEV-61967',title:'Уведомление кандидата с временной ссылкой',date:'02.09',status:'progress',state:'В работе',desc:'Кандидат получает понятное приглашение и сразу переходит к действиям до выхода.'},
-      {lane:'preboarding',wave:'r78',key:'DEV-63824',title:'Защита временного доступа при смене роли',date:'Релиз 0.78',status:'progress',state:'В работе',desc:'Временный доступ автоматически закрывается, когда кандидат больше не должен видеть пребординг.'},
-
-      {lane:'adaptation',wave:'r77',key:'DEV-62032',title:'Цели и шаги в плане адаптации',date:'09.09',status:'progress',state:'В работе',desc:'Руководитель ставит ожидаемые результаты, а сотрудник видит понятный путь к ним.'},
-      {lane:'adaptation',wave:'r77',key:'DEV-64395',title:'Опубликованные цели для сотрудника',date:'09.09',status:'progress',state:'Готово к QA',desc:'После публикации цели становятся частью рабочего плана сотрудника.'},
-      {lane:'adaptation',wave:'r77',key:'DEV-63126',title:'Комментарии к шагам адаптации',date:'09.09',status:'progress',state:'В работе',desc:'Участники фиксируют вопросы, договоренности и обратную связь прямо в шаге.'},
-      {lane:'adaptation',wave:'r78',key:'DEV-64569',title:'План адаптации и базовые действия',date:'09.09',status:'progress',state:'В работе',desc:'Цели становятся основным планом результата, а чек-лист сохраняется как базовые действия.'},
-      {lane:'adaptation',wave:'r78',key:'DEV-62377',title:'Прогресс плана по выполнению целей',date:'09.09',status:'progress',state:'В работе',desc:'Основной прогресс показывает движение к результату, когда в плане включены цели.'},
-      {lane:'adaptation',wave:'r78',key:'DEV-62448',title:'Материалы и действия внутри шага',date:'09.09',status:'planned',state:'К разработке',desc:'Руководитель добавляет к шагу курсы, статьи, задачи, файлы и ссылки без лишних сроков.'},
-      {lane:'adaptation',wave:'r78',key:'DEV-64629',title:'Отправка шага на подтверждение',date:'Сентябрь',status:'planned',state:'Запланировано',desc:'Сотрудник передает завершенный результат проверяющему и понимает, что произойдет дальше.'},
-      {lane:'adaptation',wave:'r79',key:'DEV-64630',title:'Проверка результата шага',date:'Сентябрь',status:'risk',state:'Дизайн уточняется',desc:'Проверяющий подтверждает результат, возвращает его в работу или отмечает невыполненным.'},
-      {lane:'adaptation',wave:'r79',key:'DEV-64603',title:'Рабочее место руководителя по адаптации',date:'Октябрь',status:'planned',state:'Запланировано',desc:'Руководитель видит планы команды, свои действия, сроки и проблемные места в одном разделе.'},
-      {lane:'adaptation',wave:'oct',key:'DEV-64608',title:'Контрольные точки и риски',date:'Октябрь',status:'planned',state:'Запланировано',desc:'Регулярные встречи и пульс помогают раньше заметить риск срыва адаптации.'},
-      {lane:'adaptation',wave:'oct',key:'DEV-64617',title:'AI-ассистент в адаптации',date:'Октябрь',status:'planned',state:'Запланировано',desc:'Единый ассистент помогает руководителю создавать цели и шаги, подбирать материалы, а сотруднику — понимать свои действия и готовить отчет по результату.'},
-      {lane:'adaptation',wave:'oct',key:'DEV-64620',title:'Цели в шаблонах и каталог целей',date:'Октябрь',status:'planned',state:'Запланировано',desc:'Типовые роли получают готовые цели, которые можно переиспользовать и адаптировать.'},
-      {lane:'adaptation',wave:'nov',key:'DEV-64609',title:'Финальная сводка и итоговое решение',date:'05.11',status:'planned',state:'Запланировано',desc:'Руководитель оценивает весь результат плана и завершает его успешно, неуспешно или возвращает в работу.'},
-      {lane:'adaptation',wave:'nov',key:'DEV-64880',title:'Отчетность Skillaz Start',date:'Ноябрь',status:'risk',state:'Может сместиться',desc:'HR получает выгрузки по целям, контрольным точкам, рискам и итогам адаптации.'},
-
-      {lane:'hiring',wave:'r78',key:'DEV-64440',title:'Витрина внутренних вакансий',date:'Сентябрь',status:'planned',state:'Запланировано',desc:'Сотрудник видит доступные вакансии и может начать внутренний переход внутри Skillaz Start.'},
-      {lane:'hiring',wave:'oct',key:'DEV-64440',title:'Переход из вакансии во внутренний найм',date:'Октябрь',status:'planned',state:'Запланировано',desc:'Отклик проходит через ATS, а после решения по кандидату запускается подготовка нового плана адаптации.'},
-
-      {lane:'learning',wave:'r77',key:'DEV-51184',title:'Новая страница программы обучения',date:'Релиз 0.77',status:'done',state:'Выпущено',desc:'Сотрудник видит структуру программы, прогресс и ближайшие действия на одном экране.'},
-      {lane:'learning',wave:'r77',key:'DEV-51560',title:'Адаптивная версия программы',date:'Релиз 0.77',status:'done',state:'Выпущено',desc:'Программу удобно проходить на телефоне и небольших экранах.'},
-      {lane:'learning',wave:'r77',key:'DEV-51805',title:'Полноэкранный SCORM и PDF в приложении',date:'Релиз 0.77',status:'done',state:'Выпущено',desc:'Учебный контент открывается без лишней навигации и лучше использует экран устройства.'},
-      {lane:'learning',wave:'r77',key:'DEV-60061',title:'Редактирование и назначение программы',date:'Релиз 0.77',status:'done',state:'Выпущено',desc:'Администратор быстрее переходит от просмотра программы к ее изменению или назначению.'},
-      {lane:'learning',wave:'r77',key:'DEV-51437',title:'Скрытие пройденных курсов в программе',date:'Релиз 0.77',status:'done',state:'Выпущено',desc:'Сотрудник может сосредоточиться на оставшейся части обучения.'},
-      {lane:'learning',wave:'r77',key:'DEV-56987',title:'Оптимальная загрузка календаря мероприятий',date:'Релиз 0.77',status:'done',state:'Выпущено',desc:'Календарь сразу показывает релевантный период и быстрее помогает найти событие.'},
-      {lane:'learning',wave:'r78',key:'DEV-54794',title:'Карточки курсов в «Моем обучении»',date:'Релиз 0.78',status:'progress',state:'На проверке',desc:'Сотруднику проще просматривать и сравнивать назначенные курсы.'},
-      {lane:'learning',wave:'r78',key:'DEV-54536',title:'Вкладки и счетчики в «Моем обучении»',date:'Релиз 0.78',status:'progress',state:'На проверке',desc:'Курсы сгруппированы по понятным состояниям с количеством элементов.'},
-      {lane:'learning',wave:'r78',key:'DEV-55531',title:'Фильтры списка курсов',date:'Релиз 0.78',status:'progress',state:'На проверке',desc:'Сотрудник быстрее находит нужное обучение в большом списке.'},
-      {lane:'learning',wave:'r78',key:'DEV-60832',title:'Сортировка курсов',date:'Релиз 0.78',status:'progress',state:'На проверке',desc:'Список можно упорядочить по сроку, статусу и другим рабочим признакам.'},
-      {lane:'learning',wave:'r78',key:'DEV-55327',title:'Действия с курсами в «Моем обучении»',date:'Релиз 0.78',status:'progress',state:'На проверке',desc:'Основные действия с курсом доступны прямо из списка.'},
-      {lane:'learning',wave:'r78',key:'DEV-55328',title:'Табличный вид курсов',date:'Релиз 0.78',status:'progress',state:'На проверке',desc:'Для больших объемов обучения доступен компактный режим сравнения.'},
-      {lane:'learning',wave:'r78',key:'DEV-55713',title:'Мобильное «Мое обучение»',date:'Релиз 0.78',status:'progress',state:'На проверке',desc:'Основной сценарий обучения полноценно работает на мобильном устройстве.'},
-      {lane:'learning',wave:'r78',key:'DEV-44789',title:'Фильтр программ по автору',date:'Релиз 0.78',status:'planned',state:'Запланировано',desc:'Администратор быстрее находит программы нужной команды или эксперта.'},
-      {lane:'learning',wave:'r78',key:'DEV-52611',title:'Длительность прохождения в отчетах',date:'Релиз 0.78',status:'planned',state:'На согласовании',desc:'В отчетах видно, сколько времени сотрудники фактически тратят на программу.'},
-      {lane:'learning',wave:'r79',key:'DEV-55872',title:'Избранные курсы',date:'Релиз 0.79',status:'planned',state:'Запланировано',desc:'Сотрудник сохраняет интересные курсы и возвращается к ним позже.'},
-      {lane:'learning',wave:'r79',key:'DEV-44788',title:'Фильтр курсов по автору',date:'Релиз 0.79',status:'planned',state:'Запланировано',desc:'Администратор находит курсы конкретного автора без ручного просмотра каталога.'},
-      {lane:'learning',wave:'r79',key:'DEV-44702',title:'Фильтр статей по автору',date:'Релиз 0.79',status:'planned',state:'Запланировано',desc:'Контент библиотеки проще искать и администрировать по владельцу.'},
-      {lane:'learning',wave:'r79',key:'DEV-44705',title:'Фильтр SCORM-пакетов по автору',date:'Релиз 0.79',status:'planned',state:'Запланировано',desc:'Большой каталог SCORM можно быстро отфильтровать по создателю.'},
-      {lane:'learning',wave:'r79',key:'DEV-53852',title:'Предпросмотр курса',date:'Релиз 0.79',status:'planned',state:'Запланировано',desc:'Администратор проверяет курс глазами сотрудника до публикации.'},
-      {lane:'learning',wave:'r79',key:'DEV-49948',title:'Черновик программы курсов',date:'Релиз 0.79',status:'planned',state:'Запланировано',desc:'Программу можно подготовить и проверить до того, как она станет доступна пользователям.'},
-      {lane:'learning',wave:'r79',key:'DEV-52604',title:'Автозавершение курса после проверки задания',date:'Релиз 0.79',status:'planned',state:'Запланировано',desc:'Успешная проверка финального задания автоматически завершает обучение.'},
-      {lane:'learning',wave:'r79',key:'DEV-60761',title:'QR-код для учета посещаемости',date:'Релиз 0.79',status:'planned',state:'Запланировано',desc:'Участники отмечают присутствие по QR-коду, а тренер подтверждает результат.'},
-      {lane:'learning',wave:'r79',key:'DEV-58674',title:'Блок «Продолжить обучение»',date:'Релиз 0.79',status:'planned',state:'Запланировано',desc:'Сотрудник сразу возвращается к последнему незавершенному обучению.'},
-
-      {lane:'idp',wave:'r78',key:'DEV-57477',title:'Фильтрация ИПР по функциям',date:'Релиз 0.78',status:'progress',state:'На проверке',desc:'Руководитель и HR быстрее находят планы развития нужной функции.'},
-      {lane:'idp',wave:'r78',key:'DEV-56407',title:'Управление видимостью фильтров ИПР',date:'Релиз 0.78',status:'planned',state:'Запланировано',desc:'Клиент оставляет в интерфейсе только нужные фильтры планов сотрудников.'},
-      {lane:'idp',wave:'r78',key:'DEV-64180',title:'Фильтр «Моя функция»',date:'Релиз 0.78',status:'planned',state:'Запланировано',desc:'Планы развития автоматически отбираются по функции текущего пользователя.'},
-      {lane:'idp',wave:'r78',key:'DEV-57492',title:'Фильтрация ИПР по рабочему уровню',date:'Релиз 0.78',status:'progress',state:'В работе',desc:'Планы можно анализировать по уровню должности сотрудника.'},
-      {lane:'idp',wave:'r79',key:'DEV-58077',title:'Общий отчет по планам развития',date:'Релиз 0.79',status:'planned',state:'Запланировано',desc:'HR получает сводную картину по состоянию и прогрессу ИПР сотрудников.'},
-      {lane:'idp',wave:'r79',key:'DEV-56272',title:'Новые поля в отчете по ИПР',date:'Релиз 0.79',status:'planned',state:'Запланировано',desc:'Выгрузка содержит больше данных для анализа планов развития.'},
-      {lane:'idp',wave:'r79',key:'DEV-54605',title:'Управление возвратом ИПР в работу',date:'Релиз 0.79',status:'planned',state:'Запланировано',desc:'Клиент настраивает, кому доступно возвращать план развития на доработку.'},
-      {lane:'idp',wave:'r79',key:'DEV-54369',title:'Удобный выбор компетенций в ИПР',date:'Релиз 0.79',status:'planned',state:'Запланировано',desc:'Компетенции проще искать и выбирать в длинных справочниках.'},
-
-      {lane:'goals',wave:'r77',key:'DEV-58130',title:'Черновик чекина',date:'28.08',status:'progress',state:'Готово к QA',desc:'Пользователь сохраняет промежуточные ответы и возвращается к заполнению позже.'},
-      {lane:'goals',wave:'r77',key:'DEV-60237',title:'Редактирование прогноза выполнения цели',date:'28.08',status:'progress',state:'В работе',desc:'Прогноз можно обновить прямо из карточки цели без лишних переходов.'},
-      {lane:'goals',wave:'r77',key:'DEV-62006',title:'Цель автоматически переходит в работу',date:'23.08',status:'done',state:'Выпущено',desc:'После первого чекина статус цели обновляется без ручного действия.'},
-      {lane:'goals',wave:'r77',key:'DEV-58782',title:'Создание цикла Performance Review',date:'31.08',status:'done',state:'Выпущено',desc:'Администратор запускает единый цикл оценки результатов сотрудников.'},
-      {lane:'goals',wave:'r77',key:'DEV-61361',title:'Шаблоны Performance Review',date:'31.08',status:'done',state:'Выпущено',desc:'Повторяющиеся циклы оценки создаются из заранее настроенного шаблона.'},
-      {lane:'goals',wave:'r77',key:'DEV-61139',title:'Настройка шкал оценки',date:'31.08',status:'done',state:'Выпущено',desc:'Компания задает понятные шкалы и единые правила оценки результатов.'},
-      {lane:'goals',wave:'r78',key:'DEV-60274',title:'Правила цикла оценки',date:'06.09',status:'progress',state:'В работе',desc:'Администратор управляет правилами проведения оценки в одном месте.'},
-      {lane:'goals',wave:'r78',key:'DEV-60211',title:'Уровень выполнения цели',date:'Сентябрь',status:'planned',state:'Запланировано',desc:'В цели фиксируется фактическая степень достижения результата.'},
-      {lane:'goals',wave:'r79',key:'DEV-58783',title:'Оценки команды',date:'30.09',status:'progress',state:'В работе',desc:'Руководитель видит статус и результаты оценки всех сотрудников команды.'},
-      {lane:'goals',wave:'r79',key:'DEV-58787',title:'Оценка руководителем',date:'30.09',status:'planned',state:'На груминге',desc:'Руководитель оценивает цели и фиксирует итоговую обратную связь сотруднику.'},
-      {lane:'goals',wave:'r79',key:'DEV-58788',title:'Калибровка результатов',date:'30.09',status:'planned',state:'Запланировано',desc:'Результаты выравниваются между подразделениями до публикации сотрудникам.'},
-      {lane:'goals',wave:'r79',key:'DEV-58789',title:'Подготовка результатов к публикации',date:'30.09',status:'planned',state:'Запланировано',desc:'Ответственные проверяют итоговые оценки перед открытием сотрудникам.'},
-      {lane:'goals',wave:'r79',key:'DEV-58785',title:'Моя оценка эффективности',date:'30.09',status:'planned',state:'Запланировано',desc:'Сотрудник видит итоговую оценку, результаты по целям и комментарии руководителя.'},
-      {lane:'goals',wave:'oct',key:'DEV-60972',title:'Взвешенный итог по целям',date:'После 0.79',status:'risk',state:'Без срока',desc:'Общий результат учитывает вес каждой цели и дает более точную итоговую оценку.'}
-    ];
-
-    const productLabels = { start:'Skillaz Start', learning:'Обучение', assessment:'Оценка', idp:'ИПР', goals:'Целеполагание' };
-    const roadmap = document.getElementById('roadmap');
-
-    function taskCard(task, index) {
-      return `<article class="task ${index > 3 ? 'is-extra' : ''}" role="button" tabindex="0" data-key="${task.key}" data-status="${task.status}" data-search="${`${task.title} ${task.desc}`.toLowerCase()}">
-        <div class="task-top"><span class="date">${task.date}</span></div>
-        <h3>${task.title}</h3><p>${task.desc}</p>
-        <div class="task-bottom"><span class="product ${lanes.find(l => l.id === task.lane).product}">${productLabels[lanes.find(l => l.id === task.lane).product]}</span><span class="state">${task.state}</span></div>
-      </article>`;
-    }
-
-    function render() {
-      roadmap.querySelectorAll('.lane-label,.cell').forEach(node => node.remove());
-      const family = document.querySelector('.filter.active').dataset.family;
-      const query = document.getElementById('search').value.trim().toLowerCase();
-      let visibleTasks = 0;
-      let visibleLanes = 0;
-      lanes.forEach(lane => {
-        if (family !== 'all' && lane.family !== family) return;
-        const laneTasks = tasks.filter(task => task.lane === lane.id && (!query || `${task.title} ${task.desc}`.toLowerCase().includes(query)));
-        if (query && laneTasks.length === 0) return;
-        visibleLanes += 1;
-        visibleTasks += laneTasks.length;
-        roadmap.insertAdjacentHTML('beforeend', `<div class="lane-label" data-family="${lane.family}"><span class="lane-kicker">${lane.group}</span><h2>${lane.title}</h2><p>${lane.description}</p></div>`);
-        waves.forEach(wave => {
-          const items = laneTasks.filter(task => task.wave === wave);
-          const emptyAssessment = lane.id === 'assessment';
-          const content = items.length
-            ? items.map(taskCard).join('') + (items.length > 4 ? `<button class="more" data-more>Еще ${items.length - 4}</button>` : '')
-            : `<div class="empty-note">${emptyAssessment ? 'В релизах 0.77–0.79 бизнес-задачи по оценке не запланированы.' : 'Нет задач в этой волне'}</div>`;
-          roadmap.insertAdjacentHTML('beforeend', `<div class="cell ${items.length ? '' : 'empty'}">${content}</div>`);
-        });
-      });
-      document.getElementById('visibleCount').textContent = visibleTasks;
-      document.getElementById('noResults').style.display = visibleLanes ? 'none' : 'block';
-      document.querySelectorAll('[data-more]').forEach(button => button.onclick = () => {
-        const cell = button.closest('.cell');
-        cell.classList.toggle('expanded');
-        button.textContent = cell.classList.contains('expanded') ? 'Свернуть' : `Еще ${cell.querySelectorAll('.task.is-extra').length}`;
-      });
-      document.querySelectorAll('.task').forEach(card => {
-        card.onclick = () => openDetails(card.dataset.key);
-        card.onkeydown = event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openDetails(card.dataset.key); } };
-      });
-      if (window.lucide) window.lucide.createIcons();
-    }
-
-    const audienceByLane = {
-      preboarding: 'Кандидат, HR и участники подготовки к выходу сотрудника.',
-      adaptation: 'Сотрудник, руководитель и HR, участвующие в процессе адаптации.',
-      hiring: 'Сотрудник, руководитель и HR, работающие с внутренним переходом.',
-      learning: 'Сотрудник и администратор обучения.',
-      assessment: 'Сотрудник, руководитель и администратор оценки.',
-      idp: 'Сотрудник, руководитель и HR, работающие с планами развития.',
-      goals: 'Сотрудник, руководитель и администратор цикла целеполагания.'
-    };
-
-    function openDetails(key) {
-      const task = tasks.find(item => item.key === key);
-      if (!task) return;
-      const lane = lanes.find(item => item.id === task.lane);
-      const tracker = (window.TRACKER_DETAILS || {})[key] || {};
-      document.getElementById('detailTitle').textContent = task.title;
-      document.getElementById('detailDate').textContent = task.date;
-      const product = document.getElementById('detailProduct');
-      product.className = `product ${lane.product}`;
-      product.textContent = productLabels[lane.product];
-      document.getElementById('detailAudience').textContent = audienceByLane[task.lane];
-      document.getElementById('detailNeed').textContent = tracker.need || task.desc;
-      const changes = tracker.changes?.length ? tracker.changes : [task.desc];
-      document.getElementById('detailChanges').innerHTML = changes.map(item => `<li>${item}</li>`).join('');
-      document.getElementById('detailOutcome').textContent = task.desc;
-      document.getElementById('detailLayer').classList.add('open');
-      document.getElementById('detailLayer').setAttribute('aria-hidden','false');
-      document.body.classList.add('drawer-open');
-      document.getElementById('detailClose').focus();
-    }
-
-    function closeDetails() {
-      document.getElementById('detailLayer').classList.remove('open');
-      document.getElementById('detailLayer').setAttribute('aria-hidden','true');
-      document.body.classList.remove('drawer-open');
-    }
-
-    document.querySelectorAll('.filter').forEach(button => button.onclick = () => {
-      document.querySelectorAll('.filter').forEach(item => item.classList.remove('active'));
-      button.classList.add('active');
-      render();
-    });
-    document.getElementById('search').addEventListener('input', render);
-    document.getElementById('detailClose').onclick = closeDetails;
-    document.getElementById('detailLayer').onclick = event => { if (event.target.id === 'detailLayer') closeDetails(); };
-    document.addEventListener('keydown', event => { if (event.key === 'Escape') closeDetails(); });
-    render();
+    const STORAGE_KEY='skillaz-start-project-plan-v2';
+    const statuses={done:{label:'Готово',color:'#16846b'},acceptance:{label:'Приёмка',color:'#8b5da8'},in_progress:{label:'В работе',color:'#3569c8'},planned:{label:'Запланировано',color:'#7a858d'},risk:{label:'Есть риск',color:'#c45b43'}};
+    const data=window.ROADMAP_DATA;const state={filter:'all',editMode:false,selected:null,snapshot:false,overrides:{}};const $=s=>document.querySelector(s);const escapeHtml=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'})[c]);const formatDate=v=>new Intl.DateTimeFormat('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date(v));const currentFeature=f=>({...f,...(state.overrides[f.id]||{})});const laneById=id=>data.lanes.find(x=>x.id===id);const releaseById=id=>data.releases.find(x=>x.id===id);
+    function readState(){const hash=location.hash.startsWith('#snapshot=')?location.hash.slice(10):'';if(hash){try{state.overrides=JSON.parse(decodeURIComponent(escape(atob(hash))));state.snapshot=true;$('#snapshotNote').classList.add('visible');return}catch(e){console.warn('Не удалось прочитать снимок',e)}}try{state.overrides=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch{state.overrides={}}}
+    function saveState(){if(!state.snapshot)localStorage.setItem(STORAGE_KEY,JSON.stringify(state.overrides))}
+    function renderHeader(){const fs=data.features.map(currentFeature);$('#projectTitle').textContent=data.project.title;$('#projectSubtitle').textContent=data.project.subtitle;$('#featureCount').textContent=fs.length;$('#doneCount').textContent=fs.filter(f=>['done','acceptance'].includes(f.status)).length;$('#avgProgress').textContent=Math.round(fs.reduce((s,f)=>s+Number(f.progress||0),0)/fs.length)+'%';const latest=Object.values(state.overrides).map(x=>x.updatedAt).filter(Boolean).sort().at(-1);$('#lastUpdated').textContent=formatDate(latest||data.project.updatedAt).slice(0,5);const today=new Date(),next=data.releases.find(r=>new Date(r.date+'T23:59:59')>=today)||data.releases.at(-1);$('#nextReleaseDate').textContent=next.shortDate;$('#nextReleaseLabel').textContent=next.title}
+    function renderFilters(){const items=[{id:'all',title:'Все потоки'},...data.lanes.map(x=>({id:x.id,title:x.title}))];$('#filters').innerHTML=items.map(x=>`<button class="filter ${state.filter===x.id?'active':''}" data-filter="${x.id}">${escapeHtml(x.title)}</button>`).join('');$('#filters').querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{state.filter=b.dataset.filter;renderFilters();renderLanes()}))}
+    function renderReleases(){const today=new Date().toISOString().slice(0,10);$('#releaseGrid').innerHTML=`<div class="release-intro"><strong>Релизный таймлайн</strong><span>Ценность, состав и первоисточники по каждой фиче</span></div>`+data.releases.map(r=>`<article class="release ${r.date===today?'current':''}"><time datetime="${r.date}">${r.shortDate}</time><strong>${escapeHtml(r.title)}</strong><p>${escapeHtml(r.promise)}</p></article>`).join('')}
+    function packFeatures(features){const rows=[];return features.map(feature=>{let row=rows.findIndex(occupied=>{for(let column=feature.start;column<=feature.end;column+=1)if(occupied.has(column))return false;return true});if(row<0){row=rows.length;rows.push(new Set())}for(let column=feature.start;column<=feature.end;column+=1)rows[row].add(column);return {...feature,row:row+1}})}
+    function renderLanes(){$('#laneRows').innerHTML=data.lanes.map(l=>{const hidden=state.filter!=='all'&&state.filter!==l.id,fs=packFeatures(data.features.filter(f=>f.lane===l.id).map(currentFeature)),p=data.placeholders.find(x=>x.lane===l.id);const content=p?`<div class="placeholder"><div><strong>${escapeHtml(p.title)}</strong><p>${escapeHtml(p.text)}</p></div><i data-lucide="plus"></i></div>`:fs.map(f=>{const s=statuses[f.status]||statuses.planned;return `<button class="feature" data-feature="${f.id}" style="grid-column:${f.start}/${f.end+1};grid-row:${f.row};--lane:${l.color};--status-color:${s.color};--progress-value:${Number(f.progress||0)}%"><span class="feature-top"><span class="status">${s.label}</span><span class="feature-progress">${Number(f.progress||0)}%</span></span><h3>${escapeHtml(f.title)}</h3><p>${escapeHtml(f.outcome)}</p><span class="progress-line"><i></i></span></button>`}).join('');return `<section class="lane-row ${hidden?'hidden':''}" style="--lane:${l.color}"><div class="lane-head"><strong>${escapeHtml(l.title)}</strong><span>${escapeHtml(l.description)}</span></div><div class="lane-track">${content}</div></section>`}).join('');document.querySelectorAll('[data-feature]').forEach(b=>b.addEventListener('click',()=>openFeature(b.dataset.feature)));refreshIcons()}
+    function openFeature(id){state.selected=id;const f=currentFeature(data.features.find(x=>x.id===id)),l=laneById(f.lane),r=releaseById(f.release);$('#drawerMeta').textContent=`${l.title} · релиз ${r.shortDate}`;$('#drawerTitle').textContent=f.title;$('#drawerBody').innerHTML=`<p class="drawer-outcome">${escapeHtml(f.outcome)}</p><section class="drawer-section"><h3>Что входит</h3><ul class="scope">${f.scope.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></section><section class="drawer-section"><h3>Ответственный поток</h3><p style="margin:0;color:#44515a;font-size:13px">${escapeHtml(f.owner)}</p></section>${f.note?`<div class="note"><strong>Комментарий к статусу</strong><br>${escapeHtml(f.note)}</div>`:''}<section class="drawer-section"><h3>Первоисточники</h3><div class="source-links">${f.sources.map(x=>`<a class="source-link" href="${x.url}" target="_blank" rel="noreferrer"><i data-lucide="external-link"></i>${escapeHtml(x.label)}</a>`).join('')}</div></section><section class="drawer-section edit-panel"><h3>Обновить состояние</h3><div class="edit-grid"><div class="field"><label for="statusSelect">Статус</label><select id="statusSelect">${Object.entries(statuses).map(([k,v])=>`<option value="${k}" ${f.status===k?'selected':''}>${v.label}</option>`).join('')}</select></div><div class="field"><label for="progressInput">Готовность</label><div class="range-row"><input id="progressInput" type="range" min="0" max="100" step="1" value="${Number(f.progress||0)}"><output id="progressOutput">${Number(f.progress||0)}%</output></div></div><div class="field full"><label for="noteInput">Комментарий для стейкхолдера</label><textarea id="noteInput" placeholder="Например: срок подтверждён, идёт приёмка">${escapeHtml(f.note||'')}</textarea></div><div class="field full"><button class="button primary" id="saveFeature"><i data-lucide="check"></i>Сохранить обновление</button></div></div></section>`;$('#drawerShell').classList.add('open');$('#drawerShell').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';const range=$('#progressInput');if(range)range.addEventListener('input',()=>$('#progressOutput').textContent=range.value+'%');$('#saveFeature')?.addEventListener('click',saveFeature);refreshIcons()}
+    function closeDrawer(){$('#drawerShell').classList.remove('open');$('#drawerShell').setAttribute('aria-hidden','true');document.body.style.overflow='';state.selected=null}
+    function saveFeature(){if(!state.selected||state.snapshot)return;state.overrides[state.selected]={status:$('#statusSelect').value,progress:Number($('#progressInput').value),note:$('#noteInput').value.trim(),updatedAt:new Date().toISOString()};saveState();renderHeader();renderLanes();openFeature(state.selected);toast('Статус обновлён')}
+    function toggleEdit(){if(state.snapshot){toast('Снимок доступен только для просмотра');return}state.editMode=!state.editMode;document.body.classList.toggle('edit-mode',state.editMode);$('#editBtn').classList.toggle('active',state.editMode);$('#editBtn').innerHTML=state.editMode?'<i data-lucide="lock-open"></i><span class="edit-label">Обновление включено</span>':'<i data-lucide="square-pen"></i><span class="edit-label">Режим обновления</span>';if(state.selected)openFeature(state.selected);refreshIcons()}
+    async function share(){const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(state.overrides))));const url=`${location.origin}${location.pathname}#snapshot=${encoded}`;try{await navigator.clipboard.writeText(url);toast('Ссылка на снимок плана скопирована')}catch{prompt('Скопируйте ссылку на план',url)}}
+    function exportState(){const blob=new Blob([JSON.stringify({exportedAt:new Date().toISOString(),overrides:state.overrides},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=Object.assign(document.createElement('a'),{href:url,download:'skillaz-start-roadmap-update.json'});link.click();URL.revokeObjectURL(url)}
+    function importState(file){if(!file||state.snapshot)return;const reader=new FileReader();reader.onload=()=>{try{const p=JSON.parse(reader.result);state.overrides=p.overrides||p;saveState();renderHeader();renderLanes();toast('Данные загружены')}catch{toast('Не удалось прочитать файл')}};reader.readAsText(file)}
+    function toast(message){const e=$('#toast');e.textContent=message;e.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.classList.remove('show'),2400)}function refreshIcons(){if(window.lucide)window.lucide.createIcons({attrs:{'stroke-width':1.8}})}
+    readState();renderHeader();renderFilters();renderReleases();renderLanes();refreshIcons();$('#editBtn').addEventListener('click',toggleEdit);$('#shareBtn').addEventListener('click',share);$('#exportBtn').addEventListener('click',exportState);$('#importInput').addEventListener('change',e=>importState(e.target.files[0]));$('#closeDrawer').addEventListener('click',closeDrawer);$('#backdrop').addEventListener('click',closeDrawer);document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
   </script>
 </body>
 </html>
