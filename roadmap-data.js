@@ -82,10 +82,17 @@ window.ROADMAP_DATA = {
     },
     {
       id: 'manager-workspace', lane: 'adaptation', release: 'oct07', title: 'Редизайн рабочего места руководителя',
-      outcome: 'Руководитель работает с планами команды, своими действиями, целями и подтверждением результатов в одном разделе.',
+      outcome: 'Руководитель работает с планами команды и своими задачами в одном обновленном разделе.',
       status: 'in_progress', progress: 18, owner: 'Команда адаптации',
-      scope: ['Экран «Мои действия»', 'Список и карточка планов', 'Контекст «Я руководитель / Я помощник»', 'Действия «Создать цели» и «Подтвердить результат»', 'Переход сразу к объекту действия'],
-      sources: [{ label: 'DEV-64603', url: 'https://tracker.yandex.ru/DEV-64603' }, { label: 'DEV-64676', url: 'https://tracker.yandex.ru/DEV-64676' }, { label: 'DEV-64677', url: 'https://tracker.yandex.ru/DEV-64677' }, { label: 'DEV-64678', url: 'https://tracker.yandex.ru/DEV-64678' }, { label: 'DEV-64679', url: 'https://tracker.yandex.ru/DEV-64679' }],
+      scope: ['Экран «Мои действия»', 'Список и карточка планов', 'Контекст «Я руководитель / Я помощник»', 'Навигация между рабочими представлениями'],
+      sources: [{ label: 'DEV-64603', url: 'https://tracker.yandex.ru/DEV-64603' }, { label: 'DEV-64676', url: 'https://tracker.yandex.ru/DEV-64676' }, { label: 'DEV-64677', url: 'https://tracker.yandex.ru/DEV-64677' }, { label: 'DEV-64678', url: 'https://tracker.yandex.ru/DEV-64678' }],
+    },
+    {
+      id: 'manager-goal-actions', lane: 'adaptation', release: 'oct07', title: 'Действия руководителя по целям и результатам',
+      outcome: 'Руководитель сразу видит, где нужно создать цели, а проверяющий — подтвердить результат сотрудника, и переходит прямо к нужному объекту плана.',
+      status: 'planned', progress: 0, owner: 'Команда адаптации',
+      scope: ['Действия «Создать цели» и «Подтвердить результат»', 'Группировка и фильтр по типу действия', 'Индикаторы действий над списком планов', 'Прогресс целей в карточке плана', 'Переход к нужной цели или промежуточному результату'],
+      sources: [{ label: 'DEV-64679', url: 'https://tracker.yandex.ru/DEV-64679' }],
     },
     {
       id: 'admin-editor', lane: 'adaptation', release: 'oct07', title: 'Редизайн редактора и базовые массовые действия',
