@@ -2,7 +2,7 @@ window.ROADMAP_DATA = {
   project: {
     title: 'План проекта Skillaz Start',
     subtitle: 'Что разрабатываем между релизами и какую ценность получает пользователь на каждой контрольной дате',
-    updatedAt: '2026-09-11T15:55:00+03:00',
+    updatedAt: '2026-09-11T16:25:00+03:00',
     owner: 'Продуктовая команда Skillaz Start',
   },
   releases: [
@@ -41,42 +41,42 @@ window.ROADMAP_DATA = {
     {
       id: 'goal-block-settings', lane: 'adaptation', release: 'sep09', title: 'Настройка блока целей в шаблоне',
       outcome: 'HR включает блок целей и определяет срок, к которому руководитель должен опубликовать цели сотруднику.',
-      status: 'acceptance', progress: 92, owner: 'Команда адаптации',
+      status: 'done', progress: 100, owner: 'Команда адаптации',
       scope: ['Включение блока «Цели адаптации»', 'Срок публикации целей руководителем', 'Правила доступности блока в индивидуальном плане'],
       sources: [{ label: 'DEV-62032', url: 'https://tracker.yandex.ru/DEV-62032' }, { label: 'DEV-62955', url: 'https://tracker.yandex.ru/DEV-62955' }],
     },
     {
       id: 'goal-authoring', lane: 'adaptation', release: 'sep09', title: 'Создание и публикация целей',
       outcome: 'HR создает цели в шаблоне или плане, а руководитель при необходимости уточняет набор и публикует его сотруднику.',
-      status: 'acceptance', progress: 90, owner: 'Команда адаптации',
+      status: 'done', progress: 100, owner: 'Команда адаптации',
       scope: ['Создание и редактирование целей HR', 'Создание и редактирование целей руководителем', 'Публикация целей сотруднику', 'Контроль срока постановки целей'],
       sources: [{ label: 'DEV-62032', url: 'https://tracker.yandex.ru/DEV-62032' }, { label: 'DEV-62961', url: 'https://tracker.yandex.ru/DEV-62961' }, { label: 'DEV-63133', url: 'https://tracker.yandex.ru/DEV-63133' }, { label: 'DEV-65241', url: 'https://tracker.yandex.ru/DEV-65241' }],
     },
     {
       id: 'goal-employee-flow', lane: 'adaptation', release: 'sep09', title: 'Работа сотрудника с целями и промежуточными результатами',
       outcome: 'Сотрудник видит опубликованные цели, фиксирует промежуточный результат и отправляет его на подтверждение.',
-      status: 'acceptance', progress: 90, owner: 'Команда адаптации',
+      status: 'done', progress: 100, owner: 'Команда адаптации',
       scope: ['Цели в плане сотрудника', 'Статусы цели и промежуточного результата', 'Комментарий к результату', 'Отправка результата на подтверждение'],
       sources: [{ label: 'DEV-62032', url: 'https://tracker.yandex.ru/DEV-62032' }, { label: 'DEV-64395', url: 'https://tracker.yandex.ru/DEV-64395' }, { label: 'DEV-64629', url: 'https://tracker.yandex.ru/DEV-64629' }, { label: 'DEV-64988', url: 'https://tracker.yandex.ru/DEV-64988' }],
     },
     {
       id: 'goal-review-flow', lane: 'adaptation', release: 'sep09', title: 'Проверка промежуточного результата',
       outcome: 'Назначенный проверяющий подтверждает результат сотрудника или возвращает его на доработку с обратной связью.',
-      status: 'acceptance', progress: 90, owner: 'Команда адаптации',
+      status: 'done', progress: 100, owner: 'Команда адаптации',
       scope: ['Назначение проверяющего', 'Подтверждение результата', 'Возврат на доработку', 'Фиксация невыполнения'],
       sources: [{ label: 'DEV-62032', url: 'https://tracker.yandex.ru/DEV-62032' }, { label: 'DEV-64630', url: 'https://tracker.yandex.ru/DEV-64630' }],
     },
     {
       id: 'goal-progress', lane: 'adaptation', release: 'sep09', title: 'Статусы и прогресс целей',
       outcome: 'Участники видят состояние целей и промежуточных результатов, а прогресс целей становится основным показателем плана.',
-      status: 'acceptance', progress: 91, owner: 'Команда адаптации',
+      status: 'done', progress: 100, owner: 'Команда адаптации',
       scope: ['Расчет прогресса цели', 'Прогресс плана по целям', 'Статусы целей и результатов', 'Ограничение действий по ролям и статусам'],
       sources: [{ label: 'DEV-62032', url: 'https://tracker.yandex.ru/DEV-62032' }, { label: 'DEV-62377', url: 'https://tracker.yandex.ru/DEV-62377' }, { label: 'DEV-62945', url: 'https://tracker.yandex.ru/DEV-62945' }],
     },
     {
       id: 'goal-notifications', lane: 'adaptation', release: 'sep09', title: 'Уведомления по целям и результатам',
       outcome: 'Руководитель, сотрудник и проверяющий вовремя узнают о публикации целей и действиях с промежуточными результатами.',
-      status: 'acceptance', progress: 88, owner: 'Команда адаптации',
+      status: 'done', progress: 100, owner: 'Команда адаптации',
       scope: ['Напоминание руководителю о постановке целей', 'Уведомление сотруднику о публикации целей', 'Уведомление проверяющему о новом результате', 'Подтверждение или возврат результата сотруднику'],
       sources: [{ label: 'DEV-62956', url: 'https://tracker.yandex.ru/DEV-62956' }, { label: 'DEV-64631', url: 'https://tracker.yandex.ru/DEV-64631' }, { label: 'DEV-64632', url: 'https://tracker.yandex.ru/DEV-64632' }, { label: 'DEV-64633', url: 'https://tracker.yandex.ru/DEV-64633' }, { label: 'DEV-64634', url: 'https://tracker.yandex.ru/DEV-64634' }],
     },
@@ -270,7 +270,7 @@ window.ROADMAP_DATA = {
       audience: 'HRD, руководители HR-функций, лидеры адаптации и L&D, HR BP, операционные руководители',
     },
     {
-      date: '12 октября 2026', title: 'Эффективный вход в новую роль',
+      date: '12-19 октября 2026', title: 'Эффективный вход в новую роль',
       format: 'Открытый обучающий курс',
       audience: 'Руководители HR-функций, специалисты по адаптации и L&D, HR BP, HR-методологи, руководители подразделений',
     },
@@ -300,7 +300,12 @@ window.ROADMAP_DATA = {
       audience: 'Руководители HR-функций, специалисты по адаптации и L&D, HR BP, HR-методологи, руководители подразделений',
     },
   ],
-  placeholders: [
-    { id: 'content-slot', lane: 'content', title: 'Методологические материалы внутри продукта', text: 'Состав материалов, сроки и ответственные будут добавлены после согласования.' },
+  methodology: [
+    {
+      date: '12 октября 2026',
+      title: 'Методологические материалы внутри продукта',
+      text: 'Материалы и шаблоны для поддержки работы со сценариями Skillaz Start.',
+    },
   ],
+  placeholders: [],
 };
