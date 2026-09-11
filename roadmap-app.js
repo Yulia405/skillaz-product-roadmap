@@ -1,9 +1,4 @@
-const REPOSITORY = {
-  owner: 'Yulia405',
-  repo: 'skillaz-product-roadmap',
-  path: 'roadmap-overrides.json',
-  branch: 'main',
-};
+const ROADMAP_API = 'https://skillaz-roadmap-api.skillaz-sales-bot.workers.dev';
 
 const statuses = {
   done: { label: 'Готово', color: '#16846b' },
@@ -20,12 +15,14 @@ const state = {
   editMode: false,
   selected: null,
   selectedPromo: null,
+  selectedMethodology: null,
   snapshot: false,
   viewer: params.get('view') === '1',
   owner: false,
-  token: '',
+  sessionToken: '',
   overrides: {},
   promo: data.promo.map((item) => ({ ...item })),
+  methodology: (data.methodology || []).map((item) => ({ ...item })),
   sharedUpdatedAt: null,
 };
 
@@ -39,7 +36,6 @@ const formatDate = (value) => new Intl.DateTimeFormat('ru-RU', {
 const currentFeature = (feature) => ({ ...feature, ...(state.overrides[feature.id] || {}) });
 const laneById = (id) => data.lanes.find((item) => item.id === id);
 const releaseById = (id) => data.releases.find((item) => item.id === id);
-const repoApiUrl = () => `https://api.github.com/repos/${REPOSITORY.owner}/${REPOSITORY.repo}/contents/${REPOSITORY.path}`;
 
 async function readState() {
   if (state.viewer) document.body.classList.add('view-mode');
@@ -49,6 +45,7 @@ async function readState() {
       const snapshot = JSON.parse(decodeURIComponent(escape(atob(hash))));
       state.overrides = snapshot.overrides || snapshot;
       if (Array.isArray(snapshot.promo)) state.promo = snapshot.promo;
+      if (Array.isArray(snapshot.methodology)) state.methodology = snapshot.methodology;
       state.snapshot = true;
       document.body.classList.add('snapshot-mode');
       $('#snapshotNote').classList.add('visible');
@@ -59,12 +56,16 @@ async function readState() {
   }
 
   try {
-    const response = await fetch(`roadmap-overrides.json?v=${Date.now()}`, { cache: 'no-store' });
+    let response = await fetch(`${ROADMAP_API}/roadmap?v=${Date.now()}`, { cache: 'no-store' });
+    if (response.status === 404) {
+      response = await fetch(`roadmap-overrides.json?v=${Date.now()}`, { cache: 'no-store' });
+    }
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const shared = await response.json();
     state.overrides = shared.overrides || {};
     state.sharedUpdatedAt = shared.updatedAt || null;
     if (Array.isArray(shared.promo) && shared.promo.length) state.promo = shared.promo;
+    if (Array.isArray(shared.methodology) && shared.methodology.length) state.methodology = shared.methodology;
   } catch (error) {
     console.warn('Общие обновления временно недоступны', error);
   }
@@ -130,10 +131,12 @@ function renderPromo() {
 }
 
 function renderMethodology() {
-  $('#methodologyTimeline').innerHTML = (data.methodology || []).map((item) => {
+  $('#methodologyTimeline').innerHTML = state.methodology.map((item, index) => {
     const status = statuses[item.status] || statuses.planned;
-    return `<article class="methodology-card" style="--status-color:${status.color}"><div class="methodology-top"><span class="status">${status.label}</span>${item.date ? `<time>${escapeHtml(item.date)}</time>` : ''}</div><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.text)}</p></article>`;
+    return `<article class="methodology-card" style="--status-color:${status.color}"><button class="promo-edit" data-methodology-index="${index}" title="Редактировать материал" aria-label="Редактировать ${escapeHtml(item.title)}"><i data-lucide="pencil"></i></button><div class="methodology-top"><span class="status">${status.label}</span>${item.date ? `<time>${escapeHtml(item.date)}</time>` : ''}</div><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.text)}</p></article>`;
   }).join('');
+  document.querySelectorAll('[data-methodology-index]').forEach((button) => button.addEventListener('click', () => openMethodology(Number(button.dataset.methodologyIndex))));
+  refreshIcons();
 }
 
 function renderPlaceholders() {
@@ -143,6 +146,7 @@ function renderPlaceholders() {
 function openFeature(id) {
   state.selected = id;
   state.selectedPromo = null;
+  state.selectedMethodology = null;
   const feature = currentFeature(data.features.find((item) => item.id === id));
   const lane = laneById(feature.lane);
   const release = releaseById(feature.release);
@@ -160,12 +164,27 @@ function openPromo(index) {
   if (!state.editMode) return;
   state.selected = null;
   state.selectedPromo = index;
+  state.selectedMethodology = null;
   const item = state.promo[index];
   $('#drawerMeta').textContent = 'Промо и активности';
   $('#drawerTitle').textContent = item.title;
   $('#drawerBody').innerHTML = `<section class="edit-panel" style="display:block"><h3>Редактировать карточку</h3><div class="edit-grid"><div class="field"><label for="promoDate">Дата</label><input id="promoDate" value="${escapeHtml(item.date)}"></div><div class="field"><label for="promoTime">Время или уточнение</label><input id="promoTime" value="${escapeHtml(item.time || '')}"></div><div class="field full"><label for="promoTitle">Название</label><input id="promoTitle" value="${escapeHtml(item.title)}"></div><div class="field full"><label for="promoFormat">Формат</label><input id="promoFormat" value="${escapeHtml(item.format)}"></div><div class="field full"><label for="promoAudience">Для кого</label><textarea id="promoAudience">${escapeHtml(item.audience)}</textarea></div><div class="field full"><button class="button primary" id="savePromo"><i data-lucide="check"></i>Сохранить для всех</button></div></div></section>`;
   openDrawer();
   $('#savePromo').addEventListener('click', savePromo);
+  refreshIcons();
+}
+
+function openMethodology(index) {
+  if (!state.editMode) return;
+  state.selected = null;
+  state.selectedPromo = null;
+  state.selectedMethodology = index;
+  const item = state.methodology[index];
+  $('#drawerMeta').textContent = 'Методика и наполнение';
+  $('#drawerTitle').textContent = item.title;
+  $('#drawerBody').innerHTML = `<section class="edit-panel" style="display:block"><h3>Редактировать карточку</h3><div class="edit-grid"><div class="field"><label for="methodologyDate">Срок</label><input id="methodologyDate" value="${escapeHtml(item.date || '')}"></div><div class="field"><label for="methodologyStatus">Статус</label><select id="methodologyStatus">${Object.entries(statuses).map(([key, status]) => `<option value="${key}" ${item.status === key ? 'selected' : ''}>${status.label}</option>`).join('')}</select></div><div class="field full"><label for="methodologyTitle">Название</label><input id="methodologyTitle" value="${escapeHtml(item.title)}"></div><div class="field full"><label for="methodologyText">Описание</label><textarea id="methodologyText">${escapeHtml(item.text)}</textarea></div><div class="field full"><button class="button primary" id="saveMethodology"><i data-lucide="check"></i>Сохранить для всех</button></div></div></section>`;
+  openDrawer();
+  $('#saveMethodology').addEventListener('click', saveMethodology);
   refreshIcons();
 }
 
@@ -181,56 +200,38 @@ function closeDrawer() {
   document.body.style.overflow = '';
   state.selected = null;
   state.selectedPromo = null;
+  state.selectedMethodology = null;
 }
 
-async function githubFile() {
-  const response = await fetch(`${repoApiUrl()}?ref=${REPOSITORY.branch}`, {
-    headers: {
-      Accept: 'application/vnd.github+json',
-      Authorization: `Bearer ${state.token}`,
-      'X-GitHub-Api-Version': '2022-11-28',
-    },
-  });
-  if (!response.ok) {
-    if (response.status === 401) throw new Error('Токен не принят GitHub');
-    if (response.status === 403) throw new Error('Нет доступа к репозиторию');
-    throw new Error(`GitHub: HTTP ${response.status}`);
-  }
-  return response.json();
-}
-
-async function persistShared(nextOverrides, nextPromo) {
-  if (!state.owner || !state.token) throw new Error('Сначала войдите в режим администрирования');
-  const file = await githubFile();
+async function persistShared(nextOverrides, nextPromo, nextMethodology) {
+  if (!state.owner || !state.sessionToken) throw new Error('Сначала войдите в режим администрирования');
   const payload = {
-    updatedAt: new Date().toISOString(),
     overrides: nextOverrides,
     promo: nextPromo,
+    methodology: nextMethodology,
   };
-  const content = btoa(unescape(encodeURIComponent(`${JSON.stringify(payload, null, 2)}\n`)));
-  const response = await fetch(repoApiUrl(), {
+  const response = await fetch(`${ROADMAP_API}/roadmap`, {
     method: 'PUT',
     headers: {
-      Accept: 'application/vnd.github+json',
-      Authorization: `Bearer ${state.token}`,
+      Authorization: `Bearer ${state.sessionToken}`,
       'Content-Type': 'application/json',
-      'X-GitHub-Api-Version': '2022-11-28',
     },
-    body: JSON.stringify({
-      message: 'Update roadmap from admin interface',
-      content,
-      sha: file.sha,
-      branch: REPOSITORY.branch,
-    }),
+    body: JSON.stringify(payload),
   });
   if (!response.ok) {
-    if (response.status === 409) throw new Error('Данные уже изменил другой редактор. Обновите страницу');
-    if (response.status === 403) throw new Error('У токена нет права Contents: Read and write');
-    throw new Error(`Не удалось сохранить: HTTP ${response.status}`);
+    const error = await response.json().catch(() => ({}));
+    if (response.status === 401) {
+      state.owner = false;
+      state.sessionToken = '';
+      setEditMode(false);
+    }
+    throw new Error(error.error || `Не удалось сохранить: HTTP ${response.status}`);
   }
+  const saved = await response.json();
   state.overrides = nextOverrides;
   state.promo = nextPromo;
-  state.sharedUpdatedAt = payload.updatedAt;
+  state.methodology = nextMethodology;
+  state.sharedUpdatedAt = saved.updatedAt;
 }
 
 async function saveFeature() {
@@ -247,7 +248,7 @@ async function saveFeature() {
     },
   };
   try {
-    await persistShared(next, state.promo);
+    await persistShared(next, state.promo, state.methodology);
     renderHeader();
     renderRoadmap();
     openFeature(state.selected);
@@ -270,11 +271,33 @@ async function savePromo() {
     audience: $('#promoAudience').value.trim(),
   } : item);
   try {
-    await persistShared(state.overrides, next);
+    await persistShared(state.overrides, next, state.methodology);
     renderHeader();
     renderPromo();
     closeDrawer();
     toast('Промо обновлено для всех');
+  } catch (error) {
+    toast(error.message);
+    button.disabled = false;
+  }
+}
+
+async function saveMethodology() {
+  if (!state.owner || state.selectedMethodology === null || state.snapshot) return;
+  const button = $('#saveMethodology');
+  button.disabled = true;
+  const next = state.methodology.map((item, index) => index === state.selectedMethodology ? {
+    date: $('#methodologyDate').value.trim(),
+    status: $('#methodologyStatus').value,
+    title: $('#methodologyTitle').value.trim(),
+    text: $('#methodologyText').value.trim(),
+  } : item);
+  try {
+    await persistShared(state.overrides, state.promo, next);
+    renderHeader();
+    renderMethodology();
+    closeDrawer();
+    toast('Методический материал обновлён для всех');
   } catch (error) {
     toast(error.message);
     button.disabled = false;
@@ -290,6 +313,7 @@ function setEditMode(enabled) {
     : '<i data-lucide="square-pen"></i><span class="icon-fallback" aria-hidden="true">✎</span><span class="edit-label">Администрирование</span>';
   if (state.selected) openFeature(state.selected);
   renderPromo();
+  renderMethodology();
   refreshIcons();
 }
 
@@ -341,7 +365,7 @@ function shareSnapshot() {
       updatedAt: capturedAt,
     }];
   }));
-  const snapshot = { overrides, promo: state.promo };
+  const snapshot = { overrides, promo: state.promo, methodology: state.methodology };
   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(snapshot))));
   copyLink(`${location.origin}${location.pathname}?view=1#snapshot=${encoded}`, 'Ссылка на снимок плана скопирована');
 }
@@ -350,7 +374,7 @@ function openAuth() {
   $('#authShell').classList.add('open');
   $('#authShell').setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
-  setTimeout(() => $('#githubToken').focus(), 0);
+  setTimeout(() => $('#accessPassword').focus(), 0);
   refreshIcons();
 }
 
@@ -361,24 +385,31 @@ function closeAuth() {
 }
 
 async function connectAdmin() {
-  const token = $('#githubToken').value.trim();
+  const password = $('#accessPassword').value;
   const button = $('#connectAdmin');
-  if (!token) {
-    toast('Вставьте GitHub-токен');
+  if (!password) {
+    toast('Введите пароль доступа');
     return;
   }
   button.disabled = true;
-  state.token = token;
   try {
-    await githubFile();
+    const response = await fetch(`${ROADMAP_API}/auth`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.error || 'Не удалось войти');
+    state.sessionToken = result.token;
     state.owner = true;
-    $('#githubToken').value = '';
+    $('#accessPassword').value = '';
     closeAuth();
     setEditMode(true);
     toast('Администрирование включено');
   } catch (error) {
-    state.token = '';
+    state.sessionToken = '';
     toast(error.message);
+  } finally {
     button.disabled = false;
   }
 }
@@ -418,7 +449,7 @@ $('#shareBackdrop').addEventListener('click', closeShare);
 $('#closeAuth').addEventListener('click', closeAuth);
 $('#authBackdrop').addEventListener('click', closeAuth);
 $('#connectAdmin').addEventListener('click', connectAdmin);
-$('#githubToken').addEventListener('keydown', (event) => { if (event.key === 'Enter') connectAdmin(); });
+$('#accessPassword').addEventListener('keydown', (event) => { if (event.key === 'Enter') connectAdmin(); });
 $('#prevRelease').addEventListener('click', () => shiftRelease(-1));
 $('#nextRelease').addEventListener('click', () => shiftRelease(1));
 $('#closeDrawer').addEventListener('click', closeDrawer);
