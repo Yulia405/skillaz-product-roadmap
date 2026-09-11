@@ -95,11 +95,11 @@ window.ROADMAP_DATA = {
       sources: [{ label: 'DEV-64679', url: 'https://tracker.yandex.ru/DEV-64679' }],
     },
     {
-      id: 'admin-editor', lane: 'adaptation', release: 'sep09', title: 'Редизайн редактора и экрана планов',
-      outcome: 'HR работает с шаблонами, очередью назначения, справочниками и планами сотрудников в обновленных административных разделах.',
-      status: 'done', progress: 100, owner: 'Команда адаптации',
-      scope: ['Разделение административных страниц', 'Редизайн очереди назначения', 'Редизайн списка планов', 'Переключение назначенных планов и черновиков', 'Справочники адаптации', 'Базовый поиск и фильтры'],
-      sources: [{ label: 'DEV-64604', url: 'https://tracker.yandex.ru/DEV-64604' }],
+      id: 'admin-editor', lane: 'adaptation', release: 'oct07', title: 'Редизайн административных разделов адаптации',
+      outcome: 'HR работает с очередью назначения, справочниками и планами сотрудников на отдельных обновленных страницах.',
+      status: 'in_progress', progress: 55, owner: 'Команда адаптации',
+      scope: ['Разделение административных страниц', 'Редизайн очереди назначения', 'Редизайн списка планов', 'Переключение назначенных планов и черновиков', 'Вынос справочников адаптации', 'Базовый поиск, фильтры и состояния списков'],
+      sources: [{ label: 'DEV-64604', url: 'https://tracker.yandex.ru/DEV-64604' }, { label: 'DEV-64691', url: 'https://tracker.yandex.ru/DEV-64691' }, { label: 'DEV-64693', url: 'https://tracker.yandex.ru/DEV-64693' }, { label: 'DEV-64696', url: 'https://tracker.yandex.ru/DEV-64696' }, { label: 'DEV-64697', url: 'https://tracker.yandex.ru/DEV-64697' }],
     },
     {
       id: 'goal-template-copy', lane: 'adaptation', release: 'oct07', title: 'Цели из шаблона в плане сотрудника',

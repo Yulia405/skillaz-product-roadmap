@@ -39,7 +39,7 @@
   <div class="share-shell" id="authShell" aria-hidden="true"><div class="backdrop" id="authBackdrop"></div><section class="share-dialog" role="dialog" aria-modal="true" aria-labelledby="authTitle"><header class="share-head"><div><h2 id="authTitle">Администрирование</h2><p>Доступно владельцу и коллегам с правом записи в репозиторий.</p></div><button class="button icon-only" id="closeAuth" title="Закрыть" aria-label="Закрыть"><i data-lucide="x"></i><span class="icon-fallback" aria-hidden="true">×</span></button></header><div class="auth-form"><div class="field"><label for="githubToken">GitHub-токен</label><input id="githubToken" type="password" autocomplete="off" placeholder="github_pat_… или ghp_…"></div><p class="auth-note">Нужен fine-grained token с доступом Contents: Read and write только к репозиторию skillaz-product-roadmap. Токен хранится лишь до закрытия вкладки.</p><div class="auth-actions"><button class="button primary" id="connectAdmin"><i data-lucide="log-in"></i>Войти в режим редактирования</button></div></div></section></div>
   <div class="toast" id="toast" role="status"></div>
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-  <script src="roadmap-data.js?v=20260911-5"></script>
+  <script src="roadmap-data.js?v=20260911-6"></script>
   <script type="text/plain" id="legacyApp">
     const STORAGE_KEY='skillaz-start-project-plan-v4';
     const statuses={done:{label:'Готово',color:'#16846b'},acceptance:{label:'Приемка',color:'#8b5da8'},in_progress:{label:'В работе',color:'#3569c8'},planned:{label:'Запланировано',color:'#7a858d'},risk:{label:'Есть риск',color:'#c45b43'}};
