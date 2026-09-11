@@ -82,7 +82,7 @@ export default {
         return json(request, { error: 'Сессия завершена. Введите пароль ещё раз' }, 401);
       }
       const body = await request.json().catch(() => null);
-      if (!body || typeof body !== 'object' || !body.overrides || !Array.isArray(body.promo) || !Array.isArray(body.methodology)) {
+      if (!body || typeof body !== 'object' || !body.overrides || !Array.isArray(body.promo) || !Array.isArray(body.methodology) || !Array.isArray(body.discovery)) {
         return json(request, { error: 'Некорректные данные плана' }, 400);
       }
       const payload = JSON.stringify({
@@ -90,6 +90,7 @@ export default {
         overrides: body.overrides,
         promo: body.promo,
         methodology: body.methodology,
+        discovery: body.discovery,
       });
       if (payload.length > 250000) return json(request, { error: 'Слишком большой объём данных' }, 413);
       await env.ROADMAP_STATE.put('current', payload);

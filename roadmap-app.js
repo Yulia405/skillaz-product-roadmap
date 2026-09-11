@@ -16,6 +16,7 @@ const state = {
   selected: null,
   selectedPromo: null,
   selectedMethodology: null,
+  selectedDiscovery: null,
   snapshot: false,
   viewer: params.get('view') === '1',
   owner: false,
@@ -23,6 +24,7 @@ const state = {
   overrides: {},
   promo: data.promo.map((item) => ({ ...item })),
   methodology: (data.methodology || []).map((item) => ({ ...item })),
+  discovery: (data.discovery || []).map((item) => ({ ...item })),
   sharedUpdatedAt: null,
 };
 
@@ -33,6 +35,27 @@ const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => 
 const formatDate = (value) => new Intl.DateTimeFormat('ru-RU', {
   day: '2-digit', month: '2-digit', year: 'numeric',
 }).format(new Date(value));
+const externalUrl = (value) => {
+  try {
+    const url = new URL(value);
+    return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+  } catch {
+    return '';
+  }
+};
+const sourcesToText = (sources = []) => sources.map((source) => `${source.label} | ${source.url}`).join('\n');
+const textToSources = (value) => {
+  const sources = [];
+  for (const line of value.split('\n').map((item) => item.trim()).filter(Boolean)) {
+    const separator = line.indexOf('|');
+    const label = separator >= 0 ? line.slice(0, separator).trim() : 'Артефакт';
+    const rawUrl = separator >= 0 ? line.slice(separator + 1).trim() : line;
+    const url = externalUrl(rawUrl);
+    if (!url) return { error: `Проверьте ссылку: ${rawUrl}` };
+    sources.push({ label: label || 'Артефакт', url });
+  }
+  return { sources };
+};
 const currentFeature = (feature) => ({ ...feature, ...(state.overrides[feature.id] || {}) });
 const laneById = (id) => data.lanes.find((item) => item.id === id);
 const releaseById = (id) => data.releases.find((item) => item.id === id);
@@ -46,6 +69,7 @@ async function readState() {
       state.overrides = snapshot.overrides || snapshot;
       if (Array.isArray(snapshot.promo)) state.promo = snapshot.promo;
       if (Array.isArray(snapshot.methodology)) state.methodology = snapshot.methodology;
+      if (Array.isArray(snapshot.discovery)) state.discovery = snapshot.discovery;
       state.snapshot = true;
       document.body.classList.add('snapshot-mode');
       $('#snapshotNote').classList.add('visible');
@@ -66,6 +90,7 @@ async function readState() {
     state.sharedUpdatedAt = shared.updatedAt || null;
     if (Array.isArray(shared.promo) && shared.promo.length) state.promo = shared.promo;
     if (Array.isArray(shared.methodology) && shared.methodology.length) state.methodology = shared.methodology;
+    if (Array.isArray(shared.discovery)) state.discovery = shared.discovery;
   } catch (error) {
     console.warn('Общие обновления временно недоступны', error);
   }
@@ -139,6 +164,20 @@ function renderMethodology() {
   refreshIcons();
 }
 
+function renderDiscovery() {
+  const container = $('#discoveryGrid');
+  if (!state.discovery.length) {
+    container.innerHTML = '<div class="discovery-empty">Активности дискавери пока не добавлены.</div>';
+    return;
+  }
+  container.innerHTML = state.discovery.map((item, index) => {
+    const status = statuses[item.status] || statuses.planned;
+    return `<button class="discovery-card" data-discovery-index="${index}" style="--status-color:${status.color};--progress-value:${Number(item.progress || 0)}%"><span class="feature-top"><span class="status">${status.label}</span><span class="feature-progress">${Number(item.progress || 0)}%</span></span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.outcome || '')}</p><span class="discovery-meta">${escapeHtml(item.owner || 'Ответственный не указан')}</span><span class="progress-line"><i></i></span></button>`;
+  }).join('');
+  document.querySelectorAll('[data-discovery-index]').forEach((button) => button.addEventListener('click', () => openDiscovery(Number(button.dataset.discoveryIndex))));
+  refreshIcons();
+}
+
 function renderPlaceholders() {
   $('#placeholderList').innerHTML = data.placeholders.map((item) => `<div class="placeholder"><div><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.text)}</p></div><i data-lucide="plus"></i></div>`).join('');
 }
@@ -147,6 +186,7 @@ function openFeature(id) {
   state.selected = id;
   state.selectedPromo = null;
   state.selectedMethodology = null;
+  state.selectedDiscovery = null;
   const feature = currentFeature(data.features.find((item) => item.id === id));
   const lane = laneById(feature.lane);
   const release = releaseById(feature.release);
@@ -165,6 +205,7 @@ function openPromo(index) {
   state.selected = null;
   state.selectedPromo = index;
   state.selectedMethodology = null;
+  state.selectedDiscovery = null;
   const item = state.promo[index];
   $('#drawerMeta').textContent = 'Промо и активности';
   $('#drawerTitle').textContent = item.title;
@@ -179,12 +220,38 @@ function openMethodology(index) {
   state.selected = null;
   state.selectedPromo = null;
   state.selectedMethodology = index;
+  state.selectedDiscovery = null;
   const item = state.methodology[index];
   $('#drawerMeta').textContent = 'Методика и наполнение';
   $('#drawerTitle').textContent = item.title;
   $('#drawerBody').innerHTML = `<section class="edit-panel" style="display:block"><h3>Редактировать карточку</h3><div class="edit-grid"><div class="field"><label for="methodologyDate">Срок</label><input id="methodologyDate" value="${escapeHtml(item.date || '')}"></div><div class="field"><label for="methodologyStatus">Статус</label><select id="methodologyStatus">${Object.entries(statuses).map(([key, status]) => `<option value="${key}" ${item.status === key ? 'selected' : ''}>${status.label}</option>`).join('')}</select></div><div class="field full"><label for="methodologyTitle">Название</label><input id="methodologyTitle" value="${escapeHtml(item.title)}"></div><div class="field full"><label for="methodologyText">Описание</label><textarea id="methodologyText">${escapeHtml(item.text)}</textarea></div><div class="field full"><button class="button primary" id="saveMethodology"><i data-lucide="check"></i>Сохранить для всех</button></div></div></section>`;
   openDrawer();
   $('#saveMethodology').addEventListener('click', saveMethodology);
+  refreshIcons();
+}
+
+function openDiscovery(index = -1) {
+  const isNew = index < 0;
+  if (isNew && !state.editMode) return;
+  state.selected = null;
+  state.selectedPromo = null;
+  state.selectedMethodology = null;
+  state.selectedDiscovery = index;
+  const item = isNew ? {
+    title: '', outcome: '', scope: [], owner: '', status: 'planned', progress: 0, sources: [],
+  } : state.discovery[index];
+  const sourceLinks = (item.sources || []).map((source) => {
+    const url = externalUrl(source.url);
+    return url ? `<a class="source-link" href="${escapeHtml(url)}" target="_blank" rel="noreferrer"><i data-lucide="external-link"></i>${escapeHtml(source.label)}</a>` : '';
+  }).join('');
+  $('#drawerMeta').textContent = 'Дискавери';
+  $('#drawerTitle').textContent = isNew ? 'Новая активность' : item.title;
+  $('#drawerBody').innerHTML = `${isNew ? '' : `<p class="drawer-outcome">${escapeHtml(item.outcome || '')}</p><section class="drawer-section"><h3>Что входит</h3><ul class="scope">${(item.scope || []).map((scopeItem) => `<li>${escapeHtml(scopeItem)}</li>`).join('')}</ul></section><section class="drawer-section"><h3>Ответственный</h3><p class="drawer-plain">${escapeHtml(item.owner || 'Не указан')}</p></section><section class="drawer-section"><h3>Источники и артефакты</h3><div class="source-links">${sourceLinks || '<span class="drawer-muted">Ссылки пока не добавлены</span>'}</div></section>`}<section class="edit-panel" style="${isNew ? 'display:block' : ''}"><h3>${isNew ? 'Добавить карточку' : 'Редактировать карточку'}</h3><div class="edit-grid"><div class="field full"><label for="discoveryTitle">Название</label><input id="discoveryTitle" value="${escapeHtml(item.title)}" placeholder="Название фичи или исследования"></div><div class="field full"><label for="discoveryOutcome">Результат / что исследуем</label><textarea id="discoveryOutcome" placeholder="Какой вопрос проверяем и какой результат ожидаем">${escapeHtml(item.outcome || '')}</textarea></div><div class="field full"><label for="discoveryScope">Что входит</label><textarea id="discoveryScope" placeholder="Каждый пункт с новой строки">${escapeHtml((item.scope || []).join('\n'))}</textarea></div><div class="field"><label for="discoveryOwner">Ответственный</label><input id="discoveryOwner" value="${escapeHtml(item.owner || '')}"></div><div class="field"><label for="discoveryStatus">Статус</label><select id="discoveryStatus">${Object.entries(statuses).map(([key, status]) => `<option value="${key}" ${item.status === key ? 'selected' : ''}>${status.label}</option>`).join('')}</select></div><div class="field full"><label for="discoveryProgress">Прогресс</label><div class="range-row"><input id="discoveryProgress" type="range" min="0" max="100" step="1" value="${Number(item.progress || 0)}"><output id="discoveryProgressOutput">${Number(item.progress || 0)}%</output></div></div><div class="field full"><label for="discoverySources">Источники и артефакты</label><textarea id="discoverySources" placeholder="Название | https://ссылка — каждый источник с новой строки">${escapeHtml(sourcesToText(item.sources))}</textarea></div><div class="field full discovery-actions"><button class="button primary" id="saveDiscovery"><i data-lucide="check"></i>Сохранить для всех</button>${isNew ? '' : '<button class="button danger" id="deleteDiscovery"><i data-lucide="trash-2"></i>Удалить карточку</button>'}</div></div></section>`;
+  openDrawer();
+  const range = $('#discoveryProgress');
+  range?.addEventListener('input', () => { $('#discoveryProgressOutput').textContent = `${range.value}%`; });
+  $('#saveDiscovery')?.addEventListener('click', saveDiscovery);
+  $('#deleteDiscovery')?.addEventListener('click', deleteDiscovery);
   refreshIcons();
 }
 
@@ -201,14 +268,16 @@ function closeDrawer() {
   state.selected = null;
   state.selectedPromo = null;
   state.selectedMethodology = null;
+  state.selectedDiscovery = null;
 }
 
-async function persistShared(nextOverrides, nextPromo, nextMethodology) {
+async function persistShared(nextOverrides, nextPromo, nextMethodology, nextDiscovery) {
   if (!state.owner || !state.sessionToken) throw new Error('Сначала войдите в режим администрирования');
   const payload = {
     overrides: nextOverrides,
     promo: nextPromo,
     methodology: nextMethodology,
+    discovery: nextDiscovery,
   };
   const response = await fetch(`${ROADMAP_API}/roadmap`, {
     method: 'PUT',
@@ -231,6 +300,7 @@ async function persistShared(nextOverrides, nextPromo, nextMethodology) {
   state.overrides = nextOverrides;
   state.promo = nextPromo;
   state.methodology = nextMethodology;
+  state.discovery = nextDiscovery;
   state.sharedUpdatedAt = saved.updatedAt;
 }
 
@@ -248,7 +318,7 @@ async function saveFeature() {
     },
   };
   try {
-    await persistShared(next, state.promo, state.methodology);
+    await persistShared(next, state.promo, state.methodology, state.discovery);
     renderHeader();
     renderRoadmap();
     openFeature(state.selected);
@@ -271,7 +341,7 @@ async function savePromo() {
     audience: $('#promoAudience').value.trim(),
   } : item);
   try {
-    await persistShared(state.overrides, next, state.methodology);
+    await persistShared(state.overrides, next, state.methodology, state.discovery);
     renderHeader();
     renderPromo();
     closeDrawer();
@@ -293,7 +363,7 @@ async function saveMethodology() {
     text: $('#methodologyText').value.trim(),
   } : item);
   try {
-    await persistShared(state.overrides, state.promo, next);
+    await persistShared(state.overrides, state.promo, next, state.discovery);
     renderHeader();
     renderMethodology();
     closeDrawer();
@@ -301,6 +371,59 @@ async function saveMethodology() {
   } catch (error) {
     toast(error.message);
     button.disabled = false;
+  }
+}
+
+async function saveDiscovery() {
+  if (!state.owner || state.selectedDiscovery === null || state.snapshot) return;
+  const title = $('#discoveryTitle').value.trim();
+  if (!title) {
+    toast('Введите название');
+    return;
+  }
+  const parsedSources = textToSources($('#discoverySources').value);
+  if (parsedSources.error) {
+    toast(parsedSources.error);
+    return;
+  }
+  const item = {
+    title,
+    outcome: $('#discoveryOutcome').value.trim(),
+    scope: $('#discoveryScope').value.split('\n').map((value) => value.trim()).filter(Boolean),
+    owner: $('#discoveryOwner').value.trim(),
+    status: $('#discoveryStatus').value,
+    progress: Number($('#discoveryProgress').value),
+    sources: parsedSources.sources,
+  };
+  const button = $('#saveDiscovery');
+  button.disabled = true;
+  const next = state.selectedDiscovery < 0
+    ? [...state.discovery, item]
+    : state.discovery.map((current, index) => index === state.selectedDiscovery ? item : current);
+  try {
+    await persistShared(state.overrides, state.promo, state.methodology, next);
+    renderHeader();
+    renderDiscovery();
+    closeDrawer();
+    toast('Карточка дискавери сохранена для всех');
+  } catch (error) {
+    toast(error.message);
+    button.disabled = false;
+  }
+}
+
+async function deleteDiscovery() {
+  if (!state.owner || state.selectedDiscovery < 0 || state.snapshot) return;
+  if (!confirm('Удалить карточку дискавери?')) return;
+  const next = state.discovery.filter((_, index) => index !== state.selectedDiscovery);
+  try {
+    await persistShared(state.overrides, state.promo, state.methodology, next);
+    renderHeader();
+    renderDiscovery();
+    closeDrawer();
+    toast('Карточка удалена');
+  } catch (error) {
+    toast(error.message);
   }
 }
 
@@ -314,6 +437,7 @@ function setEditMode(enabled) {
   if (state.selected) openFeature(state.selected);
   renderPromo();
   renderMethodology();
+  renderDiscovery();
   refreshIcons();
 }
 
@@ -365,7 +489,7 @@ function shareSnapshot() {
       updatedAt: capturedAt,
     }];
   }));
-  const snapshot = { overrides, promo: state.promo, methodology: state.methodology };
+  const snapshot = { overrides, promo: state.promo, methodology: state.methodology, discovery: state.discovery };
   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(snapshot))));
   copyLink(`${location.origin}${location.pathname}?view=1#snapshot=${encoded}`, 'Ссылка на снимок плана скопирована');
 }
@@ -436,6 +560,7 @@ async function init() {
   renderRoadmap();
   renderPromo();
   renderMethodology();
+  renderDiscovery();
   renderPlaceholders();
   refreshIcons();
 }
@@ -450,6 +575,7 @@ $('#closeAuth').addEventListener('click', closeAuth);
 $('#authBackdrop').addEventListener('click', closeAuth);
 $('#connectAdmin').addEventListener('click', connectAdmin);
 $('#accessPassword').addEventListener('keydown', (event) => { if (event.key === 'Enter') connectAdmin(); });
+$('#addDiscovery').addEventListener('click', () => openDiscovery(-1));
 $('#prevRelease').addEventListener('click', () => shiftRelease(-1));
 $('#nextRelease').addEventListener('click', () => shiftRelease(1));
 $('#closeDrawer').addEventListener('click', closeDrawer);
