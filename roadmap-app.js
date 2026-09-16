@@ -104,7 +104,11 @@ function renderHeader() {
   $('#doneCount').textContent = features.filter((feature) => ['done', 'acceptance'].includes(feature.status)).length;
   $('#avgProgress').textContent = `${Math.round(features.reduce((sum, feature) => sum + Number(feature.progress || 0), 0) / features.length)}%`;
   const localLatest = Object.values(state.overrides).map((item) => item.updatedAt).filter(Boolean).sort().at(-1);
-  $('#lastUpdated').textContent = formatDate(state.sharedUpdatedAt || localLatest || data.project.updatedAt).slice(0, 5);
+  const latestUpdate = [state.sharedUpdatedAt, localLatest, data.project.updatedAt]
+    .filter(Boolean)
+    .sort((left, right) => new Date(left) - new Date(right))
+    .at(-1);
+  $('#lastUpdated').textContent = formatDate(latestUpdate).slice(0, 5);
   const today = new Date();
   const next = data.releases.find((release) => new Date(`${release.date}T23:59:59`) >= today) || data.releases.at(-1);
   $('#nextReleaseDate').textContent = next.shortDate;
