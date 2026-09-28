@@ -26,15 +26,15 @@ window.Q4_DATA = {
         "qa": 876
       },
       "effort": {
-        "be": 609,
-        "fe": 521,
-        "qa": 402
+        "be": 603,
+        "fe": 511,
+        "qa": 398
       },
       "stats": {
-        "total": 57,
-        "product": 52,
+        "total": 58,
+        "product": 53,
         "project": 5,
-        "estimated": 57,
+        "estimated": 58,
         "unestimated": 0,
         "notReady": 0
       },
@@ -54,15 +54,15 @@ window.Q4_DATA = {
         "qa": 798
       },
       "effort": {
-        "be": 480,
-        "fe": 451,
-        "qa": 301
+        "be": 470,
+        "fe": 433,
+        "qa": 291
       },
       "stats": {
-        "total": 51,
-        "product": 34,
+        "total": 49,
+        "product": 32,
         "project": 17,
-        "estimated": 44,
+        "estimated": 42,
         "unestimated": 7,
         "notReady": 4
       },
@@ -458,7 +458,7 @@ window.Q4_DATA = {
       "status": "Подготовка",
       "statusKind": "planned",
       "clientVisible": true,
-      "images": [],
+      "images": ["assets/umka-template-lifecycle.png"],
       "tasks": [
         {
           "key": "DEV-61774",
@@ -560,7 +560,7 @@ window.Q4_DATA = {
       "status": "Подготовка",
       "statusKind": "planned",
       "clientVisible": true,
-      "images": [],
+      "images": ["assets/umka-ai-assistant.png"],
       "tasks": [
         {
           "key": "DEV-64617",
@@ -776,32 +776,6 @@ window.Q4_DATA = {
       ]
     },
     {
-      "id": "DEV-34174",
-      "team": "Умка",
-      "bucket": "product",
-      "module": "Адаптация",
-      "title": "Перенос / редизайн редактора плана адаптации на SkillGrid",
-      "summary": "Описание В рамках эпика планируется комплексный редизайн редактора адаптации с переводом интерфейса на компоненты дизайн-системы Skillgrid и пересмотром ключевых пользовательских сценариев. Текущая версия редактора: - использует устаревшие UI-компоненты; - имеет несогласованную структуру вкладок и сущностей; - не по…",
-      "month": "dec",
-      "status": "Подготовка",
-      "statusKind": "planned",
-      "clientVisible": true,
-      "images": [],
-      "tasks": [
-        {
-          "key": "DEV-63611",
-          "title": "Компонент для смены статуса назначения плана",
-          "status": "Grooming Backlog",
-          "project": "",
-          "description": "Потребность клиента Я, как пользователь, редактирующий назначение плана, хочу видеть текущий статус в обновленном формате и выбирать только доступные для перехода статусы, чтобы понимать текущее состояние назначения и не видеть недопустимые действия. Детали реализации AS IS Сейчас в редакторе назначения плана: - тек…",
-          "be": 4,
-          "fe": 8,
-          "qa": 2,
-          "url": "https://tracker.yandex.ru/DEV-63611"
-        }
-      ]
-    },
-    {
       "id": "DEV-65840",
       "team": "Умка",
       "bucket": "project",
@@ -824,6 +798,32 @@ window.Q4_DATA = {
           "fe": 0,
           "qa": 6,
           "url": "https://tracker.yandex.ru/DEV-65840"
+        }
+      ]
+    },
+    {
+      "id": "DEV-50542",
+      "team": "Умка",
+      "bucket": "product",
+      "module": "Self-service",
+      "title": "Настройка согласия на обработку персональных данных",
+      "summary": "Администратор сможет управлять показом согласия и прикладывать актуальный документ через интерфейс без изменения констант.",
+      "month": "dec",
+      "status": "Подготовка",
+      "statusKind": "planned",
+      "clientVisible": true,
+      "images": [],
+      "tasks": [
+        {
+          "key": "DEV-50542",
+          "title": "UI-настройка согласия на обработку персональных данных и привязка модального окна к веб-настройкам",
+          "status": "Product Backlog",
+          "project": "",
+          "description": "Потребность клиента Я, как супер-администратор, хочу управлять показом модального окна согласия на обработку персональных данных через веб-настройки и прикладывать документ политики/согласия (ссылкой или файлом), чтобы не править константы и централизованно обновлять документ для пользователей.",
+          "be": 2,
+          "fe": 2,
+          "qa": 2,
+          "url": "https://tracker.yandex.ru/DEV-50542"
         }
       ]
     },
@@ -864,7 +864,7 @@ window.Q4_DATA = {
       "status": "Нужно уточнение",
       "statusKind": "risk",
       "clientVisible": true,
-      "images": [],
+      "images": ["assets/umka-role-filter.png"],
       "tasks": [
         {
           "key": "DEV-62461",
@@ -1042,7 +1042,7 @@ window.Q4_DATA = {
       "status": "Подготовка",
       "statusKind": "planned",
       "clientVisible": true,
-      "images": [],
+      "images": ["assets/umka-manager-workspace.png"],
       "tasks": [
         {
           "key": "DEV-64681",
@@ -1245,7 +1245,7 @@ window.Q4_DATA = {
       "team": "Незнайка",
       "bucket": "project",
       "module": "Опросы",
-      "title": "Назначения опросов",
+      "title": "Экзиты. Назначения опросов",
       "summary": "Создание страницы «Опросы» Цель Создать единый интерфейс для работы с назначениями опросов, который: заменит несколько существующих точек доступа к данным; вынесет функциональность просмотра назначений опросов из бэкофиса в веб-интерфейс; предоставит доступ к назначениям опросов пользователям PEL; позволит ограничит…",
       "month": "nov",
       "status": "Готово к старту",
@@ -1386,7 +1386,7 @@ window.Q4_DATA = {
       "status": "Готово к старту",
       "statusKind": "ready",
       "clientVisible": true,
-      "images": [],
+      "images": ["assets/nez-skillgrid-menu.png"],
       "tasks": [
         {
           "key": "DEV-45446",
@@ -1402,32 +1402,6 @@ window.Q4_DATA = {
       ]
     },
     {
-      "id": "DEV-65910",
-      "team": "Незнайка",
-      "bucket": "product",
-      "module": "Моё обучение",
-      "title": "Добавление табов в разделе Мое обучение",
-      "summary": "Потребность клиента Я как сотрудник, хочу отдельно видеть обучение с приближающимся и уже истекшим дедлайном в разделе Мое обучение, а также актуальное количество таких курсов и программ с учетом примененных фильтров, чтобы быстро определять приоритетное обучение и своевременно завершать назначенные курсы и программ…",
-      "month": "nov",
-      "status": "Готово к старту",
-      "statusKind": "ready",
-      "clientVisible": true,
-      "images": [],
-      "tasks": [
-        {
-          "key": "DEV-65910",
-          "title": "Добавление табов в разделе Мое обучение",
-          "status": "Delivery Backlog",
-          "project": "",
-          "description": "Потребность клиента Я как сотрудник, хочу отдельно видеть обучение с приближающимся и уже истекшим дедлайном в разделе Мое обучение, а также актуальное количество таких курсов и программ с учетом примененных фильтров, чтобы быстро определять приоритетное обучение и своевременно завершать назначенные курсы и программ…",
-          "be": 8,
-          "fe": 16,
-          "qa": 8,
-          "url": "https://tracker.yandex.ru/DEV-65910"
-        }
-      ]
-    },
-    {
       "id": "DEV-51893",
       "team": "Незнайка",
       "bucket": "product",
@@ -1438,7 +1412,7 @@ window.Q4_DATA = {
       "status": "Готово к старту",
       "statusKind": "ready",
       "clientVisible": true,
-      "images": [],
+      "images": ["assets/nez-profile-main.png", "assets/nez-profile-competencies.png"],
       "tasks": [
         {
           "key": "DEV-51906",
@@ -1630,7 +1604,7 @@ window.Q4_DATA = {
       "status": "Подготовка",
       "statusKind": "planned",
       "clientVisible": true,
-      "images": [],
+      "images": ["assets/nez-assigned-programs.png"],
       "tasks": [
         {
           "key": "DEV-65981",
@@ -1684,7 +1658,7 @@ window.Q4_DATA = {
       "status": "Подготовка",
       "statusKind": "planned",
       "clientVisible": true,
-      "images": [],
+      "images": ["assets/nez-select-all-assignments.png"],
       "tasks": [
         {
           "key": "DEV-64171",
@@ -1710,7 +1684,7 @@ window.Q4_DATA = {
       "status": "Нужно уточнение",
       "statusKind": "risk",
       "clientVisible": true,
-      "images": [],
+      "images": ["assets/nez-report-columns.png"],
       "tasks": [
         {
           "key": "DEV-58009",
@@ -1825,7 +1799,7 @@ window.Q4_DATA = {
       "status": "Подготовка",
       "statusKind": "planned",
       "clientVisible": true,
-      "images": [],
+      "images": ["assets/nez-helper-role.png"],
       "tasks": [
         {
           "key": "DEV-51388",
@@ -1851,7 +1825,7 @@ window.Q4_DATA = {
       "status": "Подготовка",
       "statusKind": "planned",
       "clientVisible": true,
-      "images": [],
+      "images": ["assets/nez-profile-required.png"],
       "tasks": [
         {
           "key": "DEV-68446",
@@ -2005,7 +1979,7 @@ window.Q4_DATA = {
       "status": "Подготовка",
       "statusKind": "planned",
       "clientVisible": true,
-      "images": [],
+      "images": ["assets/nez-push-editor.png", "assets/nez-push-preview.jpg"],
       "tasks": [
         {
           "key": "DEV-63425",
@@ -2106,17 +2080,6 @@ window.Q4_DATA = {
           "fe": 2,
           "qa": 2,
           "url": "https://tracker.yandex.ru/DEV-50300"
-        },
-        {
-          "key": "DEV-50542",
-          "title": "UI-настройка согласия на обработку персональных данных и привязка модального окна к веб-настройкам",
-          "status": "Product Backlog",
-          "project": "",
-          "description": "Потребность клиента Я, как супер-администратор, хочу управлять показом модального окна согласия на обработку персональных данных через веб-настройки и прикладывать документ политики/согласия (ссылкой или файлом), чтобы не править константы и централизованно обновлять документ для пользователей. --- Контекст и цель В…",
-          "be": 2,
-          "fe": 2,
-          "qa": 2,
-          "url": "https://tracker.yandex.ru/DEV-50542"
         }
       ]
     },
@@ -2805,7 +2768,7 @@ window.Q4_DATA = {
       "status": "Подготовка",
       "statusKind": "planned",
       "clientVisible": true,
-      "images": [],
+      "images": ["assets/vinni-import-link.png"],
       "tasks": [
         {
           "key": "DEV-66095",
