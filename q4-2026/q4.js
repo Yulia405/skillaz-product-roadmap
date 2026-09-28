@@ -5,10 +5,29 @@ const state = { mode: params.get('view') === 'client' ? 'client' : 'internal', t
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]);
 const monthName = id => data.months.find(month => month.id === id)?.title || '';
+const clientModules = {
+  'Шаблоны адаптации': 'Адаптация',
+  'Контрольные точки': 'Адаптация',
+  'Наставничество': 'Адаптация',
+  'Задачи': 'Адаптация',
+  'AI-помощник': 'Адаптация',
+  'Пребординг': 'Адаптация',
+  'Брендирование': 'Платформа и настройки',
+  'Self-service': 'Платформа и настройки',
+  'Навигация': 'Платформа и настройки',
+  'Роли и доступы': 'Платформа и настройки',
+  'Автособытия': 'Платформа и настройки',
+  'Моё обучение': 'Обучение',
+  'Редактор курсов': 'Обучение',
+  'Тесты': 'Обучение',
+  'Обучение и отчётность': 'Обучение',
+  'Профиль и компетенции': 'Профиль',
+};
+const visibleModule = card => state.mode === 'client' ? (clientModules[card.module] || card.module) : card.module;
 
 function modeCards() {
   let cards = state.mode === 'client' ? data.cards.filter(card => card.clientVisible) : data.cards.filter(card => card.team === state.team && (state.scope === 'all' || card.bucket === state.scope));
-  if (state.module !== 'Все') cards = cards.filter(card => card.module === state.module);
+  if (state.module !== 'Все') cards = cards.filter(card => visibleModule(card) === state.module);
   if (state.query) { const query = state.query.toLowerCase(); cards = cards.filter(card => `${card.title} ${card.module} ${card.summary}`.toLowerCase().includes(query)); }
   return cards;
 }
@@ -23,7 +42,7 @@ function setMode(mode) {
 
 function renderHeader() {
   $('#updatedAt').textContent = `Обновлено ${data.updatedAt}`;
-  const cards = modeCards(); const modules = new Set(cards.map(card => card.module));
+  const cards = modeCards(); const modules = new Set(cards.map(visibleModule));
   if (state.mode === 'client') {
     $('#eyebrow').textContent = 'Продуктовый план Skillaz'; $('#pageTitle').textContent = 'Что меняется в продукте в Q4 2026';
     $('#pageLead').textContent = 'Ключевые продуктовые изменения собраны по направлениям и срокам. Откройте карточку, чтобы увидеть состав инициативы.'; $('#roadmapTitle').textContent = 'Карта продуктовых изменений';
@@ -55,9 +74,9 @@ function renderTeamPanel() {
 
 function renderFilters() {
   const source = state.mode === 'client' ? data.cards.filter(card => card.clientVisible) : data.cards.filter(card => card.team === state.team && (state.scope === 'all' || card.bucket === state.scope));
-  const modules = ['Все', ...new Set(source.map(card => card.module).sort((a, b) => a.localeCompare(b, 'ru')))]; if (!modules.includes(state.module)) state.module = 'Все';
-  $('#moduleFilter').innerHTML = `<label><span>Направление</span><select id="moduleSelect">${modules.map(module => `<option value="${esc(module)}" ${module === state.module ? 'selected' : ''}>${esc(module)}</option>`).join('')}</select></label>`;
-  $('#moduleSelect').onchange = event => { state.module = event.target.value; renderHeader(); renderMonths(); };
+  const modules = ['Все', ...new Set(source.map(visibleModule).sort((a, b) => a.localeCompare(b, 'ru')))]; if (!modules.includes(state.module)) state.module = 'Все';
+  $('#moduleFilter').innerHTML = modules.map(module => `<button type="button" class="${module === state.module ? 'active' : ''}" data-module="${esc(module)}">${esc(module)}</button>`).join('');
+  document.querySelectorAll('[data-module]').forEach(button => { button.onclick = () => { state.module = button.dataset.module; renderHeader(); renderFilters(); renderMonths(); }; });
 }
 
 function cardTemplate(card) {
@@ -65,7 +84,7 @@ function cardTemplate(card) {
   const meta = state.mode === 'internal' ? `<span>${card.bucket === 'product' ? 'Продукт' : 'Проект'}</span><span>${card.tasks.length} ${card.tasks.length === 1 ? 'задача' : 'задач'}</span>` : `<span>${card.tasks.length > 1 ? 'Комплекс изменений' : 'Изменение'}</span>`;
   const status = state.mode === 'client' ? 'В плане' : card.status;
   const statusKind = state.mode === 'client' ? 'ready' : card.statusKind;
-  return `<button type="button" class="roadmap-card" data-card-id="${esc(card.id)}"><span class="card-copy"><span class="card-label">${esc(card.module)}</span><strong>${esc(card.title)}</strong><span class="card-meta">${meta}</span></span>${image}<span class="status ${esc(statusKind)}">${esc(status)}</span></button>`;
+  return `<button type="button" class="roadmap-card" data-card-id="${esc(card.id)}"><span class="card-copy"><strong>${esc(card.title)}</strong><span class="card-meta">${meta}</span></span>${image}<span class="status ${esc(statusKind)}">${esc(status)}</span></button>`;
 }
 
 function renderMonths() {
@@ -80,7 +99,7 @@ function openModal(id) {
   const card = data.cards.find(item => item.id === id); if (!card) return;
   const status = state.mode === 'client' ? 'В плане' : card.status;
   const statusKind = state.mode === 'client' ? 'ready' : card.statusKind;
-  $('#modalMeta').innerHTML = `<span>${esc(card.module)}</span><span>${esc(monthName(card.month))}</span><span class="status ${esc(statusKind)}">${esc(status)}</span>`;
+  $('#modalMeta').innerHTML = `<span>${esc(monthName(card.month))}</span><span class="status ${esc(statusKind)}">${esc(status)}</span>`;
   $('#modalTitle').textContent = card.title; $('#modalSummary').textContent = card.summary;
   $('#gallery').innerHTML = card.images.map((image, index) => `<figure class="${index === 0 ? 'wide' : ''}"><img src="${esc(image)}" alt="Макет: ${esc(card.title)}" loading="lazy"></figure>`).join(''); $('#gallery').classList.toggle('empty', card.images.length === 0);
   $('#scopeTitle').textContent = state.mode === 'client' ? 'Что изменится' : `Состав инициативы · ${card.tasks.length}`;
