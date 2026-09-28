@@ -6,7 +6,8 @@
   <meta name="theme-color" content="#ffffff">
   <title>Skillaz · план Q4 2026</title>
   <link rel="icon" href="../skillaz-logo.png">
-  <link rel="stylesheet" href="q4.css?v=20260928-8">
+  <link rel="stylesheet" href="q4.css?v=20260928-9">
+  <link rel="stylesheet" href="q4-enhancements.css?v=20260928-9">
 </head>
 <body>
   <header class="topbar">
@@ -21,12 +22,13 @@
       <div><span class="eyebrow" id="eyebrow"></span><h1 id="pageTitle"></h1><p id="pageLead"></p></div>
       <div class="summary" id="summary"></div>
     </section>
+    <p class="delivery-note" id="deliveryNote"></p>
     <section class="controls internal-only">
       <div class="team-tabs" id="teamTabs"></div>
-      <div class="scope-tabs" id="scopeTabs"><button type="button" data-scope="all">Все</button><button type="button" data-scope="product">Продукт</button><button type="button" data-scope="project">Проекты</button></div>
+      <div class="scope-tabs" id="scopeTabs"><button type="button" data-scope="all">Все</button><button type="button" data-scope="product">Продукт</button><button type="button" data-scope="project">Клиент</button></div>
     </section>
     <section class="team-panel internal-only">
-      <div class="team-copy"><span class="section-label">Фокус команды</span><h2 id="teamTitle"></h2><p id="teamMission"></p></div>
+      <div class="team-copy"><span class="section-label">Фокус команды</span><h2 id="teamTitle"></h2><p id="teamMission"></p><a class="dashboard-link" id="teamDashboard" target="_blank" rel="noreferrer">Открыть доску команды</a></div>
       <div class="capacity" id="capacity"></div><div class="team-stats" id="teamStats"></div>
     </section>
     <section class="notices internal-only" id="notices"></section>
@@ -48,7 +50,12 @@
       <section class="modal-section"><h3 id="scopeTitle">Что входит</h3><div class="task-list" id="taskList"></div></section>
     </article>
   </div>
+  <div class="image-viewer" id="imageViewer" aria-hidden="true">
+    <button class="image-viewer-backdrop" id="imageViewerBackdrop" type="button" aria-label="Закрыть изображение"></button>
+    <button class="image-viewer-close" id="imageViewerClose" type="button" aria-label="Закрыть изображение">×</button>
+    <img id="imageViewerImage" alt="Увеличенный макет">
+  </div>
   <div class="toast" id="toast" role="status"></div>
-  <script src="q4-data.js?v=20260928-8"></script><script src="q4.js?v=20260928-8"></script>
+  <script src="q4-data.js?v=20260928-9"></script><script src="q4.js?v=20260928-9"></script>
 </body>
 </html>

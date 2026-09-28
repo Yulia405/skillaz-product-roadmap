@@ -49,8 +49,6 @@ const clientContent = {
   'DEV-62461': { title: 'Поиск сотрудников по рабочим ролям', summary: 'Администратор сможет отбирать сотрудников по новым ролям прямо в общем списке пользователей.', outcomes: ['Быстрый поиск нужной группы сотрудников', 'Удобная работа с ролевой моделью компании'] },
   'DEV-64880': { title: 'Отчётность адаптации', summary: 'Расширяем аналитику по планам адаптации: HR сможет выгружать данные о рисках, контрольных точках, целях и результатах.', outcomes: ['Анализ причин и динамики рисков', 'Контроль прохождения обязательных встреч', 'Оценка достижения целей и промежуточных результатов'] },
   'DEV-61896': { title: 'Корректная обработка кандидатов при импорте', summary: 'При обновлении данных система будет корректно управлять ролью кандидата и не оставлять пользователю устаревший доступ.', outcomes: ['Актуальные роли после импорта', 'Меньше ручных исправлений пользователей'] },
-  'DEV-64603': { title: 'Рабочее место руководителя', summary: 'Руководитель сможет удобнее контролировать планы команды, видеть прогресс и работать с адаптацией с разных устройств.', outcomes: ['Адаптивный интерфейс для ежедневной работы', 'Понятное отображение прогресса по маршруту сотрудника', 'Быстрый переход к действиям руководителя'] },
-  'DEV-64602': { title: 'Актуальные уведомления по адаптации', summary: 'Обновляем набор push-уведомлений, чтобы сотрудники и руководители вовремя получали сообщения о важных событиях плана.', outcomes: ['Единые актуальные шаблоны уведомлений', 'Своевременное информирование участников'] },
   'DEV-50542': { title: 'Согласия на обработку данных в интерфейсе', summary: 'Администратор сможет управлять показом согласия и обновлять документ политики без изменения констант.', outcomes: ['Настройка согласия без обращения к разработчикам', 'Централизованное обновление документа для пользователей'] },
   'DEV-57283': { title: 'Новая главная страница обучения', summary: 'Главная LMS станет персональной точкой входа: важные действия, новости и продолжение обучения будут видны сразу после входа.', outcomes: ['Приоритетные действия на первом экране', 'Быстрый возврат к незавершённому обучению', 'Новости и персональное приветствие в единой структуре'] },
   'DEV-65423': { title: 'Быстрое создание нового пространства', summary: 'Новое клиентское пространство можно будет разворачивать на основе готовой конфигурации, включая необходимые уведомления.', outcomes: ['Сокращение времени запуска нового пространства', 'Повторное использование проверенных настроек', 'Меньше ручной настройки при старте'] },
@@ -63,11 +61,11 @@ const clientContent = {
   'DEV-58009': { title: 'Понятная настройка отчётов', summary: 'Столбцы отчёта будут сгруппированы по смысловым категориям, чтобы нужные данные было проще найти и включить.', outcomes: ['Быстрый выбор нужных показателей', 'Меньше ошибок при настройке отчёта'] },
   'DEV-60952': { title: 'Гибкое управление редакторами курса', summary: 'Куратор и автор смогут работать с содержанием курса в рамках понятных правил доступа.', outcomes: ['Меньше ручной настройки прав', 'Предсказуемый доступ к редактированию курса'] },
   'DEV-63145': { title: 'Импорт готового оформления', summary: 'Администратор сможет загрузить подготовленную стилизацию в конструктор одним архивом.', outcomes: ['Быстрый перенос фирменного оформления', 'Меньше ручной настройки визуальных параметров'] },
-  'DEV-49031': { title: 'Понятные роли участников процессов', summary: 'Разделяем полномочия менеджера, HRBP и помощника, чтобы каждому пользователю были доступны только его рабочие действия.', outcomes: ['Прозрачное распределение ответственности', 'Корректный доступ к данным и действиям'] },
+  'DEV-49031': { title: 'Разделение ролей менеджера, HRBP и PEL', summary: 'Разводим полномочия ролей, чтобы наставники и другие участники процессов не получали лишний менеджерский доступ.', outcomes: ['Корректный набор прав для каждой роли', 'Наставник не получает полномочия руководителя', 'Меньше ручных исправлений доступа'] },
   'DEV-68446': { title: 'Обязательные данные профиля', summary: 'Компания сможет определить поля, которые сотрудник должен заполнить в своём профиле.', outcomes: ['Более полные и качественные данные сотрудников', 'Понятные требования к заполнению профиля'] },
   'DEV-65837': { title: 'Self-service брендирования', summary: 'Администратор сможет самостоятельно настроить экран входа и внешний вид мобильного приложения под бренд компании.', outcomes: ['Настройка без обращения в поддержку', 'Единый фирменный стиль веб- и мобильного входа', 'Собственная иконка приложения на устройстве'] },
   'DEV-63912': { title: 'Ссылки в импортируемых push-уведомлениях', summary: 'При массовой загрузке уведомлений можно будет сразу указать ссылку для перехода пользователя к нужному действию.', outcomes: ['Уведомление ведёт прямо к целевому объекту', 'Меньше ручной настройки после импорта'] },
-  'DEV-56505': { title: 'Бесшовный переход в мобильное приложение', summary: 'Ссылка из мобильного браузера будет открывать установленное приложение и сохранять контекст действия.', outcomes: ['Меньше лишних шагов для пользователя', 'Переход сразу к нужному экрану приложения'] },
+  'DEV-56505': { title: 'Диплинк в мобильное приложение', summary: 'Ссылка из мобильного браузера будет открывать установленное приложение и сохранять контекст действия.', outcomes: ['Меньше лишних шагов для пользователя', 'Переход сразу к нужному экрану приложения'] },
   'DEV-63425': { title: 'Удобный редактор push-уведомлений', summary: 'Обновляем настройку шаблонов push-уведомлений, чтобы администратору было проще готовить сообщения.', outcomes: ['Понятная настройка содержания уведомления', 'Меньше ошибок при подготовке шаблона'] },
   'DEV-66595': { title: 'Единые push-уведомления по ключевым модулям', summary: 'Актуализируем шаблоны уведомлений для обучения, оценки и индивидуальных планов развития.', outcomes: ['Последовательные сообщения во всех процессах', 'Актуальные шаблоны без ручной миграции'] },
   'DEV-50298': { title: 'Настройки компании в интерфейсе', summary: 'Критичные настройки интерфейса, SMS и согласий будут доступны администратору без технических запросов.', outcomes: ['Самостоятельное управление настройками компании', 'Быстрое изменение параметров без релиза', 'Прозрачная настройка согласий и коммуникаций'] },
@@ -100,6 +98,7 @@ function setMode(mode) {
 
 function renderHeader() {
   $('#updatedAt').textContent = `Обновлено ${data.updatedAt}`;
+  $('#deliveryNote').textContent = data.deliveryNote;
   const cards = modeCards(); const modules = new Set(cards.map(visibleModule));
   if (state.mode === 'client') {
     $('#eyebrow').textContent = 'Продуктовый план Skillaz'; $('#pageTitle').textContent = 'Что меняется в продукте в Q4 2026';
@@ -119,13 +118,14 @@ function renderTeamControls() {
 
 function renderTeamPanel() {
   const team = data.teams[state.team]; $('#teamTitle').textContent = `Команда «${state.team}»`; $('#teamMission').textContent = team.mission;
+  $('#teamDashboard').href = team.dashboard;
   const labels = { be: 'Backend', fe: 'Frontend', qa: 'QA' };
   $('#capacity').innerHTML = Object.entries(labels).map(([key, label]) => {
     const effort = team.effort[key]; const capacity = team.capacity[key]; const percent = capacity ? Math.round(effort / capacity * 100) : null; const width = percent === null ? 0 : Math.min(percent, 100);
     return `<div class="capacity-row ${percent !== null && percent > 100 ? 'over' : ''}"><div><strong>${label}</strong><span>${effort} ч ${capacity ? `из ${capacity} ч` : '· ёмкость не задана'}</span></div><div class="capacity-track"><i style="width:${width}%"></i></div><b>${percent === null ? '—' : `${percent}%`}</b></div>`;
   }).join('');
   const stats = team.stats;
-  $('#teamStats').innerHTML = [[stats.product, 'продукт'], [stats.project, 'проекты'], [stats.unestimated, 'без оценки'], [stats.notReady, 'не готовы']].map(([value, label]) => `<div><strong>${value}</strong><span>${label}</span></div>`).join('');
+  $('#teamStats').innerHTML = [[stats.product, 'продукт'], [stats.project, 'клиент'], [stats.unestimated, 'без оценки'], [stats.notReady, 'не готовы']].map(([value, label]) => `<div><strong>${value}</strong><span>${label}</span></div>`).join('');
   $('#notices').innerHTML = (team.notices || []).map(notice => `<article class="notice ${notice.kind}"><strong>${esc(notice.title)}</strong><p>${esc(notice.text)}</p></article>`).join('');
   $('#notices').classList.toggle('empty', !(team.notices || []).length);
 }
@@ -141,7 +141,12 @@ function renderFilters() {
 
 function cardTemplate(card) {
   const image = card.images[0] ? `<img src="${esc(card.images[0])}" alt="" loading="lazy">` : '';
-  const meta = state.mode === 'internal' ? `<span>${card.bucket === 'product' ? 'Продукт' : 'Проект'}</span><span>${card.tasks.length} ${card.tasks.length === 1 ? 'задача' : 'задач'}</span>` : `<span>${card.tasks.length > 1 ? 'Комплекс изменений' : 'Изменение'}</span>`;
+  const projects = [...new Set(card.tasks.map(task => task.project).filter(Boolean))];
+  const projectName = projects.join(' · ') || 'Проект не указан';
+  const typeMeta = card.bucket === 'product'
+    ? '<span class="work-type product">Продукт</span>'
+    : `<span class="work-type client">Клиент</span><span class="project-name" title="${esc(projectName)}">${esc(projectName)}</span>`;
+  const meta = state.mode === 'internal' ? `${typeMeta}<span>${card.tasks.length} ${card.tasks.length === 1 ? 'задача' : 'задач'}</span>` : `<span>${card.tasks.length > 1 ? 'Комплекс изменений' : 'Изменение'}</span>`;
   const status = state.mode === 'client' ? 'В плане' : card.status;
   const statusKind = state.mode === 'client' ? 'ready' : card.statusKind;
   const title = state.mode === 'client' ? clientCopy(card).title : card.title;
@@ -163,7 +168,8 @@ function openModal(id) {
   const statusKind = state.mode === 'client' ? 'ready' : card.statusKind;
   $('#modalMeta').innerHTML = `<span>${esc(monthName(card.month))}</span><span class="status ${esc(statusKind)}">${esc(status)}</span>`;
   $('#modalTitle').textContent = copy.title; $('#modalSummary').textContent = copy.summary;
-  $('#gallery').innerHTML = card.images.map((image, index) => `<figure class="${index === 0 ? 'wide' : ''}"><img src="${esc(image)}" alt="Макет: ${esc(copy.title)}" loading="lazy"></figure>`).join(''); $('#gallery').classList.toggle('empty', card.images.length === 0);
+  $('#gallery').innerHTML = card.images.map((image, index) => `<figure class="${index === 0 ? 'wide' : ''}"><button class="image-zoom-trigger" type="button" data-image="${esc(image)}" aria-label="Увеличить изображение"><img src="${esc(image)}" alt="Макет: ${esc(copy.title)}" loading="lazy"></button></figure>`).join(''); $('#gallery').classList.toggle('empty', card.images.length === 0);
+  document.querySelectorAll('[data-image]').forEach(button => button.onclick = () => openImageViewer(button.dataset.image));
   $('#scopeTitle').textContent = state.mode === 'client' ? 'Что получит пользователь' : `Состав инициативы · ${card.tasks.length}`;
   $('#taskList').classList.toggle('client-outcomes', state.mode === 'client');
   $('#taskList').innerHTML = state.mode === 'client'
@@ -172,6 +178,8 @@ function openModal(id) {
   $('#modalShell').classList.add('open'); $('#modalShell').setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden';
 }
 function closeModal() { $('#modalShell').classList.remove('open'); $('#modalShell').setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; }
+function openImageViewer(source) { $('#imageViewerImage').src = source; $('#imageViewer').classList.add('open'); $('#imageViewer').setAttribute('aria-hidden', 'false'); }
+function closeImageViewer() { $('#imageViewer').classList.remove('open'); $('#imageViewer').setAttribute('aria-hidden', 'true'); $('#imageViewerImage').removeAttribute('src'); }
 async function shareClientView() { const url = `${location.origin}${location.pathname}?view=client&shared=1`; try { await navigator.clipboard.writeText(url); showToast('Ссылка на клиентский план скопирована'); } catch { window.prompt('Скопируйте ссылку на клиентский план', url); } }
 function showToast(message) { $('#toast').textContent = message; $('#toast').classList.add('show'); setTimeout(() => $('#toast').classList.remove('show'), 2200); }
 function render() { renderHeader(); renderTeamControls(); renderTeamPanel(); renderFilters(); renderMonths(); renderDiscovery(); }
@@ -179,4 +187,5 @@ function render() { renderHeader(); renderTeamControls(); renderTeamPanel(); ren
 document.querySelectorAll('[data-mode]').forEach(button => button.onclick = () => setMode(button.dataset.mode));
 $('#searchInput').addEventListener('input', event => { state.query = event.target.value.trim(); renderHeader(); renderMonths(); });
 $('#shareButton').onclick = shareClientView; $('#modalClose').onclick = closeModal; $('#modalBackdrop').onclick = closeModal;
-document.addEventListener('keydown', event => { if (event.key === 'Escape') closeModal(); }); setMode(state.mode);
+$('#imageViewerClose').onclick = closeImageViewer; $('#imageViewerBackdrop').onclick = closeImageViewer;
+document.addEventListener('keydown', event => { if (event.key === 'Escape') { if ($('#imageViewer').classList.contains('open')) closeImageViewer(); else closeModal(); } }); setMode(state.mode);
