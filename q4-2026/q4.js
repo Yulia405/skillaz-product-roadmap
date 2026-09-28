@@ -5,17 +5,25 @@ const state = { mode: params.get('view') === 'client' ? 'client' : 'internal', t
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]);
 const monthName = id => data.months.find(month => month.id === id)?.title || '';
+const moduleGroups = {
+  'Безопасность': 'Core-компоненты',
+  'Отчётность': 'Core-компоненты',
+  'Импорты': 'Core-компоненты',
+  'Роли и доступы': 'Core-компоненты',
+  'Уведомления': 'Core-компоненты',
+  'Адаптация': 'План адаптации',
+  'Задачи': 'План адаптации',
+  'Шаблоны адаптации': 'План адаптации',
+  'Контрольные точки': 'План адаптации',
+  'Наставничество': 'План адаптации',
+  'Роли участников': 'План адаптации',
+  'AI-помощник': 'План адаптации',
+  'Пребординг': 'План адаптации',
+};
 const clientModules = {
-  'Шаблоны адаптации': 'Адаптация',
-  'Контрольные точки': 'Адаптация',
-  'Наставничество': 'Адаптация',
-  'Задачи': 'Адаптация',
-  'AI-помощник': 'Адаптация',
-  'Пребординг': 'Адаптация',
   'Брендирование': 'Платформа и настройки',
   'Self-service': 'Платформа и настройки',
   'Навигация': 'Платформа и настройки',
-  'Роли и доступы': 'Платформа и настройки',
   'Автособытия': 'Платформа и настройки',
   'Моё обучение': 'Обучение',
   'Редактор курсов': 'Обучение',
@@ -23,7 +31,10 @@ const clientModules = {
   'Обучение и отчётность': 'Обучение',
   'Профиль и компетенции': 'Профиль',
 };
-const visibleModule = card => state.mode === 'client' ? (clientModules[card.module] || card.module) : card.module;
+const visibleModule = card => {
+  const grouped = moduleGroups[card.module] || card.module;
+  return state.mode === 'client' ? (clientModules[grouped] || grouped) : grouped;
+};
 
 function modeCards() {
   let cards = state.mode === 'client' ? data.cards.filter(card => card.clientVisible) : data.cards.filter(card => card.team === state.team && (state.scope === 'all' || card.bucket === state.scope));
@@ -74,7 +85,9 @@ function renderTeamPanel() {
 
 function renderFilters() {
   const source = state.mode === 'client' ? data.cards.filter(card => card.clientVisible) : data.cards.filter(card => card.team === state.team && (state.scope === 'all' || card.bucket === state.scope));
-  const modules = ['Все', ...new Set(source.map(visibleModule).sort((a, b) => a.localeCompare(b, 'ru')))]; if (!modules.includes(state.module)) state.module = 'Все';
+  const priority = { 'План адаптации': 0, 'Core-компоненты': 1 };
+  const sortedModules = [...new Set(source.map(visibleModule))].sort((a, b) => (priority[a] ?? 10) - (priority[b] ?? 10) || a.localeCompare(b, 'ru'));
+  const modules = ['Все', ...sortedModules]; if (!modules.includes(state.module)) state.module = 'Все';
   $('#moduleFilter').innerHTML = modules.map(module => `<button type="button" class="${module === state.module ? 'active' : ''}" data-module="${esc(module)}">${esc(module)}</button>`).join('');
   document.querySelectorAll('[data-module]').forEach(button => { button.onclick = () => { state.module = button.dataset.module; renderHeader(); renderFilters(); renderMonths(); }; });
 }
