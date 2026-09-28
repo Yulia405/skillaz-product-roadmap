@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>Skillaz · развитие продукта в Q4 2026</title>
+  <link rel="icon" href="../skillaz-logo.png">
+  <link rel="stylesheet" href="q4.css">
+</head>
+<body class="client-mode">
+  <header class="topbar">
+    <a class="brand" href="../"><img src="../skillaz-logo.png" alt=""><span><strong>Skillaz</strong><small>Продуктовый план Q4 2026</small></span></a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow" id="heroEyebrow"></span>
+        <h1 id="heroTitle"></h1>
+        <p id="heroLead"></p>
+      </div>
+      <div class="hero-metrics" id="heroMetrics"></div>
+    </section>
+
+    <section class="roadmap-section">
+      <div class="section-inner">
+        <header class="section-head roadmap-head">
+          <div><span class="section-label">Q4 2026</span><h2 id="roadmapTitle"></h2></div>
+          <div class="module-filters" id="moduleFilters"></div>
+        </header>
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </section>
+
+    <section class="discovery-section">
+      <div class="section-inner">
+        <header class="section-head discovery-head">
+          <div><span class="section-label">Следующий горизонт</span><h2>Что исследуем дальше</h2></div>
+          <p>Проверяем пользовательские сценарии и архитектуру, чтобы следующие изменения решали реальные задачи бизнеса.</p>
+        </header>
+        <div class="discovery-grid" id="discoveryGrid"></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="drawer-shell" id="drawerShell" aria-hidden="true">
+    <button class="drawer-backdrop" id="drawerBackdrop" aria-label="Закрыть"></button>
+    <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+      <button class="drawer-close" id="drawerClose" aria-label="Закрыть">×</button>
+      <img class="drawer-image" id="drawerImage" alt="">
+      <div class="drawer-content">
+        <span class="drawer-meta" id="drawerMeta"></span>
+        <h2 id="drawerTitle"></h2>
+        <p class="drawer-value" id="drawerValue"></p>
+        <div class="drawer-block"><h3>Что изменится</h3><ul id="drawerScope"></ul></div>
+        <div class="drawer-block internal-only"><div class="source-links" id="drawerSources"></div></div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script src="q4-client-data.js"></script>
+  <script src="q4.js"></script>
+</body>
+</html>
