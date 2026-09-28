@@ -4,95 +4,51 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff">
-  <title>Skillaz · продуктовый план Q4 2026</title>
+  <title>Skillaz · план Q4 2026</title>
   <link rel="icon" href="../skillaz-logo.png">
   <link rel="stylesheet" href="q4.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="../"><img src="../skillaz-logo.png" alt=""><span><strong>Skillaz</strong><small>Продуктовый план Q4 2026</small></span></a>
+    <a class="brand" href="../"><img src="../skillaz-logo.png" alt="Skillaz"><span><strong>План Q4 2026</strong><small id="updatedAt"></small></span></a>
     <div class="mode-switch" id="modeSwitch" role="group" aria-label="Режим просмотра">
-      <button class="active" data-mode="internal">Внутренний</button>
-      <button data-mode="client">Для клиентов</button>
+      <button type="button" data-mode="internal">Внутренний</button><button type="button" data-mode="client">Для клиентов</button>
     </div>
-    <button class="share-button" id="shareButton" type="button">Поделиться</button>
+    <button class="share-button" id="shareButton" type="button">Скопировать ссылку</button>
   </header>
-
   <main>
-    <section class="hero">
-      <div class="hero-copy">
-        <span class="eyebrow" id="heroEyebrow">Внутренний роадмап · октябрь — декабрь 2026</span>
-        <h1 id="heroTitle">Что команды Skillaz меняют в продукте в четвёртом квартале</h1>
-        <p id="heroLead">Продуктовые инициативы, клиентские обязательства, фактическая загрузка и зоны риска собраны в одном плане.</p>
-      </div>
-      <div class="hero-metrics" id="heroMetrics"></div>
+    <section class="intro">
+      <div><span class="eyebrow" id="eyebrow"></span><h1 id="pageTitle"></h1><p id="pageLead"></p></div>
+      <div class="summary" id="summary"></div>
     </section>
-
-    <section class="team-navigation internal-only">
-      <div class="section-inner nav-inner">
-        <div>
-          <span class="section-label">Команды</span>
-          <div class="team-tabs" id="teamTabs"></div>
-        </div>
-        <p id="teamMission"></p>
-      </div>
+    <section class="controls internal-only">
+      <div class="team-tabs" id="teamTabs"></div>
+      <div class="scope-tabs" id="scopeTabs"><button type="button" data-scope="all">Все</button><button type="button" data-scope="product">Продукт</button><button type="button" data-scope="project">Проекты</button></div>
     </section>
-
-    <section class="team-overview internal-only">
-      <div class="section-inner">
-        <header class="section-head">
-          <div><span class="section-label">Планирование</span><h2 id="teamTitle"></h2></div>
-          <div class="readiness" id="readiness"></div>
-        </header>
-        <div class="capacity-layout">
-          <div class="capacity-panel">
-            <h3>Пул оценённой работы</h3>
-            <div id="capacityBars"></div>
-          </div>
-          <div class="backlog-panel" id="backlogPanel"></div>
-        </div>
-        <div class="risk-banner" id="riskBanner"></div>
-      </div>
+    <section class="team-panel internal-only">
+      <div class="team-copy"><span class="section-label">Фокус команды</span><h2 id="teamTitle"></h2><p id="teamMission"></p></div>
+      <div class="capacity" id="capacity"></div><div class="team-stats" id="teamStats"></div>
     </section>
-
-    <section class="roadmap-section">
-      <div class="section-inner">
-        <header class="section-head roadmap-head">
-          <div><span class="section-label">Q4 2026</span><h2 id="roadmapTitle">План поставки по месяцам</h2></div>
-          <div class="module-filters" id="moduleFilters"></div>
-        </header>
-        <div class="timeline" id="timeline"></div>
-      </div>
+    <section class="notices internal-only" id="notices"></section>
+    <section class="roadmap">
+      <header class="roadmap-head">
+        <div><span class="section-label">Октябрь — декабрь</span><h2 id="roadmapTitle"></h2></div>
+        <div class="roadmap-tools"><label class="search"><span>Поиск</span><input id="searchInput" type="search" placeholder="По названию или модулю"></label><div class="module-filter" id="moduleFilter"></div></div>
+      </header>
+      <div class="months" id="months"></div>
     </section>
-
-    <section class="discovery-section">
-      <div class="section-inner">
-        <header class="section-head discovery-head">
-          <div><span class="section-label">Следующий горизонт</span><h2>Продуктовые discovery</h2></div>
-          <p>Проверяем сценарии и архитектуру сейчас, чтобы к Q1 2027 выйти с понятным объёмом и готовыми решениями.</p>
-        </header>
-        <div class="discovery-grid" id="discoveryGrid"></div>
-      </div>
-    </section>
+    <section class="discovery internal-only"><header><span class="section-label">Следующий горизонт</span><h2>Discovery для следующего этапа</h2></header><div class="discovery-grid" id="discoveryGrid"></div></section>
   </main>
-
-  <div class="drawer-shell" id="drawerShell" aria-hidden="true">
-    <button class="drawer-backdrop" id="drawerBackdrop" aria-label="Закрыть"></button>
-    <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
-      <button class="drawer-close" id="drawerClose" aria-label="Закрыть">×</button>
-      <img class="drawer-image" id="drawerImage" alt="">
-      <div class="drawer-content">
-        <span class="drawer-meta" id="drawerMeta"></span>
-        <h2 id="drawerTitle"></h2>
-        <p class="drawer-value" id="drawerValue"></p>
-        <div class="drawer-block"><h3>Что изменится</h3><ul id="drawerScope"></ul></div>
-        <div class="drawer-block internal-only"><h3>Источники</h3><div class="source-links" id="drawerSources"></div></div>
-      </div>
-    </aside>
+  <div class="modal-shell" id="modalShell" aria-hidden="true">
+    <button class="modal-backdrop" id="modalBackdrop" aria-label="Закрыть"></button>
+    <article class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalClose" type="button" aria-label="Закрыть">×</button>
+      <header class="modal-header"><div class="modal-meta" id="modalMeta"></div><h2 id="modalTitle"></h2><p id="modalSummary"></p></header>
+      <div class="gallery" id="gallery"></div>
+      <section class="modal-section"><h3 id="scopeTitle">Что входит</h3><div class="task-list" id="taskList"></div></section>
+    </article>
   </div>
-
   <div class="toast" id="toast" role="status"></div>
-  <script src="q4-data.js"></script>
-  <script src="q4.js"></script>
+  <script src="q4-data.js"></script><script src="q4.js"></script>
 </body>
 </html>

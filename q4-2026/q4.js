@@ -1,15 +1,98 @@
-const data=window.Q4_DATA;const params=new URLSearchParams(location.search);const clientPage=location.pathname.endsWith('/client.html');const state={mode:clientPage||params.get('view')==='client'?'client':'internal',team:'Умка',module:'Все'};const $=s=>document.querySelector(s);const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'})[c]);
-const visibleInitiatives=()=>data.initiatives.filter(item=>state.mode==='client'||item.team===state.team).filter(item=>state.module==='Все'||item.module===state.module).filter(item=>state.mode!=='client'||item.statusKind!=='risk');
-function setMode(mode){state.mode=clientPage?'client':mode;state.module='Все';document.body.classList.toggle('client-mode',state.mode==='client');document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===state.mode));render();if(!clientPage)history.replaceState(null,'',state.mode==='client'?`${location.pathname}?view=client`:location.pathname)}
-function renderHero(){const items=visibleInitiatives(),modules=new Set(items.map(x=>x.module));if(state.mode==='client'){$('#heroEyebrow').textContent='Продуктовый план · октябрь — декабрь 2026';$('#heroTitle').textContent='Как развивается Skillaz в четвёртом квартале';$('#heroLead').textContent='Главные изменения по модулям: что появится в продукте и какую задачу бизнеса решает каждая инициатива.'}else{$('#heroEyebrow').textContent='Внутренний роадмап · октябрь — декабрь 2026';$('#heroTitle').textContent='Что команды Skillaz меняют в продукте в четвёртом квартале';$('#heroLead').textContent='Продуктовые инициативы, клиентские обязательства, фактическая загрузка и зоны риска собраны в одном плане.'}const discovery=data.discovery.length;$('#heroMetrics').innerHTML=[[items.length,'инициатив в плане'],[modules.size,'продуктовых модулей'],[discovery,'discovery-треков'],['Q4','горизонт плана']].map(x=>`<div class="hero-metric"><strong>${esc(x[0])}</strong><span>${esc(x[1])}</span></div>`).join('')}
-function renderTeams(){const teams=Object.keys(data.teams);$('#teamTabs').innerHTML=teams.map(t=>`<button class="${state.team===t?'active':''}" data-team="${t}">${t}</button>`).join('');document.querySelectorAll('[data-team]').forEach(b=>b.onclick=()=>{state.team=b.dataset.team;state.module='Все';render()});const team=data.teams[state.team];$('#teamMission').textContent=team.mission;$('#teamTitle').textContent=`Команда ${state.team}: ёмкость и готовность`;$('#readiness').innerHTML=`<strong>${team.stats.estimated} из ${team.stats.total}</strong> задач имеют оценку`;const roleLabels={be:'Backend',fe:'Frontend',qa:'QA'};$('#capacityBars').innerHTML=Object.keys(roleLabels).map(role=>{const used=team.effort[role],cap=team.capacity[role],ratio=cap?Math.round(used/cap*100):0;return `<div class="capacity-row ${cap&&used>cap?'over':''}"><span>${roleLabels[role]}</span><div class="capacity-track"><i style="width:${cap?Math.min(100,ratio):100}%"></i></div><small>${used} ч / ${cap?`${cap} ч`:'ёмкость не задана'}</small></div>`}).join('');const s=team.stats;$('#backlogPanel').innerHTML=[[s.product,'продуктовых задач'],[s.client,'клиентских задач'],[s.unestimated,'без оценки'],[s.notReady,'проектных ниже Discovery Research']].map(x=>`<div class="backlog-stat"><strong>${x[0]}</strong><span>${x[1]}</span></div>`).join('');$('#riskBanner').classList.toggle('visible',Boolean(team.risk));$('#riskBanner').textContent=team.risk}
-function renderFilters(){const items=state.mode==='client'?data.initiatives.filter(x=>x.statusKind!=='risk'):data.initiatives.filter(x=>x.team===state.team);const modules=['Все',...new Set(items.map(x=>x.module))];if(!modules.includes(state.module))state.module='Все';$('#moduleFilters').innerHTML=modules.map(m=>`<button class="${state.module===m?'active':''}" data-module="${esc(m)}">${esc(m)}</button>`).join('');document.querySelectorAll('[data-module]').forEach(b=>b.onclick=()=>{state.module=b.dataset.module;renderHero();renderTimeline();renderFilters()})}
-function card(item){const image=item.image?`<div class="initiative-media"><img src="${item.image}" alt="" loading="lazy"></div>`:'<div class="initiative-media no-image"></div>';return `<button class="initiative" data-id="${item.id}">${image}<span class="initiative-body"><span class="initiative-top"><span class="module-tag">${esc(item.module)}</span><span class="status-tag ${item.statusKind||''}">${esc(item.status)}</span></span><h4>${esc(item.title)}</h4><p>${esc(item.value)}</p><span class="initiative-footer"><span class="internal-only">${esc(item.team)}</span><span>Подробнее →</span></span></span></button>`}
-function renderTimeline(){const items=visibleInitiatives();$('#roadmapTitle').textContent=state.mode==='client'?'Развитие продукта по модулям':`План поставки команды ${state.team}`;$('#timeline').innerHTML=data.months.map(month=>{const monthItems=items.filter(x=>x.month===month.id);return `<section class="month-column"><header class="month-head"><span>${month.id==='oct'?'01':month.id==='nov'?'02':'03'} · Q4</span><h3>${month.title}</h3><p>${month.note}</p></header><div class="initiative-list">${monthItems.length?monthItems.map(card).join(''):'<div style="padding:28px 16px;color:#71808a;font-size:11px">В выбранном модуле инициатив нет</div>'}</div></section>`}).join('');document.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>openDrawer(b.dataset.id))}
-function renderDiscovery(){$('#discoveryGrid').innerHTML=data.discovery.map(item=>`<a class="discovery-card" href="${item.url}" ${item.url==='#'?'':'target="_blank" rel="noreferrer"'}><span>Discovery · Q4</span><h3>${esc(item.title)}</h3><p>${esc(item.value)}</p><small>${esc(item.result)} →</small></a>`).join('')}
-function openDrawer(id){const item=data.initiatives.find(x=>x.id===id);if(!item)return;$('#drawerMeta').textContent=`${item.module} · ${data.months.find(x=>x.id===item.month).title}`;$('#drawerTitle').textContent=item.title;$('#drawerValue').textContent=item.value;$('#drawerScope').innerHTML=item.scope.map(x=>`<li>${esc(x)}</li>`).join('');$('#drawerSources').innerHTML=(item.links||[]).map(x=>`<a href="${x[1]}" target="_blank" rel="noreferrer">${esc(x[0])} ↗</a>`).join('');const image=$('#drawerImage');image.classList.toggle('visible',Boolean(item.image));if(item.image){image.src=item.image;image.alt=item.title}else{image.removeAttribute('src');image.alt=''}$('#drawerShell').classList.add('open');$('#drawerShell').setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
-function closeDrawer(){$('#drawerShell').classList.remove('open');$('#drawerShell').setAttribute('aria-hidden','true');document.body.style.overflow=''}
-async function share(){const base=location.pathname.replace(/(?:index|client)\.html$/,'').replace(/\/$/,'');const url=`${location.origin}${base}/client.html`;try{await navigator.clipboard.writeText(url);toast('Ссылка на клиентскую версию скопирована')}catch{prompt('Скопируйте ссылку на клиентскую версию',url)}}
-function toast(text){const node=$('#toast');node.textContent=text;node.classList.add('show');setTimeout(()=>node.classList.remove('show'),2200)}
-function render(){renderHero();if(state.mode==='internal')renderTeams();renderFilters();renderTimeline();renderDiscovery()}
-document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));if($('#shareButton'))$('#shareButton').onclick=share;$('#drawerClose').onclick=closeDrawer;$('#drawerBackdrop').onclick=closeDrawer;document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});setMode(state.mode);
+const data = window.Q4_DATA;
+const params = new URLSearchParams(location.search);
+const shared = params.get('shared') === '1';
+const state = { mode: params.get('view') === 'client' ? 'client' : 'internal', team: 'Умка', scope: 'all', module: 'Все', query: '' };
+const $ = selector => document.querySelector(selector);
+const esc = value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]);
+const monthName = id => data.months.find(month => month.id === id)?.title || '';
+
+function modeCards() {
+  let cards = state.mode === 'client' ? data.cards.filter(card => card.clientVisible) : data.cards.filter(card => card.team === state.team && (state.scope === 'all' || card.bucket === state.scope));
+  if (state.module !== 'Все') cards = cards.filter(card => card.module === state.module);
+  if (state.query) { const query = state.query.toLowerCase(); cards = cards.filter(card => `${card.title} ${card.module} ${card.summary}`.toLowerCase().includes(query)); }
+  return cards;
+}
+
+function setMode(mode) {
+  state.mode = shared ? 'client' : mode; state.module = 'Все'; state.query = ''; $('#searchInput').value = '';
+  document.body.classList.toggle('client-mode', state.mode === 'client'); document.body.classList.toggle('shared-mode', shared);
+  document.querySelectorAll('[data-mode]').forEach(button => button.classList.toggle('active', button.dataset.mode === state.mode));
+  if (!shared) history.replaceState(null, '', state.mode === 'client' ? `${location.pathname}?view=client` : location.pathname);
+  render();
+}
+
+function renderHeader() {
+  $('#updatedAt').textContent = `Обновлено ${data.updatedAt}`;
+  const cards = modeCards(); const modules = new Set(cards.map(card => card.module));
+  if (state.mode === 'client') {
+    $('#eyebrow').textContent = 'Продуктовый план Skillaz'; $('#pageTitle').textContent = 'Что меняется в продукте в Q4 2026';
+    $('#pageLead').textContent = 'Ключевые продуктовые изменения собраны по направлениям и срокам. Откройте карточку, чтобы увидеть состав инициативы.'; $('#roadmapTitle').textContent = 'Карта продуктовых изменений';
+  } else {
+    $('#eyebrow').textContent = 'Внутренний план команд'; $('#pageTitle').textContent = 'Квартальный план Q4 2026';
+    $('#pageLead').textContent = 'Продуктовый и проектный объём, готовность задач, загрузка и риски в одной рабочей карте.'; $('#roadmapTitle').textContent = `План команды «${state.team}»`;
+  }
+  $('#summary').innerHTML = [[cards.length, 'инициатив'], [modules.size, 'направлений'], [cards.reduce((sum, card) => sum + card.tasks.length, 0), 'задач']].map(([value, label]) => `<div><strong>${value}</strong><span>${label}</span></div>`).join('');
+}
+
+function renderTeamControls() {
+  $('#teamTabs').innerHTML = Object.keys(data.teams).map(team => `<button type="button" class="${team === state.team ? 'active' : ''}" data-team="${esc(team)}">${esc(team)}</button>`).join('');
+  document.querySelectorAll('[data-team]').forEach(button => { button.onclick = () => { state.team = button.dataset.team; state.module = 'Все'; render(); }; });
+  document.querySelectorAll('[data-scope]').forEach(button => { button.classList.toggle('active', button.dataset.scope === state.scope); button.onclick = () => { state.scope = button.dataset.scope; state.module = 'Все'; render(); }; });
+}
+
+function renderTeamPanel() {
+  const team = data.teams[state.team]; $('#teamTitle').textContent = `Команда «${state.team}»`; $('#teamMission').textContent = team.mission;
+  const labels = { be: 'Backend', fe: 'Frontend', qa: 'QA' };
+  $('#capacity').innerHTML = Object.entries(labels).map(([key, label]) => {
+    const effort = team.effort[key]; const capacity = team.capacity[key]; const percent = capacity ? Math.round(effort / capacity * 100) : null; const width = percent === null ? 0 : Math.min(percent, 100);
+    return `<div class="capacity-row ${percent !== null && percent > 100 ? 'over' : ''}"><div><strong>${label}</strong><span>${effort} ч ${capacity ? `из ${capacity} ч` : '· ёмкость не задана'}</span></div><div class="capacity-track"><i style="width:${width}%"></i></div><b>${percent === null ? '—' : `${percent}%`}</b></div>`;
+  }).join('');
+  const stats = team.stats;
+  $('#teamStats').innerHTML = [[stats.product, 'продукт'], [stats.project, 'проекты'], [stats.unestimated, 'без оценки'], [stats.notReady, 'не готовы']].map(([value, label]) => `<div><strong>${value}</strong><span>${label}</span></div>`).join('');
+  $('#notices').innerHTML = (team.notices || []).map(notice => `<article class="notice ${notice.kind}"><strong>${esc(notice.title)}</strong><p>${esc(notice.text)}</p></article>`).join('');
+  $('#notices').classList.toggle('empty', !(team.notices || []).length);
+}
+
+function renderFilters() {
+  const source = state.mode === 'client' ? data.cards.filter(card => card.clientVisible) : data.cards.filter(card => card.team === state.team && (state.scope === 'all' || card.bucket === state.scope));
+  const modules = ['Все', ...new Set(source.map(card => card.module).sort((a, b) => a.localeCompare(b, 'ru')))]; if (!modules.includes(state.module)) state.module = 'Все';
+  $('#moduleFilter').innerHTML = `<label><span>Направление</span><select id="moduleSelect">${modules.map(module => `<option value="${esc(module)}" ${module === state.module ? 'selected' : ''}>${esc(module)}</option>`).join('')}</select></label>`;
+  $('#moduleSelect').onchange = event => { state.module = event.target.value; renderHeader(); renderMonths(); };
+}
+
+function cardTemplate(card) {
+  const image = card.images[0] ? `<img src="${esc(card.images[0])}" alt="" loading="lazy">` : '';
+  const meta = state.mode === 'internal' ? `<span>${card.bucket === 'product' ? 'Продукт' : 'Проект'}</span><span>${card.tasks.length} ${card.tasks.length === 1 ? 'задача' : 'задач'}</span>` : `<span>${card.tasks.length > 1 ? 'Комплекс изменений' : 'Изменение'}</span>`;
+  const status = state.mode === 'client' ? 'В плане' : card.status;
+  const statusKind = state.mode === 'client' ? 'ready' : card.statusKind;
+  return `<button type="button" class="roadmap-card" data-card-id="${esc(card.id)}"><span class="card-copy"><span class="card-label">${esc(card.module)}</span><strong>${esc(card.title)}</strong><span class="card-meta">${meta}</span></span>${image}<span class="status ${esc(statusKind)}">${esc(status)}</span></button>`;
+}
+
+function renderMonths() {
+  const cards = modeCards();
+  $('#months').innerHTML = data.months.map((month, index) => { const monthCards = cards.filter(card => card.month === month.id); return `<section class="month"><header><span>0${index + 1}</span><div><h3>${esc(month.title)}</h3><p>${esc(month.note)}</p></div><b>${monthCards.length}</b></header><div class="card-grid">${monthCards.length ? monthCards.map(cardTemplate).join('') : '<p class="empty-state">По выбранным условиям инициатив нет</p>'}</div></section>`; }).join('');
+  document.querySelectorAll('[data-card-id]').forEach(button => button.onclick = () => openModal(button.dataset.cardId));
+}
+
+function renderDiscovery() { $('#discoveryGrid').innerHTML = data.discovery.map(item => `<article><span>Discovery</span><h3>${esc(item.title)}</h3><p>${esc(item.value)}</p><strong>${esc(item.result)}</strong></article>`).join(''); }
+
+function openModal(id) {
+  const card = data.cards.find(item => item.id === id); if (!card) return;
+  const status = state.mode === 'client' ? 'В плане' : card.status;
+  const statusKind = state.mode === 'client' ? 'ready' : card.statusKind;
+  $('#modalMeta').innerHTML = `<span>${esc(card.module)}</span><span>${esc(monthName(card.month))}</span><span class="status ${esc(statusKind)}">${esc(status)}</span>`;
+  $('#modalTitle').textContent = card.title; $('#modalSummary').textContent = card.summary;
+  $('#gallery').innerHTML = card.images.map((image, index) => `<figure class="${index === 0 ? 'wide' : ''}"><img src="${esc(image)}" alt="Макет: ${esc(card.title)}" loading="lazy"></figure>`).join(''); $('#gallery').classList.toggle('empty', card.images.length === 0);
+  $('#scopeTitle').textContent = state.mode === 'client' ? 'Что изменится' : `Состав инициативы · ${card.tasks.length}`;
+  $('#taskList').innerHTML = card.tasks.map(task => state.mode === 'client' ? `<article class="task"><strong>${esc(task.title)}</strong>${task.description ? `<p>${esc(task.description)}</p>` : ''}</article>` : `<article class="task"><div class="task-head"><a href="${esc(task.url)}" target="_blank" rel="noreferrer">${esc(task.key)}</a><span>${esc(task.status)}</span></div><strong>${esc(task.title)}</strong>${task.description ? `<p>${esc(task.description)}</p>` : ''}<small>${task.project ? esc(task.project) : 'Продуктовая инициатива'}${task.be || task.fe || task.qa ? ` · BE ${task.be} · FE ${task.fe} · QA ${task.qa}` : ''}</small></article>`).join('');
+  $('#modalShell').classList.add('open'); $('#modalShell').setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden';
+}
+function closeModal() { $('#modalShell').classList.remove('open'); $('#modalShell').setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; }
+async function shareClientView() { const url = `${location.origin}${location.pathname}?view=client&shared=1`; try { await navigator.clipboard.writeText(url); showToast('Ссылка на клиентский план скопирована'); } catch { window.prompt('Скопируйте ссылку на клиентский план', url); } }
+function showToast(message) { $('#toast').textContent = message; $('#toast').classList.add('show'); setTimeout(() => $('#toast').classList.remove('show'), 2200); }
+function render() { renderHeader(); renderTeamControls(); renderTeamPanel(); renderFilters(); renderMonths(); renderDiscovery(); }
+
+document.querySelectorAll('[data-mode]').forEach(button => button.onclick = () => setMode(button.dataset.mode));
+$('#searchInput').addEventListener('input', event => { state.query = event.target.value.trim(); renderHeader(); renderMonths(); });
+$('#shareButton').onclick = shareClientView; $('#modalClose').onclick = closeModal; $('#modalBackdrop').onclick = closeModal;
+document.addEventListener('keydown', event => { if (event.key === 'Escape') closeModal(); }); setMode(state.mode);
