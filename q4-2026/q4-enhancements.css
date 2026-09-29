@@ -86,6 +86,26 @@
   cursor: zoom-in;
 }
 
+.gallery {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.gallery figure,
+.gallery figure.wide:only-child,
+.gallery figure.wide:nth-last-child(3) {
+  grid-column: auto;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+.gallery img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center top;
+}
+
 .image-viewer {
   position: fixed;
   inset: 0;
