@@ -2,7 +2,7 @@ window.ROADMAP_DATA = {
   project: {
     title: 'План проекта Skillaz Start',
     subtitle: 'Что разрабатываем между релизами и какую ценность получает пользователь на каждой контрольной дате',
-    updatedAt: '2026-09-29T10:30:00+03:00',
+    updatedAt: '2026-09-29T16:10:00+03:00',
     owner: 'Продуктовая команда Skillaz Start',
   },
   releases: [
@@ -284,6 +284,15 @@ window.ROADMAP_DATA = {
       note: 'Входит во второй этап внутренней витрины до конца 2026 года.',
       scope: ['Подписка по фильтрам', 'Уведомление о новой вакансии', 'Управление подпиской'],
       sources: [{ label: 'DEV-65548', url: 'https://tracker.yandex.ru/DEV-65548' }, { label: 'DEV-65550', url: 'https://tracker.yandex.ru/DEV-65550' }],
+    },
+    {
+      id: 'internal-jobs-referral', lane: 'mobility', release: 'dec02', title: 'Рекомендация друга',
+      outcome: 'Сотрудник рекомендует внешнего кандидата на вакансию, а рекрутер получает готовый отклик в ATS с данными рекомендателя.',
+      status: 'planned', progress: 0, unestimated: true, owner: 'Команда Умка',
+      note: 'Оценки пока нет: инициатива не учитывается в готовности проекта и емкости команды.',
+      image: 'assets/internal-jobs-referral.jpg',
+      scope: ['Форма рекомендации внешнего кандидата', 'Передача отклика в ATS с пометкой «Рекомендация от», именем и почтой сотрудника', 'История отправленных рекомендаций во вкладке «Я рекомендую»'],
+      sources: [],
     },
     {
       id: 'task-templates-verification', lane: 'adaptation', release: 'dec02', title: 'Шаблоны задач и проверка результата',

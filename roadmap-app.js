@@ -110,11 +110,12 @@ async function readState() {
 
 function renderHeader() {
   const features = data.features.map(currentFeature);
+  const estimatedFeatures = features.filter((feature) => !feature.unestimated);
   $('#projectTitle').textContent = data.project.title;
   $('#projectSubtitle').textContent = data.project.subtitle;
   $('#featureCount').textContent = features.length;
   $('#doneCount').textContent = features.filter((feature) => ['done', 'acceptance'].includes(feature.status)).length;
-  $('#avgProgress').textContent = `${Math.round(features.reduce((sum, feature) => sum + Number(feature.progress || 0), 0) / features.length)}%`;
+  $('#avgProgress').textContent = `${Math.round(estimatedFeatures.reduce((sum, feature) => sum + Number(feature.progress || 0), 0) / estimatedFeatures.length)}%`;
   const localLatest = Object.values(state.overrides).map((item) => item.updatedAt).filter(Boolean).sort().at(-1);
   const latestUpdate = [state.sharedUpdatedAt, localLatest, data.project.updatedAt]
     .filter(Boolean)
@@ -153,7 +154,8 @@ function featureCard(feature) {
   const current = currentFeature(feature);
   const lane = laneById(current.lane);
   const status = statuses[current.status] || statuses.planned;
-  return `<button class="feature" data-feature="${current.id}" data-lane="${current.lane}" style="--lane:${lane.color};--status-color:${status.color};--progress-value:${Number(current.progress || 0)}%"><span class="feature-top"><span class="status">${status.label}</span><span class="feature-progress">${Number(current.progress || 0)}%</span></span><span class="feature-lane">${escapeHtml(lane.title)}</span><h3>${escapeHtml(current.title)}</h3><p>${escapeHtml(current.outcome)}</p><span class="progress-line"><i></i></span></button>`;
+  const progress = current.unestimated ? 'Без оценки' : `${Number(current.progress || 0)}%`;
+  return `<button class="feature" data-feature="${current.id}" data-lane="${current.lane}" style="--lane:${lane.color};--status-color:${status.color};--progress-value:${Number(current.progress || 0)}%"><span class="feature-top"><span class="status">${status.label}</span><span class="feature-progress">${progress}</span></span><span class="feature-lane">${escapeHtml(lane.title)}</span><h3>${escapeHtml(current.title)}</h3><p>${escapeHtml(current.outcome)}</p>${current.unestimated ? '' : '<span class="progress-line"><i></i></span>'}</button>`;
 }
 
 function renderRoadmap() {
@@ -208,7 +210,9 @@ function openFeature(id) {
   const release = releaseById(feature.release);
   $('#drawerMeta').textContent = `${lane.title} · ${release.development} · релиз ${release.shortDate}`;
   $('#drawerTitle').textContent = feature.title;
-  $('#drawerBody').innerHTML = `<p class="drawer-outcome">${escapeHtml(feature.outcome)}</p><section class="drawer-section"><h3>Что входит</h3><ul class="scope">${feature.scope.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section><section class="drawer-section"><h3>Ответственный поток</h3><p style="margin:0;color:#44515a;font-size:13px">${escapeHtml(feature.owner)}</p></section>${feature.note ? `<div class="note"><strong>Комментарий к статусу</strong><br>${escapeHtml(feature.note)}</div>` : ''}<section class="drawer-section"><h3>Первоисточники</h3><div class="source-links">${feature.sources.map((source) => `<a class="source-link" href="${source.url}" target="_blank" rel="noreferrer"><i data-lucide="external-link"></i>${escapeHtml(source.label)}</a>`).join('')}</div></section><section class="drawer-section edit-panel"><h3>Обновить состояние</h3><div class="edit-grid"><div class="field"><label for="statusSelect">Статус</label><select id="statusSelect">${Object.entries(statuses).map(([key, item]) => `<option value="${key}" ${feature.status === key ? 'selected' : ''}>${item.label}</option>`).join('')}</select></div><div class="field"><label for="progressInput">Готовность</label><div class="range-row"><input id="progressInput" type="range" min="0" max="100" step="1" value="${Number(feature.progress || 0)}"><output id="progressOutput">${Number(feature.progress || 0)}%</output></div></div><div class="field full"><label for="noteInput">Комментарий для стейкхолдера</label><textarea id="noteInput" placeholder="Например: срок подтвержден, идет приемка">${escapeHtml(feature.note || '')}</textarea></div><div class="field full"><button class="button primary" id="saveFeature"><i data-lucide="check"></i>Сохранить для всех</button></div></div></section>`;
+  const image = feature.image ? `<figure class="feature-visual"><img src="${escapeHtml(feature.image)}" alt="Макет: ${escapeHtml(feature.title)}"></figure>` : '';
+  const sources = feature.sources.length ? `<section class="drawer-section"><h3>Первоисточники</h3><div class="source-links">${feature.sources.map((source) => `<a class="source-link" href="${source.url}" target="_blank" rel="noreferrer"><i data-lucide="external-link"></i>${escapeHtml(source.label)}</a>`).join('')}</div></section>` : '';
+  $('#drawerBody').innerHTML = `<p class="drawer-outcome">${escapeHtml(feature.outcome)}</p>${image}<section class="drawer-section"><h3>Что входит</h3><ul class="scope">${feature.scope.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section><section class="drawer-section"><h3>Ответственный поток</h3><p style="margin:0;color:#44515a;font-size:13px">${escapeHtml(feature.owner)}</p></section>${feature.note ? `<div class="note"><strong>Комментарий к статусу</strong><br>${escapeHtml(feature.note)}</div>` : ''}${sources}<section class="drawer-section edit-panel"><h3>Обновить состояние</h3><div class="edit-grid"><div class="field"><label for="statusSelect">Статус</label><select id="statusSelect">${Object.entries(statuses).map(([key, item]) => `<option value="${key}" ${feature.status === key ? 'selected' : ''}>${item.label}</option>`).join('')}</select></div>${feature.unestimated ? '' : `<div class="field"><label for="progressInput">Готовность</label><div class="range-row"><input id="progressInput" type="range" min="0" max="100" step="1" value="${Number(feature.progress || 0)}"><output id="progressOutput">${Number(feature.progress || 0)}%</output></div></div>`}<div class="field full"><label for="noteInput">Комментарий для стейкхолдера</label><textarea id="noteInput" placeholder="Например: срок подтвержден, идет приемка">${escapeHtml(feature.note || '')}</textarea></div><div class="field full"><button class="button primary" id="saveFeature"><i data-lucide="check"></i>Сохранить для всех</button></div></div></section>`;
   openDrawer();
   const range = $('#progressInput');
   if (range) range.addEventListener('input', () => { $('#progressOutput').textContent = `${range.value}%`; });
@@ -323,12 +327,14 @@ async function persistShared(nextOverrides, nextPromo, nextMethodology, nextDisc
 async function saveFeature() {
   if (!state.owner || !state.selected || state.snapshot) return;
   const button = $('#saveFeature');
+  const feature = currentFeature(data.features.find((item) => item.id === state.selected));
+  const progressInput = $('#progressInput');
   button.disabled = true;
   const next = {
     ...state.overrides,
     [state.selected]: {
       status: $('#statusSelect').value,
-      progress: Number($('#progressInput').value),
+      progress: progressInput ? Number(progressInput.value) : Number(feature.progress || 0),
       note: $('#noteInput').value.trim(),
       updatedAt: new Date().toISOString(),
     },
