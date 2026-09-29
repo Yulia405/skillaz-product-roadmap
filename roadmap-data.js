@@ -151,13 +151,6 @@ window.ROADMAP_DATA = {
       sources: [{ label: 'DEV-64608', url: 'https://tracker.yandex.ru/DEV-64608' }, { label: 'DEV-65559', url: 'https://tracker.yandex.ru/DEV-65559' }, { label: 'DEV-65404', url: 'https://tracker.yandex.ru/DEV-65404' }, { label: 'DEV-64637', url: 'https://tracker.yandex.ru/DEV-64637' }, { label: 'DEV-64638', url: 'https://tracker.yandex.ru/DEV-64638' }, { label: 'DEV-64640', url: 'https://tracker.yandex.ru/DEV-64640' }],
     },
     {
-      id: 'goal-reporting', lane: 'adaptation', release: 'oct07', title: 'Отчетность по целям и планам',
-      outcome: 'HR получает выгрузки по целям, промежуточным результатам и планам сотрудников без ручной сборки данных.',
-      status: 'planned', progress: 5, owner: 'Продуктовая аналитика',
-      scope: ['Excel-отчет по целям и результатам', 'Выгрузка планов сотрудников', 'Статусы, сроки и прогресс'],
-      sources: [{ label: 'DEV-64880', url: 'https://tracker.yandex.ru/DEV-64880' }, { label: 'DEV-64800', url: 'https://tracker.yandex.ru/DEV-64800' }, { label: 'DEV-64834', url: 'https://tracker.yandex.ru/DEV-64834' }],
-    },
-    {
       id: 'internal-jobs-ats', lane: 'mobility', release: 'sep09', title: 'Интеграция с ATS Skillaz',
       outcome: 'Вакансии из ATS публикуются на внутреннем карьерном сайте, а рекрутер получает внутренние отклики в привычной системе без двойной работы.',
       status: 'done', progress: 100, owner: 'Команда внутренних переходов',
@@ -240,11 +233,11 @@ window.ROADMAP_DATA = {
       sources: [{ label: 'DEV-64609', url: 'https://tracker.yandex.ru/DEV-64609' }, { label: 'DEV-65042', url: 'https://tracker.yandex.ru/DEV-65042' }, { label: 'DEV-65043', url: 'https://tracker.yandex.ru/DEV-65043' }, { label: 'DEV-65044', url: 'https://tracker.yandex.ru/DEV-65044' }],
     },
     {
-      id: 'checkpoint-reporting', lane: 'adaptation', release: 'nov05', title: 'Отчетность по контрольным точкам и рискам',
-      outcome: 'HR выгружает результаты контрольных точек и причины риска для анализа качества адаптации.',
+      id: 'checkpoint-reporting', lane: 'adaptation', release: 'nov05', title: 'Отчетность адаптации',
+      outcome: 'HR выгружает данные по рискам, контрольным точкам, целям и промежуточным результатам без ручного просмотра каждого плана.',
       status: 'planned', progress: 0, owner: 'Продуктовая аналитика',
-      scope: ['Excel-отчет по контрольным точкам', 'Excel-отчет по рискам', 'Даты, результаты и причины риска'],
-      sources: [{ label: 'DEV-64880', url: 'https://tracker.yandex.ru/DEV-64880' }, { label: 'DEV-64802', url: 'https://tracker.yandex.ru/DEV-64802' }, { label: 'DEV-64803', url: 'https://tracker.yandex.ru/DEV-64803' }],
+      scope: ['Excel-отчет по рискам адаптации', 'Excel-отчет по контрольным точкам', 'Excel-отчет по целям и промежуточным результатам', 'Сроки, ответы, итоги встреч и причины риска'],
+      sources: [{ label: 'DEV-64880', url: 'https://tracker.yandex.ru/DEV-64880' }, { label: 'DEV-64803', url: 'https://tracker.yandex.ru/DEV-64803' }, { label: 'DEV-64802', url: 'https://tracker.yandex.ru/DEV-64802' }, { label: 'DEV-64800', url: 'https://tracker.yandex.ru/DEV-64800' }],
     },
     {
       id: 'dynamic-home', lane: 'experience', release: 'nov05', title: 'Динамическая главная: приоритетные действия',
@@ -254,7 +247,7 @@ window.ROADMAP_DATA = {
       sources: [{ label: 'DEV-66122', url: 'https://tracker.yandex.ru/DEV-66122' }],
     },
     {
-      id: 'ai-assistant', lane: 'experience', release: 'dec02', title: 'AI-помощник по адаптации',
+      id: 'ai-assistant', lane: 'experience', release: 'nov05', title: 'AI-помощник по адаптации',
       outcome: 'Сотрудник быстро понимает, что делать дальше, а руководитель получает сводку по команде и помощь в подготовке целей.',
       status: 'planned', progress: 0, owner: 'AI + LMS команды',
       note: 'Все 7 дочерних MVP-задач эпика пока в статусе «Новый».',
