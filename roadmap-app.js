@@ -90,7 +90,19 @@ async function readState() {
     state.sharedUpdatedAt = shared.updatedAt || null;
     if (Array.isArray(shared.promo) && shared.promo.length) state.promo = shared.promo;
     if (Array.isArray(shared.methodology) && shared.methodology.length) state.methodology = shared.methodology;
-    if (Array.isArray(shared.discovery)) state.discovery = shared.discovery;
+    if (Array.isArray(shared.discovery)) {
+      const sharedDiscovery = shared.discovery.length ? shared.discovery : state.discovery;
+      const pinned = (data.discovery || []).filter((item) => item.pinned);
+      const pinnedIds = new Set(pinned.map((item) => item.id));
+      const pinnedTitles = new Set([
+        ...pinned.map((item) => item.title),
+        'Автоматизация назначения ролей',
+      ]);
+      state.discovery = [
+        ...sharedDiscovery.filter((item) => !pinnedIds.has(item.id) && !pinnedTitles.has(item.title)),
+        ...pinned,
+      ];
+    }
   } catch (error) {
     console.warn('Общие обновления временно недоступны', error);
   }
