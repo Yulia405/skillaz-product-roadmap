@@ -7,7 +7,7 @@
   <title>Skillaz · план Q4 2026</title>
   <link rel="icon" href="../skillaz-logo.png">
   <link rel="stylesheet" href="q4.css?v=20260928-11">
-  <link rel="stylesheet" href="q4-enhancements.css?v=20260929-2">
+  <link rel="stylesheet" href="q4-enhancements.css?v=20260929-3">
 </head>
 <body>
   <header class="topbar">
@@ -25,7 +25,7 @@
     <p class="delivery-note" id="deliveryNote"></p>
     <section class="controls internal-only">
       <div class="team-tabs" id="teamTabs"></div>
-      <div class="scope-tabs" id="scopeTabs"><button type="button" data-scope="all">Все</button><button type="button" data-scope="product">Продукт</button><button type="button" data-scope="project">Клиент</button></div>
+      <div class="scope-tabs" id="scopeTabs" role="group" aria-label="Представление внутреннего плана"><button type="button" data-scope="team">По командам</button><button type="button" data-scope="product">Продукт</button><button type="button" data-scope="project">Клиенты</button></div>
     </section>
     <section class="team-panel internal-only">
       <div class="team-copy"><span class="section-label">Фокус команды</span><h2 id="teamTitle"></h2><p id="teamMission"></p><a class="dashboard-link" id="teamDashboard" target="_blank" rel="noreferrer">Открыть доску команды</a></div>
@@ -56,6 +56,6 @@
     <img id="imageViewerImage" alt="Увеличенный макет">
   </div>
   <div class="toast" id="toast" role="status"></div>
-  <script src="q4-data.js?v=20260929-3"></script><script src="q4.js?v=20260929-3"></script>
+  <script src="q4-data.js?v=20260929-3"></script><script src="q4.js?v=20260929-4"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 const data = window.Q4_DATA;
 const params = new URLSearchParams(location.search);
 const shared = params.get('shared') === '1';
-const state = { mode: params.get('view') === 'client' ? 'client' : 'internal', team: 'Умка', scope: 'all', module: 'Все', query: '' };
+const state = { mode: params.get('view') === 'client' ? 'client' : 'internal', team: 'Умка', scope: 'team', module: 'Все', query: '' };
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]);
 const monthName = id => data.months.find(month => month.id === id)?.title || '';
@@ -139,7 +139,9 @@ const clientContent = {
 const clientCopy = card => clientContent[card.id] || { title: card.title, summary: card.summary, outcomes: ['Изменение делает ежедневный сценарий понятнее и сокращает ручные действия.'] };
 
 function modeCards() {
-  let cards = state.mode === 'client' ? data.cards.filter(card => card.clientVisible) : data.cards.filter(card => card.team === state.team && (state.scope === 'all' || card.bucket === state.scope));
+  let cards = state.mode === 'client'
+    ? data.cards.filter(card => card.clientVisible)
+    : data.cards.filter(card => state.scope === 'team' ? card.team === state.team : card.bucket === state.scope);
   if (state.module !== 'Все') cards = cards.filter(card => visibleModule(card) === state.module);
   if (state.query) {
     const query = state.query.toLowerCase();
@@ -168,7 +170,10 @@ function renderHeader() {
     $('#pageLead').textContent = 'Ключевые продуктовые изменения собраны по направлениям и срокам. Откройте карточку, чтобы увидеть состав инициативы.'; $('#roadmapTitle').textContent = 'Карта продуктовых изменений';
   } else {
     $('#eyebrow').textContent = 'Внутренний план команд'; $('#pageTitle').textContent = 'Квартальный план Q4 2026';
-    $('#pageLead').textContent = 'Продуктовый и проектный объём, готовность задач, загрузка и риски в одной рабочей карте.'; $('#roadmapTitle').textContent = `План команды «${state.team}»`;
+    $('#pageLead').textContent = 'Продуктовый и проектный объём, готовность задач, загрузка и риски в одной рабочей карте.';
+    $('#roadmapTitle').textContent = state.scope === 'team'
+      ? `План команды «${state.team}»`
+      : state.scope === 'product' ? 'Продуктовый план всех команд' : 'Клиентские задачи всех команд';
   }
   $('#summary').innerHTML = [[cards.length, 'инициатив'], [modules.size, 'направлений'], [cards.reduce((sum, card) => sum + card.tasks.length, 0), 'задач']].map(([value, label]) => `<div><strong>${value}</strong><span>${label}</span></div>`).join('');
 }
@@ -177,6 +182,11 @@ function renderTeamControls() {
   $('#teamTabs').innerHTML = Object.keys(data.teams).map(team => `<button type="button" class="${team === state.team ? 'active' : ''}" data-team="${esc(team)}">${esc(team)}</button>`).join('');
   document.querySelectorAll('[data-team]').forEach(button => { button.onclick = () => { state.team = button.dataset.team; state.module = 'Все'; render(); }; });
   document.querySelectorAll('[data-scope]').forEach(button => { button.classList.toggle('active', button.dataset.scope === state.scope); button.onclick = () => { state.scope = button.dataset.scope; state.module = 'Все'; render(); }; });
+  const overview = state.mode === 'internal' && state.scope !== 'team';
+  $('#teamTabs').classList.toggle('hidden', overview);
+  $('.controls').classList.toggle('overview', overview);
+  $('.team-panel').classList.toggle('scope-hidden', overview);
+  $('#notices').classList.toggle('scope-hidden', overview);
 }
 
 function renderTeamPanel() {
@@ -194,7 +204,9 @@ function renderTeamPanel() {
 }
 
 function renderFilters() {
-  const source = state.mode === 'client' ? data.cards.filter(card => card.clientVisible) : data.cards.filter(card => card.team === state.team && (state.scope === 'all' || card.bucket === state.scope));
+  const source = state.mode === 'client'
+    ? data.cards.filter(card => card.clientVisible)
+    : data.cards.filter(card => state.scope === 'team' ? card.team === state.team : card.bucket === state.scope);
   const priority = { 'Адаптация': 0, 'Обучение': 1, 'Оценка': 2, 'Целеполагание': 3, 'Карьера': 4, 'Платформа и настройки': 5 };
   const sortedModules = [...new Set(source.map(visibleModule))].sort((a, b) => (priority[a] ?? 10) - (priority[b] ?? 10) || a.localeCompare(b, 'ru'));
   const modules = ['Все', ...sortedModules]; if (!modules.includes(state.module)) state.module = 'Все';
@@ -206,9 +218,12 @@ function cardTemplate(card) {
   const image = card.images[0] ? `<img src="${esc(card.images[0])}" alt="" loading="lazy">` : '';
   const projects = [...new Set(card.tasks.map(task => task.project).filter(Boolean))];
   const projectName = projects.join(' · ') || 'Проект не указан';
-  const typeMeta = card.bucket === 'product'
-    ? '<span class="work-type product">Продукт</span>'
-    : `<span class="work-type client">Клиент</span><span class="project-name" title="${esc(projectName)}">${esc(projectName)}</span>`;
+  const teamMeta = `<span class="team-name">${esc(card.team)}</span>`;
+  const typeMeta = state.scope !== 'team'
+    ? `${teamMeta}${card.bucket === 'project' ? `<span class="project-name" title="${esc(projectName)}">${esc(projectName)}</span>` : ''}`
+    : card.bucket === 'product'
+      ? '<span class="work-type product">Продукт</span>'
+      : `<span class="work-type client">Клиент</span><span class="project-name" title="${esc(projectName)}">${esc(projectName)}</span>`;
   const meta = state.mode === 'internal' ? `${typeMeta}<span>${card.tasks.length} ${card.tasks.length === 1 ? 'задача' : 'задач'}</span>` : `<span>${card.tasks.length > 1 ? 'Комплекс изменений' : 'Изменение'}</span>`;
   const badges = state.mode === 'client'
     ? [{ label: 'В плане', kind: 'ready' }]

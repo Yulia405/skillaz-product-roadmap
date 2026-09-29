@@ -51,6 +51,20 @@
   color: var(--blue);
 }
 
+.team-name {
+  color: #16384a;
+  font-weight: 800;
+}
+
+.team-tabs.hidden,
+.scope-hidden {
+  display: none;
+}
+
+.controls.overview {
+  justify-content: flex-end;
+}
+
 .project-name {
   min-width: 0;
   overflow: hidden;
@@ -161,6 +175,10 @@
 }
 
 @media (max-width: 820px) {
+  .controls.overview {
+    justify-content: flex-start;
+  }
+
   .delivery-note {
     padding-right: 18px;
     padding-left: 18px;
