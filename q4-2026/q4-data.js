@@ -573,7 +573,7 @@ window.Q4_DATA = {
       "month": "dec",
       "status": "Подготовка",
       "statusKind": "planned",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -855,7 +855,7 @@ window.Q4_DATA = {
       "month": "dec",
       "status": "Подготовка",
       "statusKind": "planned",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -1009,7 +1009,7 @@ window.Q4_DATA = {
       "month": "dec",
       "status": "Подготовка",
       "statusKind": "planned",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -1035,7 +1035,7 @@ window.Q4_DATA = {
       "month": "dec",
       "status": "Подготовка",
       "statusKind": "planned",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -1061,7 +1061,7 @@ window.Q4_DATA = {
       "month": "dec",
       "status": "Подготовка",
       "statusKind": "planned",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -1087,7 +1087,7 @@ window.Q4_DATA = {
       "month": "dec",
       "status": "Подготовка",
       "statusKind": "planned",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -1250,7 +1250,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -1287,7 +1287,7 @@ window.Q4_DATA = {
       "month": "dec",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [
         "assets/nez-survey-assignments.png"
       ],
@@ -1359,7 +1359,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -1396,7 +1396,7 @@ window.Q4_DATA = {
       "month": "dec",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -1545,7 +1545,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -1593,7 +1593,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Нужно уточнение",
       "statusKind": "risk",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -1783,7 +1783,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Подготовка",
       "statusKind": "planned",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -1846,7 +1846,7 @@ window.Q4_DATA = {
       "month": "dec",
       "status": "Подготовка",
       "statusKind": "planned",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [
         "assets/nez-helper-role.png"
       ],
@@ -1874,7 +1874,7 @@ window.Q4_DATA = {
       "month": "dec",
       "status": "Подготовка",
       "statusKind": "planned",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -2031,7 +2031,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Подготовка",
       "statusKind": "planned",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -2120,7 +2120,7 @@ window.Q4_DATA = {
       "month": "dec",
       "status": "Подготовка",
       "statusKind": "planned",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -2748,7 +2748,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": true,
+      "clientVisible": false,
       "images": [],
       "tasks": [
         {
@@ -2826,7 +2826,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": true,
+      "clientVisible": false,
       "images": [],
       "tasks": [
         {
