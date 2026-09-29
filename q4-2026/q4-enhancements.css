@@ -59,6 +59,23 @@
   white-space: nowrap;
 }
 
+.status-group {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: flex;
+  max-width: calc(100% - 20px);
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.status-group .status {
+  position: static;
+  white-space: nowrap;
+}
+
 .image-zoom-trigger {
   display: block;
   width: 100%;

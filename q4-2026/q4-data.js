@@ -1,5 +1,5 @@
 window.Q4_DATA = {
-  "updatedAt": "28 сентября 2026",
+  "updatedAt": "29 сентября 2026",
   "months": [
     {
       "id": "oct",
@@ -31,8 +31,8 @@ window.Q4_DATA = {
         "qa": 435
       },
       "stats": {
-        "total": 65,
-        "product": 58,
+        "total": 66,
+        "product": 59,
         "project": 7,
         "estimated": 65,
         "unestimated": 0,
@@ -60,11 +60,11 @@ window.Q4_DATA = {
         "qa": 291
       },
       "stats": {
-        "total": 50,
-        "product": 31,
+        "total": 51,
+        "product": 32,
         "project": 19,
         "estimated": 44,
-        "unestimated": 6,
+        "unestimated": 7,
         "notReady": 4
       },
       "notices": [],
@@ -207,8 +207,8 @@ window.Q4_DATA = {
       "team": "Умка",
       "bucket": "product",
       "module": "Карьера",
-      "title": "Внутренний карьерный сайт",
-      "summary": "Цель / Что мы даем клиентам Реализуем инструмент для внутренней мобильности сотрудников (внутренний карьерный сайт). Внутренний найм — самый дешёвый канал подбора, которым компания может не пользоваться, потому что у нее нет для него инструмента. Из-за этого компании дважды платят за одного человека: один раз за под…",
+      "title": "Внутренняя витрина вакансий: основной MVP",
+      "summary": "В октябре запускаем основной сценарий внутренней мобильности: сотрудник находит вакансию, изучает условия и откликается, а HR получает отклик в рабочем процессе подбора. Подписки на новые вакансии продолжаем отдельным этапом в ноябре.",
       "month": "oct",
       "status": "В работе",
       "statusKind": "progress",
@@ -227,6 +227,34 @@ window.Q4_DATA = {
           "fe": 0,
           "qa": 0,
           "url": "https://tracker.yandex.ru/DEV-64440"
+        }
+      ]
+    },
+    {
+      "id": "DEV-65548",
+      "team": "Умка",
+      "bucket": "product",
+      "module": "Карьера",
+      "title": "Подписки на новые внутренние вакансии",
+      "summary": "Продолжаем развитие внутренней витрины в ноябре: сотрудник сможет подписаться на подходящие вакансии и узнавать о новых возможностях карьерного перехода.",
+      "month": "nov",
+      "status": "Подготовка",
+      "statusKind": "planned",
+      "clientVisible": true,
+      "images": [
+        "assets/vacancies.png"
+      ],
+      "tasks": [
+        {
+          "key": "DEV-65548",
+          "title": "Start / Подписка на уведомления",
+          "status": "Новый",
+          "project": "",
+          "description": "Подписка сотрудника на новые внутренние вакансии по выбранным параметрам.",
+          "be": 0,
+          "fe": 0,
+          "qa": 0,
+          "url": "https://tracker.yandex.ru/DEV-65548"
         }
       ]
     },
@@ -754,6 +782,16 @@ window.Q4_DATA = {
           "qa": 6,
           "url": "https://tracker.yandex.ru/DEV-64725"
         }
+      ],
+      "badges": [
+        {
+          "label": "Старт разработки",
+          "kind": "progress"
+        },
+        {
+          "label": "Риск ёмкости",
+          "kind": "risk"
+        }
       ]
     },
     {
@@ -1062,6 +1100,34 @@ window.Q4_DATA = {
           "fe": 6,
           "qa": 10,
           "url": "https://tracker.yandex.ru/DEV-67298"
+        }
+      ]
+    },
+    {
+      "id": "DEV-60688",
+      "team": "Незнайка",
+      "bucket": "product",
+      "module": "Календарь",
+      "title": "Редизайн календаря",
+      "summary": "Обновляем календарь обучения: события и их статусы станут визуально понятнее, а фильтры и список событий помогут быстрее ориентироваться в расписании.",
+      "month": "nov",
+      "status": "Подготовка",
+      "statusKind": "planned",
+      "clientVisible": true,
+      "images": [
+        "assets/nez-calendar.png"
+      ],
+      "tasks": [
+        {
+          "key": "DEV-60688",
+          "title": "[Story] Изменение цветов индикаторов в календаре",
+          "status": "Grooming Backlog",
+          "project": "",
+          "description": "Обновление визуального представления событий и их состояний в календаре обучения.",
+          "be": 0,
+          "fe": 0,
+          "qa": 0,
+          "url": "https://tracker.yandex.ru/DEV-60688"
         }
       ]
     },
@@ -2290,7 +2356,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -2353,7 +2419,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -2379,7 +2445,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Условный объём",
       "statusKind": "risk",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -2405,7 +2471,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -2431,7 +2497,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -2468,7 +2534,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -2520,8 +2586,10 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
-      "images": [],
+      "clientVisible": true,
+      "images": [
+        "assets/vinni-review.jpg"
+      ],
       "tasks": [
         {
           "key": "DEV-66074",
@@ -2557,8 +2625,10 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
-      "images": [],
+      "clientVisible": true,
+      "images": [
+        "assets/vinni-review.jpg"
+      ],
       "tasks": [
         {
           "key": "DEV-65951",
@@ -2583,8 +2653,10 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
-      "images": [],
+      "clientVisible": true,
+      "images": [
+        "assets/vinni-team-review.jpg"
+      ],
       "tasks": [
         {
           "key": "DEV-65957",
@@ -2620,8 +2692,10 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
-      "images": [],
+      "clientVisible": true,
+      "images": [
+        "assets/vinni-calibration.png"
+      ],
       "tasks": [
         {
           "key": "DEV-65956",
@@ -2646,8 +2720,10 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
-      "images": [],
+      "clientVisible": true,
+      "images": [
+        "assets/vinni-review.jpg"
+      ],
       "tasks": [
         {
           "key": "DEV-65187",
@@ -2672,7 +2748,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -2724,7 +2800,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -2750,7 +2826,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -2831,7 +2907,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -2857,7 +2933,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -2883,7 +2959,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -2909,8 +2985,10 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
-      "images": [],
+      "clientVisible": true,
+      "images": [
+        "assets/vinni-publish.jpg"
+      ],
       "tasks": [
         {
           "key": "DEV-67215",
@@ -2979,7 +3057,7 @@ window.Q4_DATA = {
       "month": "nov",
       "status": "Готово к старту",
       "statusKind": "ready",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [
         "assets/vinni-review.jpg",
         "assets/vinni-team-review.jpg",
@@ -3031,8 +3109,10 @@ window.Q4_DATA = {
       "month": "dec",
       "status": "Подготовка",
       "statusKind": "planned",
-      "clientVisible": false,
-      "images": [],
+      "clientVisible": true,
+      "images": [
+        "assets/vinni-calibration.png"
+      ],
       "tasks": [
         {
           "key": "DEV-46079",
@@ -3187,7 +3267,7 @@ window.Q4_DATA = {
       "month": "dec",
       "status": "Подготовка",
       "statusKind": "planned",
-      "clientVisible": false,
+      "clientVisible": true,
       "images": [],
       "tasks": [
         {
@@ -3229,6 +3309,24 @@ window.Q4_DATA = {
       "title": "Шаблоны задач и проверка",
       "value": "Переиспользуемые задачи, применимость и единый процесс проверки.",
       "result": "Макеты и декомпозиция реализации"
+    },
+    {
+      "title": "Редизайн плеера курса",
+      "value": "Обновление основного сценария прохождения курса: навигации, работы с контентом и ключевых действий пользователя.",
+      "result": "Концепция нового плеера и границы первой версии",
+      "clientVisible": true
+    },
+    {
+      "title": "Офлайн-прохождение обучения",
+      "value": "Доступ к учебным материалам и фиксация прогресса без стабильного подключения к сети.",
+      "result": "Сценарии синхронизации и техническая оценка",
+      "clientVisible": true
+    },
+    {
+      "title": "Банк вопросов",
+      "value": "Единое хранение и повторное использование вопросов в тестах и оценочных материалах.",
+      "result": "Модель банка и сценарии редактора",
+      "clientVisible": false
     }
   ],
   "deliveryNote": "Сроки поставки будут уточняться в релизных новостях."
