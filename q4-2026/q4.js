@@ -242,7 +242,7 @@ function renderMonths() {
 
 function renderDiscovery() {
   const items = data.discovery.filter(item => state.mode !== 'client' || item.clientVisible !== false);
-  $('#discoveryGrid').innerHTML = items.map(item => `<article><span>Discovery</span><h3>${esc(item.title)}</h3><p>${esc(item.value)}</p><strong>${esc(item.result)}</strong></article>`).join('');
+  $('#discoveryGrid').innerHTML = items.map(item => `<article><span>Discovery / проектирование</span><h3>${esc(item.title)}</h3><p>${esc(item.value)}</p>${item.timeline?.length ? `<ol class="discovery-timeline">${item.timeline.map(step => `<li><span>${esc(step.stage)}</span><time>${esc(step.date)}</time></li>`).join('')}</ol>` : ''}<strong>${esc(item.result)}</strong></article>`).join('');
 }
 
 function openModal(id) {

@@ -32,6 +32,9 @@ const $ = (selector) => document.querySelector(selector);
 const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',
 })[char]);
+const discoveryTimeline = (timeline = []) => timeline.length
+  ? `<ol class="discovery-timeline">${timeline.map((item) => `<li><span>${escapeHtml(item.stage)}</span><time>${escapeHtml(item.date)}</time></li>`).join('')}</ol>`
+  : '';
 const formatDate = (value) => new Intl.DateTimeFormat('ru-RU', {
   day: '2-digit', month: '2-digit', year: 'numeric',
 }).format(new Date(value));
@@ -59,6 +62,11 @@ const textToSources = (value) => {
 const currentFeature = (feature) => ({ ...feature, ...(state.overrides[feature.id] || {}) });
 const laneById = (id) => data.lanes.find((item) => item.id === id);
 const releaseById = (id) => data.releases.find((item) => item.id === id);
+const withDiscoveryDefaults = (item) => {
+  const legacyIds = { 'Оценочные полевые листы': 'field-assessment-sheets' };
+  const fallback = (data.discovery || []).find((candidate) => candidate.id === item.id || candidate.id === legacyIds[item.title] || candidate.title === item.title);
+  return fallback ? { ...fallback, ...item, timeline: item.timeline?.length ? item.timeline : (fallback.timeline || []) } : item;
+};
 
 async function readState() {
   if (state.viewer) document.body.classList.add('view-mode');
@@ -69,7 +77,7 @@ async function readState() {
       state.overrides = snapshot.overrides || snapshot;
       if (Array.isArray(snapshot.promo)) state.promo = snapshot.promo;
       if (Array.isArray(snapshot.methodology)) state.methodology = snapshot.methodology;
-      if (Array.isArray(snapshot.discovery)) state.discovery = snapshot.discovery;
+      if (Array.isArray(snapshot.discovery)) state.discovery = snapshot.discovery.map(withDiscoveryDefaults);
       state.snapshot = true;
       document.body.classList.add('snapshot-mode');
       $('#snapshotNote').classList.add('visible');
@@ -91,12 +99,13 @@ async function readState() {
     if (Array.isArray(shared.promo) && shared.promo.length) state.promo = shared.promo;
     if (Array.isArray(shared.methodology) && shared.methodology.length) state.methodology = shared.methodology;
     if (Array.isArray(shared.discovery)) {
-      const sharedDiscovery = shared.discovery.length ? shared.discovery : state.discovery;
+      const sharedDiscovery = (shared.discovery.length ? shared.discovery : state.discovery).map(withDiscoveryDefaults);
       const pinned = (data.discovery || []).filter((item) => item.pinned);
       const pinnedIds = new Set(pinned.map((item) => item.id));
       const pinnedTitles = new Set([
         ...pinned.map((item) => item.title),
         'Автоматизация назначения ролей',
+        'Офлайн-прохождение обучения',
       ]);
       state.discovery = [
         ...sharedDiscovery.filter((item) => !pinnedIds.has(item.id) && !pinnedTitles.has(item.title)),
@@ -190,7 +199,7 @@ function renderDiscovery() {
   }
   container.innerHTML = state.discovery.map((item, index) => {
     const status = statuses[item.status] || statuses.planned;
-    return `<button class="discovery-card" data-discovery-index="${index}" style="--status-color:${status.color};--progress-value:${Number(item.progress || 0)}%"><span class="feature-top"><span class="status">${status.label}</span><span class="feature-progress">${Number(item.progress || 0)}%</span></span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.outcome || '')}</p><span class="discovery-meta">${escapeHtml(item.owner || 'Ответственный не указан')}</span><span class="progress-line"><i></i></span></button>`;
+    return `<button class="discovery-card" data-discovery-index="${index}" style="--status-color:${status.color};--progress-value:${Number(item.progress || 0)}%"><span class="feature-top"><span class="status">${status.label}</span><span class="feature-progress">${Number(item.progress || 0)}%</span></span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.outcome || '')}</p>${discoveryTimeline(item.timeline)}<span class="discovery-meta">${escapeHtml(item.owner || 'Ответственный не указан')}</span><span class="progress-line"><i></i></span></button>`;
   }).join('');
   document.querySelectorAll('[data-discovery-index]').forEach((button) => button.addEventListener('click', () => openDiscovery(Number(button.dataset.discoveryIndex))));
   refreshIcons();
@@ -266,7 +275,7 @@ function openDiscovery(index = -1) {
   }).join('');
   $('#drawerMeta').textContent = 'Дискавери';
   $('#drawerTitle').textContent = isNew ? 'Новая активность' : item.title;
-  $('#drawerBody').innerHTML = `${isNew ? '' : `<p class="drawer-outcome">${escapeHtml(item.outcome || '')}</p><section class="drawer-section"><h3>Что входит</h3><ul class="scope">${(item.scope || []).map((scopeItem) => `<li>${escapeHtml(scopeItem)}</li>`).join('')}</ul></section><section class="drawer-section"><h3>Ответственный</h3><p class="drawer-plain">${escapeHtml(item.owner || 'Не указан')}</p></section><section class="drawer-section"><h3>Источники и артефакты</h3><div class="source-links">${sourceLinks || '<span class="drawer-muted">Ссылки пока не добавлены</span>'}</div></section>`}<section class="edit-panel" style="${isNew ? 'display:block' : ''}"><h3>${isNew ? 'Добавить карточку' : 'Редактировать карточку'}</h3><div class="edit-grid"><div class="field full"><label for="discoveryTitle">Название</label><input id="discoveryTitle" value="${escapeHtml(item.title)}" placeholder="Название фичи или исследования"></div><div class="field full"><label for="discoveryOutcome">Результат / что исследуем</label><textarea id="discoveryOutcome" placeholder="Какой вопрос проверяем и какой результат ожидаем">${escapeHtml(item.outcome || '')}</textarea></div><div class="field full"><label for="discoveryScope">Что входит</label><textarea id="discoveryScope" placeholder="Каждый пункт с новой строки">${escapeHtml((item.scope || []).join('\n'))}</textarea></div><div class="field"><label for="discoveryOwner">Ответственный</label><input id="discoveryOwner" value="${escapeHtml(item.owner || '')}"></div><div class="field"><label for="discoveryStatus">Статус</label><select id="discoveryStatus">${Object.entries(statuses).map(([key, status]) => `<option value="${key}" ${item.status === key ? 'selected' : ''}>${status.label}</option>`).join('')}</select></div><div class="field full"><label for="discoveryProgress">Прогресс</label><div class="range-row"><input id="discoveryProgress" type="range" min="0" max="100" step="1" value="${Number(item.progress || 0)}"><output id="discoveryProgressOutput">${Number(item.progress || 0)}%</output></div></div><div class="field full"><label for="discoverySources">Источники и артефакты</label><textarea id="discoverySources" placeholder="Название | https://ссылка — каждый источник с новой строки">${escapeHtml(sourcesToText(item.sources))}</textarea></div><div class="field full discovery-actions"><button class="button primary" id="saveDiscovery"><i data-lucide="check"></i>Сохранить для всех</button>${isNew ? '' : '<button class="button danger" id="deleteDiscovery"><i data-lucide="trash-2"></i>Удалить карточку</button>'}</div></div></section>`;
+  $('#drawerBody').innerHTML = `${isNew ? '' : `<p class="drawer-outcome">${escapeHtml(item.outcome || '')}</p>${item.timeline?.length ? `<section class="drawer-section"><h3>Таймлайн discovery и проектирования</h3>${discoveryTimeline(item.timeline)}</section>` : ''}<section class="drawer-section"><h3>Что входит</h3><ul class="scope">${(item.scope || []).map((scopeItem) => `<li>${escapeHtml(scopeItem)}</li>`).join('')}</ul></section><section class="drawer-section"><h3>Ответственный</h3><p class="drawer-plain">${escapeHtml(item.owner || 'Не указан')}</p></section><section class="drawer-section"><h3>Источники и артефакты</h3><div class="source-links">${sourceLinks || '<span class="drawer-muted">Ссылки пока не добавлены</span>'}</div></section>`}<section class="edit-panel" style="${isNew ? 'display:block' : ''}"><h3>${isNew ? 'Добавить карточку' : 'Редактировать карточку'}</h3><div class="edit-grid"><div class="field full"><label for="discoveryTitle">Название</label><input id="discoveryTitle" value="${escapeHtml(item.title)}" placeholder="Название фичи или исследования"></div><div class="field full"><label for="discoveryOutcome">Результат / что исследуем</label><textarea id="discoveryOutcome" placeholder="Какой вопрос проверяем и какой результат ожидаем">${escapeHtml(item.outcome || '')}</textarea></div><div class="field full"><label for="discoveryScope">Что входит</label><textarea id="discoveryScope" placeholder="Каждый пункт с новой строки">${escapeHtml((item.scope || []).join('\n'))}</textarea></div><div class="field"><label for="discoveryOwner">Ответственный</label><input id="discoveryOwner" value="${escapeHtml(item.owner || '')}"></div><div class="field"><label for="discoveryStatus">Статус</label><select id="discoveryStatus">${Object.entries(statuses).map(([key, status]) => `<option value="${key}" ${item.status === key ? 'selected' : ''}>${status.label}</option>`).join('')}</select></div><div class="field full"><label for="discoveryProgress">Прогресс</label><div class="range-row"><input id="discoveryProgress" type="range" min="0" max="100" step="1" value="${Number(item.progress || 0)}"><output id="discoveryProgressOutput">${Number(item.progress || 0)}%</output></div></div><div class="field full"><label for="discoverySources">Источники и артефакты</label><textarea id="discoverySources" placeholder="Название | https://ссылка — каждый источник с новой строки">${escapeHtml(sourcesToText(item.sources))}</textarea></div><div class="field full discovery-actions"><button class="button primary" id="saveDiscovery"><i data-lucide="check"></i>Сохранить для всех</button>${isNew ? '' : '<button class="button danger" id="deleteDiscovery"><i data-lucide="trash-2"></i>Удалить карточку</button>'}</div></div></section>`;
   openDrawer();
   const range = $('#discoveryProgress');
   range?.addEventListener('input', () => { $('#discoveryProgressOutput').textContent = `${range.value}%`; });
@@ -409,6 +418,7 @@ async function saveDiscovery() {
     return;
   }
   const item = {
+    ...(state.selectedDiscovery < 0 ? {} : state.discovery[state.selectedDiscovery]),
     title,
     outcome: $('#discoveryOutcome').value.trim(),
     scope: $('#discoveryScope').value.split('\n').map((value) => value.trim()).filter(Boolean),
