@@ -338,11 +338,12 @@ window.ROADMAP_DATA = {
       sources: [],
     },
     {
-      id: 'task-templates-verification', lane: 'adaptation', release: 'dec02', title: 'Шаблоны задач и проверка результата',
-      outcome: 'HR формирует библиотеку повторяемых задач, добавляет их в планы и заранее определяет роль проверяющего.',
+      id: 'task-templates-verification', lane: 'adaptation', release: 'dec02', title: 'Шаблоны задач в редакторе адаптации',
+      outcome: 'Администратор сможет один раз подготовить обычную типовую задачу и быстро добавлять её в новые планы адаптации.',
       status: 'planned', progress: 10, owner: 'Команда адаптации',
-      scope: ['Справочник шаблонов задач', 'Признаки применимости по должности и оргструктуре', 'Включение проверки результата', 'Подбор и ручная замена проверяющего'],
-      sources: [{ label: 'DEV-67944', url: 'https://tracker.yandex.ru/DEV-67944' }, { label: 'DEV-65283', url: 'https://tracker.yandex.ru/DEV-65283' }],
+      image: 'q4-2026/assets/umka-task-templates.png',
+      scope: ['Справочник шаблонов обычных задач', 'Создание и редактирование типовой задачи', 'Добавление одной или нескольких готовых задач в этап плана'],
+      sources: [{ label: 'DEV-65283', url: 'https://tracker.yandex.ru/DEV-65283' }],
     },
     {
       id: 'employee-plans-and-tasks', lane: 'adaptation', release: 'dec02', title: 'Мои планы, планы коллег и задачи',
