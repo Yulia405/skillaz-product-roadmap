@@ -1,7 +1,7 @@
 const data = window.Q4_DATA;
 const params = new URLSearchParams(location.search);
 const shared = params.get('shared') === '1';
-const state = { mode: params.get('view') === 'client' ? 'client' : 'internal', team: 'Умка', scope: 'team', module: 'Все', query: '' };
+const state = { mode: params.get('view') === 'client' ? 'client' : 'internal', team: 'Умка', scope: 'team', client: 'Все клиенты', module: 'Все', query: '' };
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]);
 const monthName = id => data.months.find(month => month.id === id)?.title || '';
@@ -149,19 +149,23 @@ function modeCards() {
   let cards = state.mode === 'client'
     ? data.cards.filter(card => card.clientVisible && !card.hidden)
     : data.cards.filter(card => !card.hidden && (state.scope === 'team' ? card.team === state.team : card.bucket === state.scope));
+  if (state.mode === 'internal' && state.scope === 'project' && state.client !== 'Все клиенты') {
+    cards = cards.filter(card => card.tasks.some(task => task.project === state.client));
+  }
   if (state.module !== 'Все') cards = cards.filter(card => visibleModule(card) === state.module);
   if (state.query) {
     const query = state.query.toLowerCase();
     cards = cards.filter(card => {
       const copy = state.mode === 'client' ? clientCopy(card) : card;
-      return `${copy.title} ${visibleModule(card)} ${copy.summary} ${(copy.outcomes || []).join(' ')}`.toLowerCase().includes(query);
+      const projects = card.tasks.map(task => task.project).filter(Boolean).join(' ');
+      return `${copy.title} ${visibleModule(card)} ${copy.summary} ${(copy.outcomes || []).join(' ')} ${projects}`.toLowerCase().includes(query);
     });
   }
   return cards;
 }
 
 function setMode(mode) {
-  state.mode = shared ? 'client' : mode; state.module = 'Все'; state.query = ''; $('#searchInput').value = '';
+  state.mode = shared ? 'client' : mode; state.client = 'Все клиенты'; state.module = 'Все'; state.query = ''; $('#searchInput').value = '';
   document.body.classList.toggle('client-mode', state.mode === 'client'); document.body.classList.toggle('shared-mode', shared);
   document.querySelectorAll('[data-mode]').forEach(button => button.classList.toggle('active', button.dataset.mode === state.mode));
   if (!shared) history.replaceState(null, '', state.mode === 'client' ? `${location.pathname}?view=client` : location.pathname);
@@ -180,15 +184,17 @@ function renderHeader() {
     $('#pageLead').textContent = 'Продуктовый и проектный объём, готовность задач, загрузка и риски в одной рабочей карте.';
     $('#roadmapTitle').textContent = state.scope === 'team'
       ? `План команды «${state.team}»`
-      : state.scope === 'product' ? 'Продуктовый план всех команд' : 'Клиентские задачи всех команд';
+      : state.scope === 'product'
+        ? 'Продуктовый план всех команд'
+        : state.client === 'Все клиенты' ? 'Клиентские задачи всех команд' : `Клиентские задачи · ${state.client}`;
   }
   $('#summary').innerHTML = [[cards.length, 'инициатив'], [modules.size, 'направлений'], [cards.reduce((sum, card) => sum + card.tasks.length, 0), 'задач']].map(([value, label]) => `<div><strong>${value}</strong><span>${label}</span></div>`).join('');
 }
 
 function renderTeamControls() {
   $('#teamTabs').innerHTML = Object.keys(data.teams).map(team => `<button type="button" class="${team === state.team ? 'active' : ''}" data-team="${esc(team)}">${esc(team)}</button>`).join('');
-  document.querySelectorAll('[data-team]').forEach(button => { button.onclick = () => { state.team = button.dataset.team; state.module = 'Все'; render(); }; });
-  document.querySelectorAll('[data-scope]').forEach(button => { button.classList.toggle('active', button.dataset.scope === state.scope); button.onclick = () => { state.scope = button.dataset.scope; state.module = 'Все'; render(); }; });
+  document.querySelectorAll('[data-team]').forEach(button => { button.onclick = () => { state.team = button.dataset.team; state.client = 'Все клиенты'; state.module = 'Все'; render(); }; });
+  document.querySelectorAll('[data-scope]').forEach(button => { button.classList.toggle('active', button.dataset.scope === state.scope); button.onclick = () => { state.scope = button.dataset.scope; state.client = 'Все клиенты'; state.module = 'Все'; render(); }; });
   const overview = state.mode === 'internal' && state.scope !== 'team';
   $('#teamTabs').classList.toggle('hidden', overview);
   $('.controls').classList.toggle('overview', overview);
@@ -210,21 +216,22 @@ function renderTeamPanel() {
   $('#notices').classList.toggle('empty', !(team.notices || []).length);
 }
 
-function renderClientFocus() {
-  const section = $('#clientFocus');
-  const visible = state.mode === 'internal' && state.scope === 'project';
-  section.classList.toggle('visible', visible);
-  if (!visible) return;
-  $('#clientFocusGrid').innerHTML = (data.clientUpdates || []).map(update => {
-    const links = update.issues.map(issue => `<a href="https://tracker.yandex.ru/${esc(issue)}" target="_blank" rel="noreferrer">${esc(issue)}</a>`).join('');
-    return `<article class="client-focus-card"><div class="client-focus-meta"><span class="client-focus-name">${esc(update.client)}</span><span class="client-focus-target">${esc(update.target)}</span></div><h3>${esc(update.focus)}</h3><span class="client-focus-state ${esc(update.kind)}">${esc(update.label)}</span><p>${esc(update.status)}</p><div class="client-focus-links" aria-label="Связанные задачи">${links}</div></article>`;
-  }).join('');
-}
-
 function renderFilters() {
-  const source = state.mode === 'client'
+  const baseSource = state.mode === 'client'
     ? data.cards.filter(card => card.clientVisible && !card.hidden)
     : data.cards.filter(card => !card.hidden && (state.scope === 'team' ? card.team === state.team : card.bucket === state.scope));
+  const showClientFilter = state.mode === 'internal' && state.scope === 'project';
+  $('#clientFilterLabel').classList.toggle('hidden', !showClientFilter);
+  $('#roadmapTools').classList.toggle('with-client-filter', showClientFilter);
+  if (showClientFilter) {
+    const projects = [...new Set(baseSource.flatMap(card => card.tasks.map(task => task.project).filter(Boolean)))].sort((a, b) => a.localeCompare(b, 'ru'));
+    if (!projects.includes(state.client)) state.client = 'Все клиенты';
+    $('#clientFilter').innerHTML = ['Все клиенты', ...projects].map(project => `<option value="${esc(project)}" ${project === state.client ? 'selected' : ''}>${esc(project)}</option>`).join('');
+    $('#clientFilter').onchange = event => { state.client = event.target.value; state.module = 'Все'; render(); };
+  }
+  const source = showClientFilter && state.client !== 'Все клиенты'
+    ? baseSource.filter(card => card.tasks.some(task => task.project === state.client))
+    : baseSource;
   const priority = { 'Адаптация': 0, 'Обучение': 1, 'Оценка': 2, 'Целеполагание': 3, 'Карьера': 4, 'Платформа и настройки': 5 };
   const sortedModules = [...new Set(source.map(visibleModule))].sort((a, b) => (priority[a] ?? 10) - (priority[b] ?? 10) || a.localeCompare(b, 'ru'));
   const modules = ['Все', ...sortedModules]; if (!modules.includes(state.module)) state.module = 'Все';
@@ -284,7 +291,7 @@ function openImageViewer(source) { $('#imageViewerImage').src = source; $('#imag
 function closeImageViewer() { $('#imageViewer').classList.remove('open'); $('#imageViewer').setAttribute('aria-hidden', 'true'); $('#imageViewerImage').removeAttribute('src'); }
 async function shareClientView() { const url = `${location.origin}${location.pathname}?view=client&shared=1`; try { await navigator.clipboard.writeText(url); showToast('Ссылка на клиентский план скопирована'); } catch { window.prompt('Скопируйте ссылку на клиентский план', url); } }
 function showToast(message) { $('#toast').textContent = message; $('#toast').classList.add('show'); setTimeout(() => $('#toast').classList.remove('show'), 2200); }
-function render() { renderHeader(); renderTeamControls(); renderTeamPanel(); renderClientFocus(); renderFilters(); renderMonths(); renderDiscovery(); }
+function render() { renderTeamControls(); renderTeamPanel(); renderFilters(); renderHeader(); renderMonths(); renderDiscovery(); }
 
 document.querySelectorAll('[data-mode]').forEach(button => button.onclick = () => setMode(button.dataset.mode));
 $('#searchInput').addEventListener('input', event => { state.query = event.target.value.trim(); renderHeader(); renderMonths(); });

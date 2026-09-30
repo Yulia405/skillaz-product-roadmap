@@ -7,7 +7,7 @@
   <title>Skillaz · план Q4 2026</title>
   <link rel="icon" href="../skillaz-logo.png">
   <link rel="stylesheet" href="q4.css?v=20260929-12">
-  <link rel="stylesheet" href="q4-enhancements.css?v=20260929-3">
+  <link rel="stylesheet" href="q4-enhancements.css?v=20260930-4">
 </head>
 <body>
   <header class="topbar">
@@ -32,17 +32,10 @@
       <div class="capacity" id="capacity"></div><div class="team-stats" id="teamStats"></div>
     </section>
     <section class="notices internal-only" id="notices"></section>
-    <section class="client-focus internal-only" id="clientFocus" aria-labelledby="clientFocusTitle">
-      <header class="client-focus-head">
-        <div><span class="section-label">Итоги синка · 30 сентября</span><h2 id="clientFocusTitle">Статус клиентских фокусов</h2></div>
-        <p>Короткая сводка по согласованиям, ближайшим действиям и ограничениям до перехода в разработку.</p>
-      </header>
-      <div class="client-focus-grid" id="clientFocusGrid"></div>
-    </section>
     <section class="roadmap">
       <header class="roadmap-head">
         <div><span class="section-label">Октябрь — январь</span><h2 id="roadmapTitle"></h2></div>
-        <div class="roadmap-tools"><label class="search"><span>Поиск</span><input id="searchInput" type="search" placeholder="По названию или модулю"></label><div class="module-filter" id="moduleFilter"></div></div>
+        <div class="roadmap-tools" id="roadmapTools"><label class="search"><span>Поиск</span><input id="searchInput" type="search" placeholder="По названию или модулю"></label><label class="client-filter hidden" id="clientFilterLabel"><span>Клиент</span><select id="clientFilter"><option value="Все клиенты">Все клиенты</option></select></label><div class="module-filter" id="moduleFilter"></div></div>
       </header>
       <div class="months" id="months"></div>
     </section>
@@ -63,6 +56,6 @@
     <img id="imageViewerImage" alt="Увеличенный макет">
   </div>
   <div class="toast" id="toast" role="status"></div>
-  <script src="q4-data.js?v=20260930-4"></script><script src="q4.js?v=20260930-3"></script>
+  <script src="q4-data.js?v=20260930-5"></script><script src="q4.js?v=20260930-4"></script>
 </body>
 </html>
