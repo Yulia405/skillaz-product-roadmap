@@ -447,15 +447,15 @@ window.ROADMAP_DATA = {
   discovery: [
     {
       id: 'workflow-orchestrator', title: 'Оркестратор бизнес-процессов',
-      outcome: 'Проверяем универсальную модель процессов: этапы, ветки, условия, участники, события и переиспользуемые сценарии.',
-      scope: ['Целевые бизнес-сценарии', 'Границы первой реализации', 'Модель workflow и переходного периода', 'Техническая декомпозиция'],
+      outcome: 'Проектируем конструктор workflow адаптации: HR собирает единый маршрут с отдельными ветками для разных аудиторий, настраивает этапы, участников и условия, а затем проверяет итоговый план до публикации.',
+      scope: ['Ветки и условия для разных аудиторий', 'Этапы, задачи, обучение, цели и контрольные точки', 'Роли участников и автоматический подбор', 'Предпросмотр и тестовая сборка плана'],
       timeline: [
         { stage: 'Разработка концепта и исследование', date: 'до 20.10.2026' },
         { stage: 'Проектное решение', date: 'до 05.11.2026' },
         { stage: 'Проектирование архитектуры', date: 'до 30.11.2026' },
       ],
       owner: 'Продуктовая команда', status: 'in_progress', progress: 25,
-      sources: [{ label: 'Концепция', url: 'https://yulia405.github.io/skillaz-orchestrator-vision/processes.html' }],
+      sources: [{ label: 'Концепция', url: 'https://yulia405.github.io/skillaz-orchestrator-vision/workflow-v3.html' }],
     },
     {
       id: 'ai-map-2027', title: 'AI-карта LMS на 2027 год',
@@ -467,7 +467,7 @@ window.ROADMAP_DATA = {
         { stage: 'Роадмап поставок', date: 'до 25.12.2026' },
       ],
       owner: 'Продуктовая команда', status: 'in_progress', progress: 20,
-      sources: [{ label: 'AI-карта', url: 'https://yulia405.github.io/skillaz-orchestrator-vision/ai-map.html' }],
+      sources: [{ label: 'AI-карта', url: 'https://yulia405.github.io/skillaz-ai-map/' }],
     },
     {
       id: 'field-assessment-sheets', title: 'Оценочный лист',
