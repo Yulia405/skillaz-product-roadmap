@@ -54,6 +54,67 @@ function originAllowed(request) {
   return !origin || ALLOWED_ORIGINS.has(origin);
 }
 
+function nonEmptyString(value) {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+function validSources(value) {
+  return value === undefined || (Array.isArray(value) && value.every((item) => (
+    item && nonEmptyString(item.label) && nonEmptyString(item.url)
+  )));
+}
+
+function validCustomFeature(item) {
+  return item
+    && nonEmptyString(item.id)
+    && nonEmptyString(item.release)
+    && nonEmptyString(item.lane)
+    && nonEmptyString(item.title)
+    && nonEmptyString(item.outcome)
+    && nonEmptyString(item.owner)
+    && nonEmptyString(item.status)
+    && Array.isArray(item.scope)
+    && item.scope.length > 0
+    && item.scope.every(nonEmptyString)
+    && Number.isFinite(Number(item.progress))
+    && Number(item.progress) >= 0
+    && Number(item.progress) <= 100
+    && validSources(item.sources);
+}
+
+function validPromo(item) {
+  return item
+    && nonEmptyString(item.date)
+    && nonEmptyString(item.title)
+    && nonEmptyString(item.format)
+    && nonEmptyString(item.audience);
+}
+
+function validMethodology(item) {
+  return item
+    && nonEmptyString(item.status)
+    && nonEmptyString(item.title)
+    && nonEmptyString(item.text);
+}
+
+function validDiscovery(item) {
+  return item
+    && nonEmptyString(item.title)
+    && nonEmptyString(item.outcome)
+    && nonEmptyString(item.owner)
+    && nonEmptyString(item.status)
+    && Array.isArray(item.scope)
+    && item.scope.length > 0
+    && item.scope.every(nonEmptyString)
+    && Number.isFinite(Number(item.progress))
+    && Number(item.progress) >= 0
+    && Number(item.progress) <= 100
+    && validSources(item.sources)
+    && (item.timeline === undefined || (Array.isArray(item.timeline) && item.timeline.every((entry) => (
+      entry && nonEmptyString(entry.stage) && nonEmptyString(entry.date)
+    ))));
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === 'OPTIONS') return new Response(null, { headers: corsHeaders(request) });
@@ -85,12 +146,25 @@ export default {
       if (!body || typeof body !== 'object' || !body.overrides || !Array.isArray(body.promo) || !Array.isArray(body.methodology) || !Array.isArray(body.discovery)) {
         return json(request, { error: 'Некорректные данные плана' }, 400);
       }
+      const current = await env.ROADMAP_STATE.get('current', 'json') || {};
+      const customFeatures = Array.isArray(body.customFeatures)
+        ? body.customFeatures
+        : (Array.isArray(current.customFeatures) ? current.customFeatures : []);
+      if (
+        !body.promo.every(validPromo)
+        || !body.methodology.every(validMethodology)
+        || !body.discovery.every(validDiscovery)
+        || !customFeatures.every(validCustomFeature)
+      ) {
+        return json(request, { error: 'Заполните обязательные поля карточек' }, 400);
+      }
       const payload = JSON.stringify({
         updatedAt: new Date().toISOString(),
         overrides: body.overrides,
         promo: body.promo,
         methodology: body.methodology,
         discovery: body.discovery,
+        customFeatures,
       });
       if (payload.length > 250000) return json(request, { error: 'Слишком большой объём данных' }, 413);
       await env.ROADMAP_STATE.put('current', payload);
