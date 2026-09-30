@@ -66,7 +66,18 @@
 }
 
 .roadmap-tools.with-client-filter {
-  grid-template-columns: 220px 220px minmax(0, 1fr);
+  grid-template-columns: minmax(200px, 240px) minmax(200px, 240px) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.roadmap-tools.with-client-filter .search,
+.roadmap-tools.with-client-filter .client-filter {
+  min-width: 0;
+}
+
+.roadmap-tools.with-client-filter .search input,
+.roadmap-tools.with-client-filter .client-filter select {
+  width: 100%;
 }
 
 .client-filter span {
