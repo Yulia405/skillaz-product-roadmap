@@ -27,16 +27,16 @@ window.Q4_DATA = {
       },
       "effort": {
         "be": 466,
-        "fe": 420,
-        "qa": 295
+        "fe": 414,
+        "qa": 291
       },
       "stats": {
-        "total": 56,
+        "total": 55,
         "product": 51,
-        "project": 5,
-        "estimated": 49,
+        "project": 4,
+        "estimated": 48,
         "unestimated": 2,
-        "notReady": 21
+        "notReady": 20
       },
       "notices": [
         {
@@ -272,17 +272,6 @@ window.Q4_DATA = {
           "fe": null,
           "qa": null,
           "url": "https://tracker.yandex.ru/DEV-68675"
-        },
-        {
-          "key": "DEV-67507",
-          "title": "Единое отображение состояний фильтров",
-          "status": "Grooming Backlog",
-          "project": "Skillaz LMS Onboarding+Assessment",
-          "description": "Закрытые и активные состояния фильтров будут приведены к единому визуальному паттерну Skillgrid без тяжёлых чёрных рамок.",
-          "be": 0,
-          "fe": 6,
-          "qa": 4,
-          "url": "https://tracker.yandex.ru/DEV-67507"
         }
       ]
     },
@@ -357,15 +346,13 @@ window.Q4_DATA = {
       "team": "Умка",
       "bucket": "project",
       "module": "Адаптация",
-      "title": "Библиотека шаблонов задач адаптации",
-      "summary": "Администраторы и руководители смогут переиспользовать типовые задачи, распределять шаблоны по папкам, управлять доступом и делиться готовыми наборами с коллегами.",
+      "title": "Папки и совместный доступ к шаблонам задач",
+      "summary": "Руководители смогут распределять шаблоны задач по папкам, управлять доступом и делиться готовыми наборами с коллегами.",
       "month": "dec",
       "status": "Подготовка",
       "statusKind": "planned",
       "clientVisible": true,
-      "images": [
-        "assets/umka-task-templates.png"
-      ],
+      "images": [],
       "tasks": [
         {
           "key": "DEV-67423",
@@ -377,7 +364,24 @@ window.Q4_DATA = {
           "fe": 56,
           "qa": 24,
           "url": "https://tracker.yandex.ru/DEV-67423"
-        },
+        }
+      ]
+    },
+    {
+      "id": "DEV-65283",
+      "team": "Умка",
+      "bucket": "product",
+      "module": "Адаптация",
+      "title": "Шаблоны задач в редакторе адаптации",
+      "summary": "Администратор сможет создавать переиспользуемые шаблоны задач и добавлять одну или несколько готовых задач в этап плана.",
+      "month": "dec",
+      "status": "Подготовка",
+      "statusKind": "planned",
+      "clientVisible": true,
+      "images": [
+        "assets/umka-task-templates.png"
+      ],
+      "tasks": [
         {
           "key": "DEV-65283",
           "title": "Шаблоны задач в редакторе адаптации",
@@ -968,7 +972,7 @@ window.Q4_DATA = {
       "module": "Импорты",
       "title": "Автоматическая смена роли кандидата после трудоустройства",
       "summary": "После импорта трудоустроенный кандидат будет автоматически переведён в роль сотрудника независимо от способа загрузки данных.",
-      "month": "nov",
+      "month": "dec",
       "status": "Подготовка",
       "statusKind": "planned",
       "clientVisible": true,
