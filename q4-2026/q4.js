@@ -141,8 +141,8 @@ const clientCopy = card => clientContent[card.id] || { title: card.title, summar
 
 function modeCards() {
   let cards = state.mode === 'client'
-    ? data.cards.filter(card => card.clientVisible)
-    : data.cards.filter(card => state.scope === 'team' ? card.team === state.team : card.bucket === state.scope);
+    ? data.cards.filter(card => card.clientVisible && !card.hidden)
+    : data.cards.filter(card => !card.hidden && (state.scope === 'team' ? card.team === state.team : card.bucket === state.scope));
   if (state.module !== 'Все') cards = cards.filter(card => visibleModule(card) === state.module);
   if (state.query) {
     const query = state.query.toLowerCase();
@@ -206,8 +206,8 @@ function renderTeamPanel() {
 
 function renderFilters() {
   const source = state.mode === 'client'
-    ? data.cards.filter(card => card.clientVisible)
-    : data.cards.filter(card => state.scope === 'team' ? card.team === state.team : card.bucket === state.scope);
+    ? data.cards.filter(card => card.clientVisible && !card.hidden)
+    : data.cards.filter(card => !card.hidden && (state.scope === 'team' ? card.team === state.team : card.bucket === state.scope));
   const priority = { 'Адаптация': 0, 'Обучение': 1, 'Оценка': 2, 'Целеполагание': 3, 'Карьера': 4, 'Платформа и настройки': 5 };
   const sortedModules = [...new Set(source.map(visibleModule))].sort((a, b) => (priority[a] ?? 10) - (priority[b] ?? 10) || a.localeCompare(b, 'ru'));
   const modules = ['Все', ...sortedModules]; if (!modules.includes(state.module)) state.module = 'Все';
