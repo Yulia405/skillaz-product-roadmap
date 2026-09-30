@@ -210,6 +210,17 @@ function renderTeamPanel() {
   $('#notices').classList.toggle('empty', !(team.notices || []).length);
 }
 
+function renderClientFocus() {
+  const section = $('#clientFocus');
+  const visible = state.mode === 'internal' && state.scope === 'project';
+  section.classList.toggle('visible', visible);
+  if (!visible) return;
+  $('#clientFocusGrid').innerHTML = (data.clientUpdates || []).map(update => {
+    const links = update.issues.map(issue => `<a href="https://tracker.yandex.ru/${esc(issue)}" target="_blank" rel="noreferrer">${esc(issue)}</a>`).join('');
+    return `<article class="client-focus-card"><div class="client-focus-meta"><span class="client-focus-name">${esc(update.client)}</span><span class="client-focus-target">${esc(update.target)}</span></div><h3>${esc(update.focus)}</h3><span class="client-focus-state ${esc(update.kind)}">${esc(update.label)}</span><p>${esc(update.status)}</p><div class="client-focus-links" aria-label="Связанные задачи">${links}</div></article>`;
+  }).join('');
+}
+
 function renderFilters() {
   const source = state.mode === 'client'
     ? data.cards.filter(card => card.clientVisible && !card.hidden)
@@ -273,7 +284,7 @@ function openImageViewer(source) { $('#imageViewerImage').src = source; $('#imag
 function closeImageViewer() { $('#imageViewer').classList.remove('open'); $('#imageViewer').setAttribute('aria-hidden', 'true'); $('#imageViewerImage').removeAttribute('src'); }
 async function shareClientView() { const url = `${location.origin}${location.pathname}?view=client&shared=1`; try { await navigator.clipboard.writeText(url); showToast('Ссылка на клиентский план скопирована'); } catch { window.prompt('Скопируйте ссылку на клиентский план', url); } }
 function showToast(message) { $('#toast').textContent = message; $('#toast').classList.add('show'); setTimeout(() => $('#toast').classList.remove('show'), 2200); }
-function render() { renderHeader(); renderTeamControls(); renderTeamPanel(); renderFilters(); renderMonths(); renderDiscovery(); }
+function render() { renderHeader(); renderTeamControls(); renderTeamPanel(); renderClientFocus(); renderFilters(); renderMonths(); renderDiscovery(); }
 
 document.querySelectorAll('[data-mode]').forEach(button => button.onclick = () => setMode(button.dataset.mode));
 $('#searchInput').addEventListener('input', event => { state.query = event.target.value.trim(); renderHeader(); renderMonths(); });
