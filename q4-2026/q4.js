@@ -206,10 +206,13 @@ function renderTeamPanel() {
   const team = data.teams[state.team]; $('#teamTitle').textContent = `Команда «${state.team}»`; $('#teamMission').textContent = team.mission;
   $('#teamDashboard').href = team.dashboard;
   const labels = { be: 'Backend', fe: 'Frontend', qa: 'QA' };
-  $('#capacity').innerHTML = Object.entries(labels).map(([key, label]) => {
+  const capacityRows = Object.entries(labels).map(([key, label]) => {
     const effort = team.effort[key]; const capacity = team.capacity[key]; const percent = capacity ? Math.round(effort / capacity * 100) : null; const width = percent === null ? 0 : Math.min(percent, 100);
-    return `<div class="capacity-row ${percent !== null && percent > 100 ? 'over' : ''}"><div><strong>${label}</strong><span>${effort} ч ${capacity ? `из ${capacity} ч` : '· ёмкость не задана'}</span></div><div class="capacity-track"><i style="width:${width}%"></i></div><b>${percent === null ? '—' : `${percent}%`}</b></div>`;
+    const reserve = capacity ? Math.max(capacity - effort, 0) : 0; const reserveWidth = capacity ? Math.max(100 - width, 0) : 0;
+    const trackLabel = capacity ? `Запланировано ${effort} из ${capacity} часов. Резерв ${reserve} часов.` : `Запланировано ${effort} часов. Ёмкость не задана.`;
+    return `<div class="capacity-row ${percent !== null && percent > 100 ? 'over' : ''}"><div><strong>${label}</strong><span>${effort} ч ${capacity ? `из ${capacity} ч` : '· ёмкость не задана'}</span></div><div class="capacity-track" role="img" aria-label="${trackLabel}" title="${trackLabel}"><i style="width:${width}%"></i>${reserveWidth ? `<span class="capacity-reserve" style="width:${reserveWidth}%"></span>` : ''}</div><b>${percent === null ? '—' : `${percent}%`}</b></div>`;
   }).join('');
+  $('#capacity').innerHTML = `${capacityRows}<div class="capacity-legend"><span><i class="capacity-legend-planned"></i>Запланированные задачи</span><span><i class="capacity-legend-reserve"></i>Резерв: баги, техдолг, регресс, риски и срочные задачи</span></div>`;
   const stats = team.stats;
   $('#teamStats').innerHTML = [[stats.product, 'продукт'], [stats.project, 'клиент'], [stats.unestimated, 'без оценки'], [stats.notReady, 'не готовы']].map(([value, label]) => `<div><strong>${value}</strong><span>${label}</span></div>`).join('');
   $('#notices').innerHTML = (team.notices || []).map(notice => `<article class="notice ${notice.kind}"><strong>${esc(notice.title)}</strong><p>${esc(notice.text)}</p></article>`).join('');
