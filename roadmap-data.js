@@ -455,7 +455,7 @@ window.ROADMAP_DATA = {
         { stage: 'Проектирование архитектуры', date: 'до 30.11.2026' },
       ],
       owner: 'Продуктовая команда', status: 'in_progress', progress: 25,
-      sources: [{ label: 'Концепция', url: 'https://yulia405.github.io/skillaz-orchestrator-vision/workflow-v3.html?deploy=64b38af' }],
+      sources: [{ label: 'Концепция', url: 'https://yulia405.github.io/skillaz-orchestrator-vision/workflow-v3.html?deploy=d0ccc47' }],
     },
     {
       id: 'ai-map-2027', title: 'AI-карта LMS на 2027 год',
