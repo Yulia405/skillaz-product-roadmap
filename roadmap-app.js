@@ -100,7 +100,14 @@ const requiredFields = (fields) => {
   }
   return values;
 };
-const currentFeature = (feature) => ({ ...feature, ...(state.overrides[feature.id] || {}) });
+const currentFeature = (feature) => {
+  const override = state.overrides[feature.id];
+  if (!override) return feature;
+  const overrideUpdatedAt = Date.parse(override.updatedAt || '');
+  const projectUpdatedAt = Date.parse(data.project.updatedAt || '');
+  if (Number.isFinite(overrideUpdatedAt) && Number.isFinite(projectUpdatedAt) && overrideUpdatedAt < projectUpdatedAt) return feature;
+  return { ...feature, ...override };
+};
 const laneById = (id) => data.lanes.find((item) => item.id === id);
 const releaseById = (id) => data.releases.find((item) => item.id === id);
 const withDiscoveryDefaults = (item) => {
