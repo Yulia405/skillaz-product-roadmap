@@ -26,6 +26,11 @@ window.ROADMAP_DATA = {
       development: 'Разработка 10.11 - 02.12', title: 'Планы сотрудников, отчётность и настройка коробки',
       promise: 'Сотрудники и помощники получают обновлённые страницы планов и задач, а HR — очередь назначения и расширенную отчётность.',
     },
+    {
+      id: 'atsDec05', date: '2026-12-05', shortDate: '05.12', version: 'Релиз АТС',
+      development: 'Поставка АТС — 05.12', title: 'Внутренние переходы',
+      promise: 'Поставка АТС разблокирует завершение создания вакансий вручную, финального дизайн-ревью и прав доступа к витрине.',
+    },
   ],
   lanes: [
     { id: 'entry', title: 'Запуск и коробка', description: 'Пребординг, пресет и самостоятельное подключение', color: '#3569c8' },
@@ -192,7 +197,7 @@ window.ROADMAP_DATA = {
       sources: [{ label: 'DEV-64440', url: 'https://tracker.yandex.ru/DEV-64440' }, { label: 'Роадмап команды', url: 'https://docs.google.com/spreadsheets/d/1uSGSlFyl51AdHcJwBd8zZd0onzs3DzjlnbQdO0yFRAk/edit?gid=1309037961' }],
     },
     {
-      id: 'internal-jobs-manual', lane: 'mobility', release: 'oct07', title: 'Создание вакансии вручную',
+      id: 'internal-jobs-manual', lane: 'mobility', release: 'atsDec05', title: 'Создание вакансии вручную',
       outcome: 'Клиент без ATS может завести вакансию руками и собирать отклики в витрине; HR также может открыть вакансию только для внутренних переходов.',
       status: 'acceptance', progress: 80, owner: 'Команда внутренних переходов',
       note: 'Создание вакансии DEV-65554 готово к QA: 80% по шкале Tracker. В таблице команды ещё «В разработке», ручная оценка владельца была 100%; выпуск пока не подтверждён.',
@@ -200,7 +205,7 @@ window.ROADMAP_DATA = {
       sources: [{ label: 'DEV-64440', url: 'https://tracker.yandex.ru/DEV-64440' }, { label: 'Роадмап команды', url: 'https://docs.google.com/spreadsheets/d/1uSGSlFyl51AdHcJwBd8zZd0onzs3DzjlnbQdO0yFRAk/edit?gid=1309037961' }],
     },
     {
-      id: 'internal-jobs-design', lane: 'mobility', release: 'oct07', title: 'Финальный дизайн и ревью экранов',
+      id: 'internal-jobs-design', lane: 'mobility', release: 'atsDec05', title: 'Финальный дизайн и ревью экранов',
       outcome: 'Понятный интерфейс и последовательные шаги отклика повышают конверсию сотрудников во внутренние вакансии.',
       status: 'in_progress', progress: 100, owner: 'Команда внутренних переходов',
       note: 'Сохранена ручная оценка владельца — 100%. В таблице команды ещё «В разработке»; отдельная задача финального дизайн-ревью в Tracker не найдена, завершение требует подтверждения.',
@@ -208,7 +213,7 @@ window.ROADMAP_DATA = {
       sources: [{ label: 'DEV-64440', url: 'https://tracker.yandex.ru/DEV-64440' }, { label: 'Роадмап команды', url: 'https://docs.google.com/spreadsheets/d/1uSGSlFyl51AdHcJwBd8zZd0onzs3DzjlnbQdO0yFRAk/edit?gid=1309037961' }],
     },
     {
-      id: 'internal-jobs-access', lane: 'mobility', release: 'oct07', title: 'Права и доступы к витрине',
+      id: 'internal-jobs-access', lane: 'mobility', release: 'atsDec05', title: 'Права и доступы к витрине',
       outcome: 'Клиент включает раздел для нужных пользователей и регулирует видимость данных для разных ролей.',
       status: 'acceptance', progress: 80, owner: 'Команда внутренних переходов',
       note: 'Права и доступы DEV-65549 готовы к QA: 80% по шкале Tracker. В таблице команды ещё «Ждет разработки», ручная оценка владельца была 100%; выпуск пока не подтверждён.',
