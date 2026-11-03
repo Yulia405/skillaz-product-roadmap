@@ -9,6 +9,8 @@ const statuses = {
 };
 
 const data = window.ROADMAP_DATA;
+const baseReleases = data.releases.map((release) => ({ ...release }));
+const RELEASE_SETTINGS_KEY = '__releaseSettings';
 const params = new URLSearchParams(location.search);
 const state = {
   release: data.releases[0].id,
@@ -110,6 +112,88 @@ const currentFeature = (feature) => {
 };
 const laneById = (id) => data.lanes.find((item) => item.id === id);
 const releaseById = (id) => data.releases.find((item) => item.id === id);
+const validReleaseDate = (value) => /^\d{4}-\d{2}-\d{2}$/.test(value || '')
+  && Number.isFinite(Date.parse(`${value}T12:00:00Z`))
+  && new Date(`${value}T12:00:00Z`).toISOString().slice(0, 10) === value;
+
+function applyReleaseSettings() {
+  const releases = new Map(baseReleases.map((release) => [release.id, { ...release }]));
+  const saved = state.overrides[RELEASE_SETTINGS_KEY]?.items || {};
+  for (const [id, release] of Object.entries(saved)) {
+    if (!release || release.id !== id || !validReleaseDate(release.date)
+      || typeof release.version !== 'string' || !release.version.trim()
+      || typeof release.title !== 'string' || !release.title.trim()) continue;
+    releases.set(id, { ...releases.get(id), ...release, shortDate: `${release.date.slice(8, 10)}.${release.date.slice(5, 7)}` });
+  }
+  data.releases = [...releases.values()].sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
+  if (!releaseById(state.release)) state.release = data.releases[0].id;
+}
+
+function openReleaseEditor(id = null) {
+  if (!state.owner || !state.editMode || state.snapshot || state.viewer) return;
+  const release = id ? releaseById(id) : null;
+  if (id && !release) return;
+  state.selected = null;
+  state.selectedPromo = null;
+  state.selectedMethodology = null;
+  state.selectedDiscovery = null;
+  $('#drawerMeta').textContent = 'Управление релизами';
+  $('#drawerTitle').textContent = release ? 'Редактировать релиз' : 'Новый релиз';
+  $('#drawerBody').innerHTML = `<section class="edit-panel create-panel"><div class="edit-grid"><div class="field"><label for="releaseDate">Дата релиза <span class="required-mark">*</span></label><input id="releaseDate" type="date" required value="${escapeHtml(release?.date || '')}"></div><div class="field"><label for="releaseVersion">Название релиза <span class="required-mark">*</span></label><input id="releaseVersion" required value="${escapeHtml(release?.version || '')}" placeholder="Релиз АТС"></div><div class="field full"><label for="releaseTitle">Заголовок поставки <span class="required-mark">*</span></label><input id="releaseTitle" required value="${escapeHtml(release?.title || '')}"></div><div class="field full"><label for="releaseDevelopment">Период разработки или зависимость</label><input id="releaseDevelopment" value="${escapeHtml(release?.development || '')}"></div><div class="field full"><label for="releasePromise">Результат поставки</label><textarea id="releasePromise">${escapeHtml(release?.promise || '')}</textarea></div><div class="field full"><div class="auth-actions"><button class="button" id="cancelRelease">Отменить</button><button class="button primary" id="saveRelease">${release ? 'Сохранить' : 'Создать релиз'}</button></div></div></div></section>`;
+  $('#cancelRelease').addEventListener('click', closeDrawer);
+  $('#saveRelease').addEventListener('click', () => saveRelease(id));
+  openDrawer();
+  $('#releaseDate').focus();
+}
+
+async function saveRelease(id) {
+  if (!state.owner || !state.editMode || state.snapshot || state.viewer) return;
+  const values = requiredFields([
+    { id: 'releaseDate', label: 'Дата релиза' },
+    { id: 'releaseVersion', label: 'Название релиза' },
+    { id: 'releaseTitle', label: 'Заголовок поставки' },
+  ]);
+  if (!values) return;
+  if (!validReleaseDate(values.releaseDate)) {
+    $('#releaseDate').setAttribute('aria-invalid', 'true');
+    $('#releaseDate').focus();
+    toast('Укажите корректную дату релиза');
+    return;
+  }
+  const releaseId = id || uniqueId('release');
+  const release = {
+    ...(id ? releaseById(id) : {}),
+    id: releaseId,
+    date: values.releaseDate,
+    shortDate: `${values.releaseDate.slice(8, 10)}.${values.releaseDate.slice(5, 7)}`,
+    version: values.releaseVersion,
+    title: values.releaseTitle,
+    development: $('#releaseDevelopment').value.trim(),
+    promise: $('#releasePromise').value.trim(),
+  };
+  const next = {
+    ...state.overrides,
+    [RELEASE_SETTINGS_KEY]: {
+      items: { ...state.overrides[RELEASE_SETTINGS_KEY]?.items, [releaseId]: release },
+      updatedAt: new Date().toISOString(),
+    },
+  };
+  const button = $('#saveRelease');
+  button.disabled = true;
+  try {
+    await persistShared(next, state.promo, state.methodology, state.discovery);
+    state.release = releaseId;
+    applyReleaseSettings();
+    renderHeader();
+    renderFilters();
+    renderRoadmap();
+    closeDrawer();
+    toast(id ? 'Релиз обновлён для всех' : 'Релиз создан');
+  } catch (error) {
+    toast(error.message);
+    button.disabled = false;
+  }
+}
 const withDiscoveryDefaults = (item) => {
   const legacyIds = { 'Оценочные полевые листы': 'field-assessment-sheets' };
   const fallback = (data.discovery || []).find((candidate) => candidate.id === item.id || candidate.id === legacyIds[item.title] || candidate.title === item.title);
@@ -127,6 +211,7 @@ async function readState() {
       if (Array.isArray(snapshot.methodology)) state.methodology = snapshot.methodology;
       if (Array.isArray(snapshot.discovery)) state.discovery = snapshot.discovery.map(withDiscoveryDefaults);
       if (Array.isArray(snapshot.customFeatures)) state.customFeatures = snapshot.customFeatures;
+      applyReleaseSettings();
       state.snapshot = true;
       document.body.classList.add('snapshot-mode');
       $('#snapshotNote').classList.add('visible');
@@ -137,7 +222,7 @@ async function readState() {
   }
 
   try {
-    let response = await fetch(`${ROADMAP_API}/roadmap?v=${Date.now()}`, { cache: 'no-store' });
+    let response = await fetch(`${ROADMAP_API}/roadmap?v=${Date.now()}`, { cache: 'no-store', signal: AbortSignal.timeout(10000) });
     if (response.status === 404) {
       response = await fetch(`roadmap-overrides.json?v=${Date.now()}`, { cache: 'no-store' });
     }
@@ -165,6 +250,7 @@ async function readState() {
   } catch (error) {
     console.warn('Общие обновления временно недоступны', error);
   }
+  applyReleaseSettings();
 }
 
 function renderHeader() {
@@ -191,7 +277,8 @@ function renderHeader() {
 }
 
 function renderFilters() {
-  $('#filters').innerHTML = data.releases.map((release) => `<button class="filter ${state.release === release.id ? 'active' : ''}" data-release="${release.id}" aria-pressed="${state.release === release.id}">${escapeHtml(release.shortDate)}<small>${escapeHtml(release.version)}</small></button>`).join('');
+  $('#filters').innerHTML = data.releases.map((release) => `<button class="filter ${state.release === release.id ? 'active' : ''}" data-release="${release.id}" aria-pressed="${state.release === release.id}">${escapeHtml(release.shortDate)}<small>${escapeHtml(release.version)}</small></button>`).join('') + '<button class="button admin-only" id="addRelease"><i data-lucide="plus"></i>Новый релиз</button>';
+  $('#addRelease').addEventListener('click', () => openReleaseEditor());
   $('#filters').querySelectorAll('[data-release]').forEach((button) => button.addEventListener('click', () => selectRelease(button.dataset.release)));
   const index = data.releases.findIndex((release) => release.id === state.release);
   $('#prevRelease').disabled = index <= 0;
@@ -225,6 +312,8 @@ function renderRoadmap() {
   const index = data.releases.findIndex((item) => item.id === release.id);
   const features = allFeatures().filter((feature) => feature.release === release.id);
   $('#roadmap').innerHTML = `<section class="release-section" id="${release.id}"><header class="release-head"><div><div class="release-kicker"><span class="phase-number">${index + 1}</span>${escapeHtml(release.development)}</div><div class="release-date"><time datetime="${release.date}">${release.shortDate}</time><span>${escapeHtml(release.version)}</span></div></div><div class="release-copy"><h2>${escapeHtml(release.title)}</h2><p>${escapeHtml(release.promise)}</p><button class="button admin-only release-admin-action" data-add-feature="${release.id}"><i data-lucide="plus"></i>Добавить карточку</button></div></header><div class="feature-grid">${features.length ? features.map(featureCard).join('') : '<div class="empty-release">В этой поставке пока нет карточек.</div>'}</div></section>`;
+  $('#roadmap .release-copy').insertAdjacentHTML('beforeend', '<button class="button icon-only admin-only release-admin-action" id="editRelease" title="Редактировать релиз" aria-label="Редактировать релиз"><i data-lucide="pencil"></i><span class="icon-fallback" aria-hidden="true">✎</span></button>');
+  $('#editRelease').addEventListener('click', () => openReleaseEditor(state.release));
   document.querySelectorAll('[data-feature]').forEach((button) => button.addEventListener('click', () => openFeature(button.dataset.feature)));
   document.querySelectorAll('[data-add-feature]').forEach((button) => button.addEventListener('click', () => openNewFeature(button.dataset.addFeature)));
   refreshIcons();
@@ -688,7 +777,13 @@ function shareSnapshot() {
     }];
   }));
   const snapshot = {
-    overrides,
+    overrides: {
+      ...overrides,
+      [RELEASE_SETTINGS_KEY]: {
+        items: Object.fromEntries(data.releases.map((release) => [release.id, { ...release }])),
+        updatedAt: capturedAt,
+      },
+    },
     promo: state.promo,
     methodology: state.methodology,
     discovery: state.discovery,
