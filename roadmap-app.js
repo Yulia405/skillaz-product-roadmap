@@ -107,7 +107,11 @@ const currentFeature = (feature) => {
   if (!override) return feature;
   const overrideUpdatedAt = Date.parse(override.updatedAt || '');
   const projectUpdatedAt = Date.parse(data.project.updatedAt || '');
-  if (Number.isFinite(overrideUpdatedAt) && Number.isFinite(projectUpdatedAt) && overrideUpdatedAt < projectUpdatedAt) return feature;
+  if (Number.isFinite(overrideUpdatedAt) && Number.isFinite(projectUpdatedAt) && overrideUpdatedAt < projectUpdatedAt) {
+    // Tracker refreshes status; manually edited card content remains authoritative.
+    const contentKeys = ['release', 'lane', 'title', 'outcome', 'scope', 'owner', 'sources', 'image', 'unestimated'];
+    return { ...feature, ...Object.fromEntries(contentKeys.filter((key) => Object.hasOwn(override, key)).map((key) => [key, override[key]])) };
+  }
   return { ...feature, ...override };
 };
 const laneById = (id) => data.lanes.find((item) => item.id === id);
@@ -374,6 +378,28 @@ function openNewFeature(releaseId = state.release) {
   refreshIcons();
 }
 
+function sourceEditorRow(source = {}) {
+  return `<div class="source-edit-row" data-source-row><label class="field">Название<input data-source-label value="${escapeHtml(source.label || '')}" placeholder="Например, задача в Tracker"></label><label class="field">Ссылка<input data-source-url type="url" value="${escapeHtml(source.url || '')}" placeholder="https://..."></label><button type="button" class="button icon-only" data-remove-source aria-label="Удалить источник" title="Удалить источник"><i data-lucide="trash-2"></i></button></div>`;
+}
+
+function featureEditor(feature) {
+  return `<section class="drawer-section edit-panel"><h3>Редактировать карточку</h3><div class="edit-grid">
+    <div class="field"><label for="releaseSelect">Релиз</label><select id="releaseSelect">${data.releases.map((item) => `<option value="${escapeHtml(item.id)}" ${item.id === feature.release ? 'selected' : ''}>${escapeHtml(item.shortDate)} · ${escapeHtml(item.version)}</option>`).join('')}</select></div>
+    <div class="field"><label for="laneSelect">Направление</label><select id="laneSelect">${data.lanes.map((item) => `<option value="${escapeHtml(item.id)}" ${item.id === feature.lane ? 'selected' : ''}>${escapeHtml(item.title)}</option>`).join('')}</select></div>
+    <div class="field full"><label for="titleInput">Название</label><input id="titleInput" required value="${escapeHtml(feature.title)}"></div>
+    <div class="field full"><label for="outcomeInput">Что изменится для пользователя</label><textarea id="outcomeInput" required>${escapeHtml(feature.outcome)}</textarea></div>
+    <div class="field full"><label for="scopeInput">Что входит</label><textarea id="scopeInput" required placeholder="Каждый пункт с новой строки">${escapeHtml((feature.scope || []).join('\n'))}</textarea></div>
+    <div class="field full"><label for="ownerInput">Ответственный поток</label><input id="ownerInput" required value="${escapeHtml(feature.owner)}"></div>
+    <div class="field"><label for="statusSelect">Статус</label><select id="statusSelect">${Object.entries(statuses).map(([key, item]) => `<option value="${key}" ${feature.status === key ? 'selected' : ''}>${item.label}</option>`).join('')}</select></div>
+    <div class="field"><label for="progressInput">Готовность</label><div class="range-row"><input id="progressInput" type="range" min="0" max="100" step="1" value="${Number(feature.progress || 0)}" ${feature.unestimated ? 'disabled' : ''}><output id="progressOutput">${feature.unestimated ? '—' : `${Number(feature.progress || 0)}%`}</output></div></div>
+    <label class="check-row field full" for="unestimatedInput"><input id="unestimatedInput" type="checkbox" ${feature.unestimated ? 'checked' : ''}>Без оценки, не учитывать в средней готовности</label>
+    <div class="field full"><label for="noteInput">Комментарий для стейкхолдера</label><textarea id="noteInput">${escapeHtml(feature.note || '')}</textarea></div>
+    <div class="field full"><label for="imageInput">Изображение</label><input id="imageInput" value="${escapeHtml(feature.image || '')}" placeholder="https://... или assets/image.jpg"></div>
+    <div class="field full"><span class="source-edit-heading">Первоисточники</span><div id="featureSourcesEditor">${(feature.sources || []).map(sourceEditorRow).join('')}</div><button type="button" class="button" id="addFeatureSource"><i data-lucide="plus"></i>Добавить источник</button></div>
+    <div class="field full"><button class="button primary" id="saveFeature"><i data-lucide="check"></i>Сохранить для всех</button></div>
+  </div></section>`;
+}
+
 function openFeature(id) {
   state.selected = id;
   state.selectedPromo = null;
@@ -389,12 +415,22 @@ function openFeature(id) {
   const image = feature.image ? `<figure class="feature-visual"><img src="${escapeHtml(feature.image)}" alt="Макет: ${escapeHtml(feature.title)}"></figure>` : '';
   const featureSources = feature.sources || [];
   const sources = featureSources.length ? `<section class="drawer-section"><h3>Первоисточники</h3><div class="source-links">${featureSources.map((source) => `<a class="source-link" href="${escapeHtml(externalUrl(source.url))}" target="_blank" rel="noreferrer"><i data-lucide="external-link"></i>${escapeHtml(source.label)}</a>`).join('')}</div></section>` : '';
-  $('#drawerBody').innerHTML = `<p class="drawer-outcome">${escapeHtml(feature.outcome)}</p>${image}<section class="drawer-section"><h3>Что входит</h3><ul class="scope">${(feature.scope || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section><section class="drawer-section"><h3>Ответственный поток</h3><p style="margin:0;color:#44515a;font-size:13px">${escapeHtml(feature.owner)}</p></section>${feature.note ? `<div class="note"><strong>Комментарий к статусу</strong><br>${escapeHtml(feature.note)}</div>` : ''}${sources}<section class="drawer-section edit-panel"><h3>Обновить состояние</h3><div class="edit-grid"><div class="field"><label for="statusSelect">Статус</label><select id="statusSelect">${Object.entries(statuses).map(([key, item]) => `<option value="${key}" ${feature.status === key ? 'selected' : ''}>${item.label}</option>`).join('')}</select></div>${feature.unestimated ? '' : `<div class="field"><label for="progressInput">Готовность</label><div class="range-row"><input id="progressInput" type="range" min="0" max="100" step="1" value="${Number(feature.progress || 0)}"><output id="progressOutput">${Number(feature.progress || 0)}%</output></div></div>`}<div class="field full"><label for="noteInput">Комментарий для стейкхолдера</label><textarea id="noteInput" placeholder="Например: срок подтвержден, идет приемка">${escapeHtml(feature.note || '')}</textarea></div><div class="field full"><button class="button primary" id="saveFeature"><i data-lucide="check"></i>Сохранить для всех</button></div></div></section>`;
+  $('#drawerBody').innerHTML = `<p class="drawer-outcome">${escapeHtml(feature.outcome)}</p>${image}<section class="drawer-section"><h3>Что входит</h3><ul class="scope">${(feature.scope || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section><section class="drawer-section"><h3>Ответственный поток</h3><p style="margin:0;color:#44515a;font-size:13px">${escapeHtml(feature.owner)}</p></section>${feature.note ? `<div class="note"><strong>Комментарий к статусу</strong><br>${escapeHtml(feature.note)}</div>` : ''}${sources}${featureEditor(feature)}`;
   openDrawer();
   const range = $('#progressInput');
   if (range) range.addEventListener('input', () => { $('#progressOutput').textContent = `${range.value}%`; });
   $('#saveFeature')?.addEventListener('click', saveFeature);
-  $('#statusSelect').closest('.field').insertAdjacentHTML('beforebegin', `<div class="field full"><label for="releaseSelect">Релиз</label><select id="releaseSelect">${data.releases.map((item) => `<option value="${escapeHtml(item.id)}" ${item.id === feature.release ? 'selected' : ''}>${escapeHtml(item.shortDate)} · ${escapeHtml(item.version)}</option>`).join('')}</select></div>`);
+  $('#unestimatedInput').addEventListener('change', (event) => {
+    range.disabled = event.target.checked;
+    $('#progressOutput').textContent = event.target.checked ? '—' : `${range.value}%`;
+  });
+  $('#addFeatureSource').addEventListener('click', () => {
+    $('#featureSourcesEditor').insertAdjacentHTML('beforeend', sourceEditorRow());
+    refreshIcons();
+  });
+  $('#featureSourcesEditor').addEventListener('click', (event) => {
+    event.target.closest('[data-remove-source]')?.closest('[data-source-row]')?.remove();
+  });
   refreshIcons();
 }
 
@@ -565,11 +601,41 @@ async function saveFeature() {
   if (!state.owner || !state.selected || state.snapshot) return;
   const button = $('#saveFeature');
   const feature = currentFeature(featureById(state.selected));
+  const values = requiredFields([
+    { id: 'titleInput', label: 'Название' },
+    { id: 'outcomeInput', label: 'Что изменится для пользователя' },
+    { id: 'scopeInput', label: 'Что входит' },
+    { id: 'ownerInput', label: 'Ответственный поток' },
+  ]);
+  if (!values) return;
   const release = $('#releaseSelect').value;
   if (!releaseById(release)) {
     toast('Выберите релиз из списка');
     return;
   }
+  const lane = $('#laneSelect').value;
+  if (!laneById(lane)) return toast('Выберите направление из списка');
+  const image = safeImageSource($('#imageInput').value);
+  if ($('#imageInput').value.trim() && !image) {
+    $('#imageInput').setAttribute('aria-invalid', 'true');
+    $('#imageInput').focus();
+    return toast('Проверьте ссылку или путь к изображению');
+  }
+  const sources = [];
+  for (const row of $('#featureSourcesEditor').querySelectorAll('[data-source-row]')) {
+    const label = row.querySelector('[data-source-label]').value.trim();
+    const input = row.querySelector('[data-source-url]');
+    const rawUrl = input.value.trim();
+    if (!label && !rawUrl) continue;
+    const url = externalUrl(rawUrl);
+    input.setAttribute('aria-invalid', url ? 'false' : 'true');
+    if (!url) {
+      input.focus();
+      return toast('Укажите корректную ссылку источника: https://...');
+    }
+    sources.push({ label: label || 'Источник', url });
+  }
+  const unestimated = $('#unestimatedInput').checked;
   const progressInput = $('#progressInput');
   button.disabled = true;
   const next = {
@@ -577,8 +643,16 @@ async function saveFeature() {
     [state.selected]: {
       ...state.overrides[state.selected],
       release,
+      lane,
+      title: values.titleInput,
+      outcome: values.outcomeInput,
+      scope: values.scopeInput.split('\n').map((item) => item.trim()).filter(Boolean),
+      owner: values.ownerInput,
+      sources,
+      image,
+      unestimated,
       status: $('#statusSelect').value,
-      progress: progressInput ? Number(progressInput.value) : Number(feature.progress || 0),
+      progress: unestimated ? 0 : (progressInput ? Number(progressInput.value) : Number(feature.progress || 0)),
       note: $('#noteInput').value.trim(),
       updatedAt: new Date().toISOString(),
     },

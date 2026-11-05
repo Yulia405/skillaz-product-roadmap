@@ -29,6 +29,7 @@
       .filter{flex-shrink:0}
       .release-nav{position:static;flex-shrink:0;padding-left:0}
     }
+    .source-edit-heading{color:var(--muted);font-size:11px;font-weight:800;text-transform:uppercase}.source-edit-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr) 38px;gap:8px;align-items:end;margin-bottom:10px}.source-edit-row .field{min-width:0}.source-edit-row .icon-only{height:38px;width:38px;padding:8px}.edit-grid>.field{min-width:0}@media(max-width:480px){.source-edit-row{grid-template-columns:minmax(0,1fr) 38px}.source-edit-row>.field:first-child{grid-column:1/-1}}
   </style>
 </head>
 <body>
@@ -79,6 +80,6 @@
     function toast(message){const e=$('#toast');e.textContent=message;e.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.classList.remove('show'),2400)}function refreshIcons(){if(window.lucide){window.lucide.createIcons({attrs:{'stroke-width':1.8}});document.documentElement.classList.add('icons-ready')}}
     readState();renderHeader();renderFilters();renderRoadmap();renderPromo();renderMethodology();renderPlaceholders();refreshIcons();$('#editBtn').addEventListener('click',toggleEdit);$('#shareBtn').addEventListener('click',openShare);$('#shareLive').addEventListener('click',shareLive);$('#shareSnapshot').addEventListener('click',shareSnapshot);$('#closeShare').addEventListener('click',closeShare);$('#shareBackdrop').addEventListener('click',closeShare);$('#exportBtn').addEventListener('click',exportState);$('#importInput').addEventListener('change',e=>importState(e.target.files[0]));$('#prevRelease').addEventListener('click',()=>shiftRelease(-1));$('#nextRelease').addEventListener('click',()=>shiftRelease(1));$('#closeDrawer').addEventListener('click',closeDrawer);$('#backdrop').addEventListener('click',closeDrawer);document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('#shareShell').classList.contains('open')?closeShare():closeDrawer()}if(e.key==='ArrowLeft'&&!$('#drawerShell').classList.contains('open')&&!$('#shareShell').classList.contains('open'))shiftRelease(-1);if(e.key==='ArrowRight'&&!$('#drawerShell').classList.contains('open')&&!$('#shareShell').classList.contains('open'))shiftRelease(1)});
   </script>
-  <script src="roadmap-app.js?v=20261105-release-move"></script>
+  <script src="roadmap-app.js?v=20261105-full-card-editor"></script>
 </body>
 </html>
