@@ -310,7 +310,7 @@ function featureCard(feature) {
 function renderRoadmap() {
   const release = releaseById(state.release);
   const index = data.releases.findIndex((item) => item.id === release.id);
-  const features = allFeatures().filter((feature) => feature.release === release.id);
+  const features = allFeatures().filter((feature) => currentFeature(feature).release === release.id);
   $('#roadmap').innerHTML = `<section class="release-section" id="${release.id}"><header class="release-head"><div><div class="release-kicker"><span class="phase-number">${index + 1}</span>${escapeHtml(release.development)}</div><div class="release-date"><time datetime="${release.date}">${release.shortDate}</time><span>${escapeHtml(release.version)}</span></div></div><div class="release-copy"><h2>${escapeHtml(release.title)}</h2><p>${escapeHtml(release.promise)}</p><button class="button admin-only release-admin-action" data-add-feature="${release.id}"><i data-lucide="plus"></i>Добавить карточку</button></div></header><div class="feature-grid">${features.length ? features.map(featureCard).join('') : '<div class="empty-release">В этой поставке пока нет карточек.</div>'}</div></section>`;
   $('#roadmap .release-copy').insertAdjacentHTML('beforeend', '<button class="button icon-only admin-only release-admin-action" id="editRelease" title="Редактировать релиз" aria-label="Редактировать релиз"><i data-lucide="pencil"></i><span class="icon-fallback" aria-hidden="true">✎</span></button>');
   $('#editRelease').addEventListener('click', () => openReleaseEditor(state.release));
@@ -394,6 +394,7 @@ function openFeature(id) {
   const range = $('#progressInput');
   if (range) range.addEventListener('input', () => { $('#progressOutput').textContent = `${range.value}%`; });
   $('#saveFeature')?.addEventListener('click', saveFeature);
+  $('#statusSelect').closest('.field').insertAdjacentHTML('beforebegin', `<div class="field full"><label for="releaseSelect">Релиз</label><select id="releaseSelect">${data.releases.map((item) => `<option value="${escapeHtml(item.id)}" ${item.id === feature.release ? 'selected' : ''}>${escapeHtml(item.shortDate)} · ${escapeHtml(item.version)}</option>`).join('')}</select></div>`);
   refreshIcons();
 }
 
@@ -564,11 +565,18 @@ async function saveFeature() {
   if (!state.owner || !state.selected || state.snapshot) return;
   const button = $('#saveFeature');
   const feature = currentFeature(featureById(state.selected));
+  const release = $('#releaseSelect').value;
+  if (!releaseById(release)) {
+    toast('Выберите релиз из списка');
+    return;
+  }
   const progressInput = $('#progressInput');
   button.disabled = true;
   const next = {
     ...state.overrides,
     [state.selected]: {
+      ...state.overrides[state.selected],
+      release,
       status: $('#statusSelect').value,
       progress: progressInput ? Number(progressInput.value) : Number(feature.progress || 0),
       note: $('#noteInput').value.trim(),
@@ -577,7 +585,9 @@ async function saveFeature() {
   };
   try {
     await persistShared(next, state.promo, state.methodology, state.discovery);
+    state.release = release;
     renderHeader();
+    renderFilters();
     renderRoadmap();
     openFeature(state.selected);
     toast('Обновление сохранено для всех');
